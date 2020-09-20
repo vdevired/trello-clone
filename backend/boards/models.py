@@ -14,20 +14,33 @@ class Board(models.Model):
 class List(models.Model):
     board = models.ForeignKey(Board, on_delete=models.CASCADE, related_name="lists")
     title = models.CharField(max_length=255, blank=False, null=False)
+    order = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if not self.order:
+            self.order = List.objects.filter(board=self.board).count() + 1
+        return super().save(*args, **kwargs)
+
 class Item(models.Model):
+    list = models.ForeignKey(List, on_delete=models.CASCADE, related_name='items')
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     image = models.ImageField(blank=True, upload_to='item_images')
+    order = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        if not self.order:
+            self.order = Item.objects.filter(list=self.list).count() + 1
+        return super().save(*args, **kwargs)
+    
 class Label(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name='labels')
     title = models.CharField(max_length=255, blank=False, null=False)
