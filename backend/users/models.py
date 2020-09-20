@@ -24,7 +24,10 @@ class User(AbstractUser):
     email = models.EmailField(max_length=255, blank=False, null=False, unique=True)
     first_name = models.CharField(max_length=255, blank=False, null=False)
     last_name = models.CharField(max_length=255, blank=False, null=False)
-
     profile_pic = models.ImageField(blank=True, upload_to='profile_pics')
 
     objects = CustomUserManager()
+    
+    @property
+    def full_name(self):
+        return f'{self.first_name} {self.last_name}'
