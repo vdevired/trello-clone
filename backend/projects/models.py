@@ -1,8 +1,6 @@
 from django.db import models
-from users.models import User
 from django.utils import timezone
-
-# Create your models here.
+from users.models import User
 
 
 class Project(models.Model):
@@ -13,6 +11,7 @@ class Project(models.Model):
     profile_picture = models.ImageField(
         blank=True, upload_to="project_profile_pics")
     created_at = models.DateTimeField(default=timezone.now)
+    members = models.ManyToManyField(User, through='ProjectMembership')
 
     def __str__(self):
         return self.title
