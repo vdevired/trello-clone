@@ -11,12 +11,20 @@ class CustomUserManager(UserManager):
         if 'email' in kwargs:
             kwargs['email__iexact'] = kwargs['email']
             del kwargs['email']
+
+        if 'username' in kwargs: # Get by natural key not usef while registering, filter is
+            kwargs['username__iexact'] = kwargs['username']
+            del kwargs['username']
         return super(CustomUserManager, self).filter(**kwargs)
 
     def get(self, **kwargs):
         if 'email' in kwargs:
             kwargs['email__iexact'] = kwargs['email']
             del kwargs['email']
+
+        if 'username' in kwargs: # When we use .get() explicitly. Get by natural key used for logging in
+            kwargs['username__iexact'] = kwargs['username']
+            del kwargs['username']
         return super(CustomUserManager, self).get(**kwargs)
 
 class User(AbstractUser):

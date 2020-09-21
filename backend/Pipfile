@@ -8,6 +8,10 @@ verify_ssl = true
 [packages]
 django = "*"
 pillow = "*"
+pytest = "*"
+pytest-django = "*"
+pytest-cov = "*"
+mixer = "*"
 
 [requires]
 python_version = "3.8"
