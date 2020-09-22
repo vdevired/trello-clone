@@ -8,3 +8,4 @@ omit =
 	*wsgi.py,
 	manage.py,
 	*admin.py
+	*__init__.py

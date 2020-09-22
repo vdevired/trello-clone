@@ -6,12 +6,14 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-djangorestframework-simplejwt = "*"
+django = "*"
 pillow = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
 mixer = "*"
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
 
 [requires]
 python_version = "3.8"

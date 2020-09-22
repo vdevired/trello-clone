@@ -20,14 +20,13 @@ class Project(models.Model):
 
 class ProjectMembership(models.Model):
     class Access(models.IntegerChoices):
-        BASE = 1            # Can view and create and move only own items
-        INTERMEDIATE = 2    # Can create lists and move others items.
-        OWNER = 3          # Can perform destructive actions on other's items.
+        MEMBER = 1            # Can view and create and move only own items
+        ADMIN = 2             # Can remove members and modify project settings.
 
     project = models.ForeignKey(
-        Project, on_delete=models.CASCADE, related_name='memberships')
+        Project, on_delete=models.CASCADE)
     member = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='memberships')
+        User, on_delete=models.CASCADE)
     access_level = models.IntegerField(choices=Access.choices)
     created_at = models.DateTimeField(default=timezone.now)
 

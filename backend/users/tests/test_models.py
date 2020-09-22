@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.test import Client
 from mixer.backend.django import mixer
 
@@ -31,6 +32,19 @@ class TestUserModel:
         user = mixer.blend(User, first_name='John', last_name='Doe')
         assert user.full_name == 'John Doe'
 
+    def test_username_regex(self):
+        user = User(
+            username = 'johndoe@gmail.com', 
+            email = 'johndoe@gmail.com', 
+            first_name = 'John',
+            last_name = 'Doe',
+        )
+        user.set_password('}P-9(e,W')
+        with pytest.raises(ValidationError):
+            if user.full_clean():
+                user.save()
+        assert User.objects.filter(username='johndoe@gmail.com').count() == 0
+
 class TestUserLogin:
     def test_username_case_insensitive(self):
         c = Client()
@@ -38,3 +52,10 @@ class TestUserLogin:
         user.set_password('}P-9(e,W')
         user.save()
         assert c.login(username='JohN', password='}P-9(e,W') == True
+
+    def test_user_can_login_with_email(self):
+        c = Client()
+        user = mixer.blend(User, username='john', email='johndoe@gmail.com')
+        user.set_password('}P-9(e,W')
+        user.save()
+        assert c.login(username='johndoe@gmail.com', password='}P-9(e,W') == True
