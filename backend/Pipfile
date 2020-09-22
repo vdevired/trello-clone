@@ -12,6 +12,9 @@ pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
 mixer = "*"
+djangorestframework = "*"
+markdown = "*"
+django-filter = "*"
 
 [requires]
 python_version = "3.8"

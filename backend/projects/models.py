@@ -11,7 +11,8 @@ class Project(models.Model):
     profile_picture = models.ImageField(
         blank=True, upload_to="project_profile_pics")
     created_at = models.DateTimeField(default=timezone.now)
-    members = models.ManyToManyField(User, through='ProjectMembership')
+    members = models.ManyToManyField(
+        User, through='ProjectMembership', through_fields=('project', 'member'))
 
     def __str__(self):
         return self.title
