@@ -1,4 +1,5 @@
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -36,6 +37,8 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=255, blank=False, null=False)
     last_name = models.CharField(max_length=255, blank=False, null=False)
     profile_pic = models.ImageField(blank=True, upload_to='profile_pics')
+
+    boards = GenericRelation('boards.Board', related_query_name='owner', object_id_field='owner_id', content_type_field='owner_model')
 
     objects = CustomUserManager()
     

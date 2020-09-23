@@ -1,10 +1,10 @@
 import pytest
+from django.core import mail
 from mixer.backend.django import mixer
-from rest_framework.test import APIClient
 from projects.models import Project, ProjectMembership
-from projects.serializers import ProjectSerializer, ProjectMembershipSerializer
+from projects.serializers import ProjectMembershipSerializer, ProjectSerializer
+from rest_framework.test import APIClient
 from users.models import User
-
 
 pytestmark = pytest.mark.django_db
 
@@ -209,3 +209,73 @@ class TestProjectMember:
         client = APIClient()
         response = client.get('/projects/2/members')
         assert response.status_code == 404
+
+class TestProjectInvite:
+    @pytest.fixture
+    def make_proj(self):
+        user1 = mixer.blend(User)
+        proj  = mixer.blend(Project, owner=user1)
+        return (user1, proj)
+
+    def test_can_invite(self, make_proj, mailoutbox):
+        (owner, project) = make_proj
+        user2 = mixer.blend(User)
+        client = APIClient()
+        client.force_authenticate(owner)
+        response = client.post('/projects/1/invite', {
+            'users' : [user2.username]
+        }, format='json')
+        assert response.status_code == 204
+        assert len(mailoutbox) == 1
+        
+        activation_link = mailoutbox[0].body.split(" ")[-1]
+        token = activation_link.split("/")[-1]
+        pidb64 = activation_link.split("/")[-2]
+        usernameb64 = activation_link.split("/")[-3]
+        client.force_authenticate(user2)
+
+        assert ProjectMembership.objects.filter(project=project, member=user2).exists() == False
+        response = client.post('/projects/join', {
+            'usernameb64' : usernameb64,
+            'pidb64' : pidb64,
+            'token' : token    
+        })
+
+        assert response.status_code == 204
+        assert ProjectMembership.objects.filter(project=project, member=user2).exists()
+
+    def test_invite_no_users_specified(self, make_proj):
+        (owner, project) = make_proj
+        client = APIClient()
+        client.force_authenticate(owner)
+        response = client.post('/projects/1/invite')
+        assert response.status_code == 400
+        assert 'No users provided' in response.data['error']
+
+    def test_invite_can_use_link_only_once(self, make_proj, mailoutbox):
+        (owner, project) = make_proj
+        user2 = mixer.blend(User)
+        client = APIClient()
+        client.force_authenticate(owner)
+        response = client.post('/projects/1/invite', {
+            'users' : [user2.username]
+        }, format='json')
+        
+        activation_link = mailoutbox[0].body.split(" ")[-1]
+        token = activation_link.split("/")[-1]
+        pidb64 = activation_link.split("/")[-2]
+        usernameb64 = activation_link.split("/")[-3]
+        client.force_authenticate(user2)
+
+        response = client.post('/projects/join', {
+            'usernameb64' : usernameb64,
+            'pidb64' : pidb64,
+            'token' : token    
+        })
+        response = client.post('/projects/join', {
+            'usernameb64' : usernameb64,
+            'pidb64' : pidb64,
+            'token' : token    
+        })
+
+        assert response.status_code == 400
