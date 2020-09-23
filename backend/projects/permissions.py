@@ -13,3 +13,12 @@ class IsProjectAdminOrMemberReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         return request.user == obj.owner or pmem.access_level == 2
+
+class IsProjectMember(permissions.BasePermission):
+    try: 
+        pmem = ProjectMembership.objects.get(member=request.user, project=obj)
+    except ProjectMembership.DoesNotExist:
+        if request.user != obj.owner:
+            return False
+
+    return True
