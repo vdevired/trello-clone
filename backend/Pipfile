@@ -12,6 +12,8 @@ pytest = "*"
 pytest-django = "*"
 pytest-cov = "*"
 mixer = "*"
+drf-yasg = "*"
+uritemplate = "*"
 
 [requires]
 python_version = "3.8"

@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'users',
     'projects',
     'boards',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
@@ -145,4 +146,16 @@ REST_FRAMEWORK = {
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=360)
+}
+
+
+SWAGGER_SETTINGS = {
+    'token_type': 'Bearer',
+    'SECURITY_DEFINITIONS' : {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
 }
