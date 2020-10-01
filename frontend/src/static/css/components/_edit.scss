@@ -1,0 +1,253 @@
+.out-of-focus { // To darken the background
+	height: 200vh; // Needs 200 as needs to be placed inside header so that search can be above it and the rest of the header behind
+	overflow: none;
+	width: 100vw;
+	background: rgba(0,0,0,0.5);
+	position: fixed;
+	z-index: 3; // Above header
+}
+
+.card {
+	&--edit {
+		z-index: 4; // Above .out-of-focus
+		overflow: visible;
+
+		&:hover {
+			background: white;
+		}
+	}
+
+	&__title-edit {
+		margin-top: 1em;
+		font-size: 1rem;
+	}
+
+	&__edit-controls > .btn {
+		position: absolute;
+		bottom: -50px;
+		left: 0;
+	}
+
+	&__edit-controls-side {
+		position: fixed;
+		top: 239px; // card.getBoundingClientRect().y
+		left: 376px; // card.getBoundingClientRect().x + card.getBoundingClientRect().width + 10px
+
+		li {
+			width: fit-content;
+			color: white;
+			background: rgba(0,0,0,0.5);
+			padding: 0.5em;
+			border-radius: 4px;
+			margin: 0.25em 0;
+			transition: margin-left 100ms ease;
+
+			&:hover {
+				margin-left: 0.15em;
+			}
+		}
+	}
+}
+
+.edit-modal {
+	z-index: 4;
+	background-color: white;
+	border-radius: 5px;
+	position: fixed;
+	top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 925px;
+    padding: 2em;
+
+	&__cols {
+		display:flex;
+	}
+
+	&__left {
+		flex: 3;
+
+		& > .labels {
+			margin-bottom: 0.875em;
+		}
+	}
+
+	&__title {
+		font-weight: 500;
+		font-size: 1.25em;
+		margin-bottom: 0.4em;
+	}
+
+	&__subtitle {
+		color: $secondary-text;
+		font-size: 0.875rem;
+		margin-bottom: 2.5em;
+		span {
+			color: black;
+		}
+	}
+
+	&__section-header {
+		display: flex;
+		align-items: center;
+		color: $secondary-text;
+		margin-bottom: 1.5em;
+		> div:first-of-type {
+			font-weight: 500;
+			display: flex;
+			align-items: center;
+			width: 130px;
+			i {
+				font-size: 1.25rem;
+				margin-right: 0.35em;
+			}
+		}
+
+		> div:nth-of-type(2) {
+			margin-left: 1.5em;
+		}
+	}
+
+	&__description {
+		white-space: pre-line; // To display new lines
+		margin-bottom: 2.5em;
+	}
+
+	&__attachments {
+		margin-bottom: 2.5em;
+		> .attachment {
+			margin-bottom: 1.25em;
+		}
+	}
+
+	&__comment-form {
+		border: 1px $border-color solid;
+		border-radius: 5px;
+		position: relative;
+		height: 100px;
+		margin-bottom: 2em;
+
+		> textarea {
+			border: 0;
+			resize: none;
+			padding: 1em;
+			width: 100%;
+			height: 100%;
+		}
+
+		> .btn {
+			position: absolute;
+			right: 10px;
+			bottom: 10px;
+		}
+	}
+
+	&__comments > li {
+		margin-bottom: 1.75em;
+	}
+
+	// Right side
+	&__right {
+		margin-left: 2em;
+		flex: 1;
+		> .edit-modal__section-header:first-of-type {
+			margin-top: 0.875em;
+		}
+	}
+
+	&__actions {
+		margin-bottom: 2.5em;
+		> li {
+			padding-bottom: 1.4em;
+			&:last-of-type {
+				padding-bottom: 0;
+			}
+		}
+	}
+
+	&__members {
+		> li {
+			display: flex;
+			align-items: center;
+			margin-bottom: 0.7em;
+			> p {
+				margin-left: 0.5em;
+				font-weight: 500;
+			}
+		}
+	}
+}
+
+.attachment {
+	display: flex;
+	width: 80%;
+	height: 100px;
+
+	img {
+		flex: 1;
+		object-fit: contain;
+		height: 100%;
+		border-radius: 5px;
+	}
+
+	&__content {
+		flex: 2;
+		display: flex;
+		flex-direction: column;
+		margin-left: 1.5em;
+	}
+
+	&__subtitle {
+		font-size: 0.875rem;
+		color: $secondary-text;
+		font-weight: 300;
+		margin-bottom: 0.75em;
+	}
+
+	&__title {
+		margin-bottom: 0.5em;
+	}
+
+	&__buttons {
+		margin-top: auto;
+		display: flex;
+		> .btn:first-of-type {
+			margin-right: 1em;
+		}
+	}
+}
+
+.comment {
+	&__header {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 1em;
+	}
+
+	&__header-left {
+		display: flex;
+		align-items: center;
+	}
+
+	&__info {
+		margin-left: 0.5em;
+		p:first-of-type {
+			font-weight: 500;
+			margin-bottom: 0.25em;
+		}
+		p:last-of-type {
+			color: $secondary-text;
+			font-size: 0.75em;
+			font-weight: 300;
+		}
+	}
+
+	&__header-right {
+		font-size: 0.875em;
+		font-weight: 300;
+	}
+
+	&__content {
+		font-size: 0.875rem;
+	}
+}

@@ -1,0 +1,69 @@
+.header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: $secondary-text;
+	background: white;
+
+	&__logo {
+		object-fit:cover;
+		height: 35px;
+		width: 114px;
+	}
+
+	&__list {
+		display: flex;
+		align-items: center;
+	}
+
+	&__li {
+		padding: 1.5em 1.5em;
+		max-height: 65px;
+
+		&--search {
+			display: flex;
+			align-items: center;
+			padding: 0.7em 0.7em; // As we highlight this when active, looks awkard if the whole height of header
+			border-radius: 5px;
+			background-color: white;
+			transition: width 100ms ease;
+
+			> .far {
+				margin-right: 0.5em;
+			}
+
+			> input {
+				outline: 0;
+				border: 0;
+				width: 100%;
+			}
+		}
+
+		&--active { // Only for use with search
+			position: relative;
+			z-index: 4;
+			width: 300px;
+
+			> .far {
+				color: $blue;
+			}
+		}
+
+		&--profile {
+			display: flex;
+			align-items: center;
+			> .member {
+				margin-right: 1em !important;
+			}
+		}
+
+		&--border {
+			border-left: 1px rgba($border-color, 0.55) solid;
+		}
+	}
+}
