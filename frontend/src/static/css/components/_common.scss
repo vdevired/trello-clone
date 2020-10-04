@@ -13,13 +13,44 @@
 		color: darken($secondary-text, 20%);
 
 		&:hover {
-			background-color: darken(#F2F2F2, 4%);
+			background-color: darken(#F2F2F2, 6%);
+		}
+	}
+
+	&--transparent {
+		background-color: transparent;
+		color: darken($secondary-text, 20%);
+
+		&:hover {
+			background-color: darken(#F2F2F2, 6%);
+		}
+	}
+
+	&--active { // For home sidebar, when you're on that page
+		background-color: $light-blue;
+		color: $blue;
+
+		&:hover {
+			background-color: $light-blue;
+			color: $blue;
 		}
 	}
 
 	&--small {
 		padding: 0.5em 0.75em;
 		font-size: 0.875rem;
+	}
+
+	&--disabled {
+		cursor: not-allowed;
+		color: lighten(#42526e, 25%);
+		background-color: $border-color;
+
+		&:hover {
+			color: lighten(#42526e, 25%);
+			background-color: $border-color;
+			opacity: 1;
+		}
 	}
 }
 
