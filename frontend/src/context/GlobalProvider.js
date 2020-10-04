@@ -12,6 +12,8 @@ const GlobalProvider = props => {
   });
 
   const login = (resData) => {
+    localStorage.setItem('accessToken', resData.access);
+    localStorage.setItem('refreshToken', resData.refresh);
     dispatch({type : LOGIN});
   }
 
