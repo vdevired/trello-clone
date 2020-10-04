@@ -24,7 +24,7 @@ const CreateTeamModal = ({setShowModal}) => {
 		        </p>
 
 		        <form onSubmit={handleSubmit(onSubmit)}>
-		            <label>Project Name</label>
+		            <label htmlFor="name">Project Name</label>
 		            <input 
 		            	name="name"
 		            	ref={register({ required: true })} 
@@ -32,14 +32,14 @@ const CreateTeamModal = ({setShowModal}) => {
 		            	placeholder="The Boys" 
 	            	/>
 
-		            <label>Project Description</label>
+		            <label htmlFor="description">Project Description</label>
 		            <textarea 
 		            	name="description"
 		            	ref={register} 
 		            	placeholder="Get your members on board with a few words about your project">
 		            </textarea>
 
-		            <label>Invite Members</label>
+		            <label htmlFor="members">Invite Members</label>
 		            <input 
 		            	name="members"
 		            	ref={register} 

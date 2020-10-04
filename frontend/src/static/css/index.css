@@ -353,6 +353,7 @@ button, input, select, textarea, input::placeholder {
   padding: 0.75em;
   width: 300px;
   position: relative;
+  cursor: pointer;
 }
 .card__pen {
   position: absolute;
