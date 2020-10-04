@@ -94,7 +94,7 @@ const Members = ({members}) => (
 const getEditControlsSidePosition = cardElem => { // pass in ref.current
 	if (!cardElem) return null;
 	return {
-		top: cardElem.getBoundingClientRect().y+"px",
+		top: cardElem.getBoundingClientRect().y + "px",
 		left : cardElem.getBoundingClientRect().x + cardElem.getBoundingClientRect().width + 10 + "px"
 	}
 }

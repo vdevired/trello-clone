@@ -412,6 +412,7 @@ button, input, select, textarea, input::placeholder {
   background: rgba(0, 0, 0, 0.5);
   position: fixed;
   z-index: 3;
+  display: none;
 }
 
 .card--edit {
@@ -642,30 +643,30 @@ button, input, select, textarea, input::placeholder {
 .search-suggestions__cards > li {
   margin-bottom: 1em;
 }
-.search-suggestions__cards > li .card {
+.search-suggestions__cards .card {
   display: flex;
   width: 100%;
   padding-bottom: 0;
 }
-.search-suggestions__cards > li .card__image {
+.search-suggestions__cards .card__image {
   flex: 3;
   margin: 0;
   margin-left: -0.75em;
   margin-top: -0.75em;
 }
-.search-suggestions__cards > li .card__image img {
+.search-suggestions__cards .card__image img {
   border-radius: 5px 0 0 5px;
   width: 100%;
   height: 100%;
   object-fit: cover;
   max-height: 125px;
 }
-.search-suggestions__cards > li .card > div:last-of-type {
+.search-suggestions__cards .card > div:last-of-type {
   flex: 4;
   border: 0;
   margin-left: 1em;
 }
-.search-suggestions__cards > li .card > div:last-of-type .card__members {
+.search-suggestions__cards .card > div:last-of-type .card__members {
   position: absolute;
   margin-top: 0;
   bottom: 0.75em;
@@ -767,7 +768,6 @@ button, input, select, textarea, input::placeholder {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
   text-align: center;
 }
 .landing-banner__title {
