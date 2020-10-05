@@ -17,7 +17,7 @@ const SearchModal = ({searchQuery, searchElem, setShowModal}) => {
 	const cards = [];
 	const boards = [];
 
-	useEffect(modalBlurHandler(setShowModal), [])
+	useEffect(modalBlurHandler(setShowModal), []);
 
 	return (
 		<div className="search-suggestions" style={getSearchSuggestionsPosition(searchElem.current)}>

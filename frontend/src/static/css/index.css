@@ -415,6 +415,15 @@ button, input, select, textarea, input::placeholder {
   display: none;
 }
 
+.btn--description {
+  width: 100%;
+  text-align: left;
+  padding-top: 1em;
+  padding-left: 1em;
+  padding-bottom: 40px;
+  margin-bottom: 2em;
+}
+
 .card--edit {
   z-index: 4;
   overflow: visible;
@@ -482,11 +491,17 @@ button, input, select, textarea, input::placeholder {
 .edit-modal__subtitle span {
   color: black;
 }
+.edit-modal__exit {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 1.25rem;
+}
 .edit-modal__section-header {
   display: flex;
   align-items: center;
   color: #838282;
-  margin-bottom: 1.5em;
+  margin-bottom: 1.25em;
 }
 .edit-modal__section-header > div:first-of-type {
   font-weight: 500;
@@ -503,29 +518,29 @@ button, input, select, textarea, input::placeholder {
 }
 .edit-modal__description {
   white-space: pre-line;
-  margin-bottom: 2.5em;
+  margin-bottom: 2em;
 }
 .edit-modal__attachments {
-  margin-bottom: 2.5em;
+  margin-bottom: 2em;
 }
 .edit-modal__attachments > .attachment {
   margin-bottom: 1.25em;
 }
-.edit-modal__comment-form {
+.edit-modal__form {
   border: 1px rgba(211, 211, 211, 0.55) solid;
   border-radius: 5px;
   position: relative;
   height: 100px;
   margin-bottom: 2em;
 }
-.edit-modal__comment-form > textarea {
+.edit-modal__form > textarea {
   border: 0;
   resize: none;
   padding: 1em;
   width: 100%;
   height: 100%;
 }
-.edit-modal__comment-form > .btn {
+.edit-modal__form > .btn {
   position: absolute;
   right: 10px;
   bottom: 10px;

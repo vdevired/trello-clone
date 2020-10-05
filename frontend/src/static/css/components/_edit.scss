@@ -8,6 +8,15 @@
 	display: none;
 }
 
+.btn--description { // Use with secondary and small
+	width: 100%;
+    text-align: left;
+    padding-top: 1em;
+    padding-left: 1em;
+    padding-bottom: 40px;
+    margin-bottom: 2em;
+}
+
 .card {
 	&--edit {
 		z-index: 4; // Above .out-of-focus
@@ -88,11 +97,18 @@
 		}
 	}
 
+	&__exit {
+		position: absolute;
+        top: 20px;
+        right: 20px;
+        font-size: 1.25rem;
+	}
+
 	&__section-header {
 		display: flex;
 		align-items: center;
 		color: $secondary-text;
-		margin-bottom: 1.5em;
+		margin-bottom: 1.25em;
 		> div:first-of-type {
 			font-weight: 500;
 			display: flex;
@@ -111,17 +127,17 @@
 
 	&__description {
 		white-space: pre-line; // To display new lines
-		margin-bottom: 2.5em;
+		margin-bottom: 2em;
 	}
 
 	&__attachments {
-		margin-bottom: 2.5em;
+		margin-bottom: 2em;
 		> .attachment {
 			margin-bottom: 1.25em;
 		}
 	}
 
-	&__comment-form {
+	&__form {
 		border: 1px $border-color solid;
 		border-radius: 5px;
 		position: relative;
