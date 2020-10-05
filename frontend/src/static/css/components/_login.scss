@@ -113,8 +113,11 @@
 .buttons {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-items: space-evenly;
     margin-left: 10%;
     margin-right: 10%;
     margin-top: 15px;
+    > .btn {
+         flex: 1;
+    }
 }

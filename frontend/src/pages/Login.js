@@ -1,5 +1,6 @@
 import React from "react";
 import LoginForm from '../components/auth/LoginForm'
+import RegisterForm from "../components/auth/RegisterForm";
 import logo from '../static/img/logo2.png';
 import bg from '../static/img/slideshow-1.jpg';
 
@@ -10,7 +11,7 @@ const Login = ({login}) => {
               <div className="sidebar-logo">
                  <img className="sidebar-logo__img" src={logo} alt="trello"/>
               </div>
-              {login ? <LoginForm/> : null }
+              {login ? <LoginForm/> : <RegisterForm/>}
             </div>
             <div className="slideshow" id="slideshow-container">
                 <div id="slideshow">
