@@ -40,11 +40,6 @@ const TabTwo = ({ display, register }) => {
     <div style={style}>
       <input
         className="sidebar-input border--gray border--onHoverBlue"
-        type="file"
-        name="profile_pic"
-      />
-      <input
-        className="sidebar-input border--gray border--onHoverBlue"
         type="email"
         name="email"
         placeholder="Email"
@@ -52,16 +47,21 @@ const TabTwo = ({ display, register }) => {
       />
       <input
         className="sidebar-input border--gray border--onHoverBlue"
+        type="file"
+        name="profile_pic"
+      />
+      <input
+        className="sidebar-input border--gray border--onHoverBlue"
         type="password"
         name="password"
-        placeholder="Password: Min. 8 characters"
+        placeholder="Password"
         ref={register({ required: true })}
       />
     </div>
   );
 };
 
-const RegisterForm = () => {
+const RegisterForm = ({setErrMsgs}) => {
   const { register, handleSubmit, watch } = useForm();
   const [isTabOne, setIsTabOne] = useState(true);
   const firstName = watch("first_name", "");
@@ -75,10 +75,10 @@ const RegisterForm = () => {
     const url = `${backendUrl}/register/`;
     try {
       await axios.post(url, data);
-      history.push("/");
+      history.push("/login");
     } catch (err) {
       if (err.response?.status === 400) {
-        console.log("Bad Request");
+          setErrMsgs({signup: true , err: true, msgs: err.response.data});
       }
     }
   };
@@ -100,6 +100,7 @@ const RegisterForm = () => {
   };
 
   return (
+    <>
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="login-fieldset">
         <TabOne display={isTabOne} register={register} />
@@ -126,6 +127,7 @@ const RegisterForm = () => {
         </div>
       </div>
     </form>
+    </>
   );
 };
 

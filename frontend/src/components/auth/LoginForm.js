@@ -6,7 +6,7 @@ import globalContext from '../../context/globalContext'
 import { backendUrl }  from '../../static/js/const';
 import { useForm } from "react-hook-form";
 
-const LoginForm = () => {
+const LoginForm = ({setErrMsgs}) => {
   const { register, handleSubmit, watch } = useForm();
 
   const userName = watch("username", "");
@@ -24,6 +24,7 @@ const LoginForm = () => {
       catch (err) {
         if (err.response?.status === 401){
             console.log('Invalid Credentials');
+            setErrMsgs({signup: false, err: true, msgs: { Invalid: 'username or password'}});
         }
       }
   }
