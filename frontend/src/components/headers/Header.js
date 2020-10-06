@@ -1,11 +1,15 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef, useEffect, useContext} from 'react';
 import logo from '../../static/img/logo2.png';
 import SearchModal from '../modals/SearchModal';
+import ProfilePic from '../boards/ProfilePic';
+
+import globalContext from "../../context/globalContext";
 
 const Header = () => {
 	const [searchQuery, setSearchQuery] = useState("");
 	const [showSearch, setShowSearch] = useState(false);
 	const searchElem = useRef(null);
+	const {user} = useContext(globalContext);
 
 	useEffect(() => {
 		if (searchQuery !== "") setShowSearch(true);
@@ -36,19 +40,17 @@ const Header = () => {
 	            <div className="header__section">
 	                <ul className="header__list">
 	                    <li className="header__li header__li--profile">
-	                        <div className="member member--image member--large">
-	                            <img src={null} />
-	                        </div>
-	                        Hello, Vikhyat
+	                        <ProfilePic user={user} header={true}/>
+	                        Hello, {user.full_name.replace(/ .*/,'')}
 	                    </li>
 	                    <li className="header__li">
 	                        <a>
-	                        <i className="fal fa-bell"></i>
+	                        	<i className="fal fa-bell"></i>
 	                        </a>
 	                    </li>
 	                    <li className="header__li header__li--border">
 	                        <a>
-	                        <i className="fal fa-bars"></i>
+	                        	<i className="fal fa-bars"></i>
 	                        </a>
 	                    </li>
 	                </ul>

@@ -2,6 +2,7 @@ import React, {useEffect, useContext} from "react";
 import { Route, Switch } from "react-router-dom";
 
 import globalContext from "./context/globalContext";
+import Header from "./components/headers/Header";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 
@@ -18,13 +19,13 @@ function App() {
 
   return (
       <Switch>
-        {user ? 
-          <p>Logged in</p> :
-          <Route exact path="/" component={Landing} />
+        {user && 
+          <Route path="/" component={Header} />
         }
         
         {!user &&
           <>
+            <Route exact path="/" component={Landing} />
             <Route exact path="/login" component={Login} />
             <Route
               exact

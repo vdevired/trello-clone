@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
+import {modalBlurHandler} from '../../static/js/util';
 import Labels from './Labels';
 import ProfilePic from './ProfilePic';
 import EditCardModal from '../modals/EditCardModal';
@@ -54,7 +55,7 @@ const Card = ({card}) => {
 			            </p>
 			        }
 			        <Members members={card.assigned_to} />
-			        {isEditing && <EditControls cardElem={cardElem} />}
+			        {isEditing && <EditControls cardElem={cardElem} setShowModal={setIsEditing}/>}
 		        </div>
 		    </div>
 		    {showEditModal && <EditCardModal card={card} setShowModal={setShowEditModal} />}
@@ -73,24 +74,27 @@ const Members = ({members}) => (
     </div>
 )
 
-const getEditControlsSidePosition = cardElem => { // pass in ref.current
+export const getEditControlsSidePosition = (cardElem, height=10) => { // pass in ref.current
 	if (!cardElem) return null;
 	return {
 		top: cardElem.getBoundingClientRect().y + "px",
-		left : cardElem.getBoundingClientRect().x + cardElem.getBoundingClientRect().width + 10 + "px"
+		left : cardElem.getBoundingClientRect().x + cardElem.getBoundingClientRect().width + height + "px"
 	}
 }
 
-const EditControls = ({cardElem}) => (
-	<div className="card__edit-controls">
-		<a className="btn">Save</a>
-		<ul className="card__edit-controls-side" style={getEditControlsSidePosition(cardElem.current)}>
-			<li><i className="fal fa-tags"></i> Edit Labels</li>
-			<li><i className="fal fa-user"></i> Change Members</li>
-			<li><i className="fal fa-arrow-right"></i> Move</li>
-			<li><i className="fal fa-clock"></i> Change Due Date</li>
-		</ul>
-	</div>
-)
+const EditControls = ({cardElem, setShowModal}) => {
+	useEffect(modalBlurHandler(setShowModal), []);
+	return (
+		<div className="card__edit-controls">
+			<a className="btn">Save</a>
+			<ul className="card__edit-controls-side" style={getEditControlsSidePosition(cardElem.current)}>
+				<li><i className="fal fa-tags"></i> Edit Labels</li>
+				<li><i className="fal fa-user"></i> Change Members</li>
+				<li><i className="fal fa-arrow-right"></i> Move</li>
+				<li><i className="fal fa-clock"></i> Change Due Date</li>
+			</ul>
+		</div>
+	);
+}
 
 export default Card;

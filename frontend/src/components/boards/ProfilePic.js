@@ -15,14 +15,18 @@ const getNameColor = name => {
 	return colors[hashName(name) % colors.length];
 }
 
-const ProfilePic = ({user}) => (
+const ProfilePic = ({user, header}) => (
 	user.profile_pic ? 
-		<div className="member member--image">
-            <img src={null} />
+		<div className={`member member--image${header ? ' member--large' : ''}`}>
+            <img src={user.profile_pic} />
         </div> :
-		<div className={`member member--${getNameColor(user.full_name)}`}>
+		<div className={`member member--${getNameColor(user.full_name)}${header ? ' member--large' : ''}`}>
             {user.full_name.substring(0, 1)}
         </div>
 )
+
+ProfilePic.defaultProps = {
+	header : false
+}
 
 export default ProfilePic;
