@@ -14,3 +14,10 @@ class RegisterUser(APIView):
             user = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Me(APIView):
+    serializer_class = UserSerializer
+
+    def get(self, request, format=None):
+        serializer = UserSerializer(request.user)
+        return Response(serializer.data)

@@ -1,25 +1,39 @@
-import React from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
+import React, {useEffect, useContext} from "react";
+import { Route, Switch } from "react-router-dom";
 
-import GlobalProvider from "./context/GlobalProvider";
+import globalContext from "./context/globalContext";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 
 function App() {
+  const { checkAuth, checkedAuth, user } = useContext(globalContext);
+
+  useEffect(() => {
+    checkAuth();
+  }, [])
+
+  if (!checkedAuth) {
+    return (null);
+  }
+
   return (
-    <BrowserRouter>
-      <GlobalProvider>
-        <Switch>
+      <Switch>
+        {user ? 
+          <p>Logged in</p> :
           <Route exact path="/" component={Landing} />
-          <Route exact path="/login" component={Login} />
-          <Route
-            exact
-            path="/register"
-            render={(props) => <Login {...props} login={false} />}
-          />
-        </Switch>
-      </GlobalProvider>
-    </BrowserRouter>
+        }
+        
+        {!user &&
+          <>
+            <Route exact path="/login" component={Login} />
+            <Route
+              exact
+              path="/register"
+              render={(props) => <Login {...props} login={false} />}
+            />
+          </>
+        }
+      </Switch>
   );
 }
 

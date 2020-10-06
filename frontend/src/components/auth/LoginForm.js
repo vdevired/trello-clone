@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import axios from 'axios';
 
-import { useHistory } from "react-router-dom";
 import globalContext from '../../context/globalContext'
 import { backendUrl }  from '../../static/js/const';
 import { useForm } from "react-hook-form";
@@ -12,18 +11,16 @@ const LoginForm = ({setErrMsgs}) => {
   const userName = watch("username", "");
   const userPassword = watch("password", "");
   const { login } = useContext(globalContext);
-  const history = useHistory();
 
   const onSubmit = async (data) => {
       const url = `${backendUrl}/token/`;
       try {
         const res = await axios.post(url, data);
         login(res.data);
-        history.push('/');
       }
       catch (err) {
         if (err.response?.status === 401){
-            console.log('Invalid Credentials');
+            //console.log('Invalid Credentials');
             setErrMsgs({signup: false, err: true, msgs: { Invalid: 'username or password'}});
         }
       }

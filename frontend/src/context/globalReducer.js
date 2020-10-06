@@ -4,9 +4,9 @@ export const LOGOUT = 'LOGOUT';
 export const globalReducer = (state, action) => {
   switch (action.type) {
     case LOGIN:
-      return {...state, authenticated : true, checkedAuth : true};
+      return {...state, user : action.user, checkedAuth : true};
     case LOGOUT:
-      return {...state, authenticated : false, checkedAuth : true};
+      return {...state, user : null, checkedAuth : true};
     default:
       return state;
   }
