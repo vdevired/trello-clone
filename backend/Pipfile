@@ -14,6 +14,9 @@ pytest-cov = "*"
 mixer = "*"
 drf-yasg = "*"
 uritemplate = "*"
+django-cors-headers = "*"
+djangorestframework = "*"
+pyyaml = "*"
 
 [requires]
 python_version = "3.8"

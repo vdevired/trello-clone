@@ -1,0 +1,226 @@
+$colors: $yellow, coral, $blue, rgb(68, 221, 145), rgb(185, 134, 233), rgb(255, 201, 86);
+$list: bg1, bg2, bg3, bg4, bg5, bg6;
+
+$repeat: 10;
+$key: random(6);
+
+@for $i from 1 through 6{
+  .label-modal__create-label--img:nth-child(#{length($list)}n+#{$i}) {
+    > button {
+      //background-image: "../../img/#{nth($list, $key)}.jpg",
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+  }
+}
+
+@for $i from 1 through $repeat {
+    .label-modal__label:nth-child(#{length($colors)}n+#{$i}) {
+       > p {
+           background-color: lighten(nth($colors,random(length($colors))), 8%),
+       }      
+    }
+    
+    .label-modal__create-label:nth-child(#{length($colors)}n+#{$i}) {
+      > button {
+         background-color: lighten(nth($colors,random(length($colors))), 8%),
+      }
+    }
+}
+
+.label-modal {
+  background-color: white;
+  position: fixed;
+  left: 40%;
+  top: 20%;
+  width: 20em;
+  display: flex;
+  flex-direction: column;
+  z-index: 5;
+  font-weight: 600;
+  border-radius: 0.4em;
+  
+  &--bg {
+    width: 20em;
+    .label-modal__header {
+      margin-bottom: 0;
+    } 
+    
+    .label-modal__create-label {
+      > button {
+        width: 6.5em;
+        height: 4em;
+      }
+    }
+    
+    .label-modal__labels-head {
+      margin-top: 0.8em;
+    }
+  }
+
+  &__header {
+    margin: 1.2em 1.2em;
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 1.2em;
+    border-bottom: 1px solid lighten(black, 80);
+    color: $secondary-text;
+
+    &--noborder {
+      border-bottom: 0;
+      margin-bottom: 0;
+    }
+
+    > p {
+      width: 90%;
+      justify-content: space-evenly;
+      text-align:  center;
+    }
+    
+    > i:hover{
+      filter: brightness(70%);
+    }
+  }
+  
+  &__search {
+    display: flex;
+    flex-direction: column;
+    margin: 0.6em 1.2em;
+
+    > p {
+      color: $secondary-text;
+      filter: brightness(90%);
+      margin-bottom: 0.4em;
+      font-size: 0.9em;
+    }
+    
+    > input[type=text] {
+      width: 100%;
+      font-weight: 600;
+      height: 2em;
+      border-width: 1px;
+      border-color: $border-color;
+      border-radius: 0.2em;
+    }
+
+    > input[type=text]:hover{
+      border-color: $blue;
+      border-width: 2px;
+    }
+    
+    > ::-webkit-input-placeholder, ::-moz-placeholder{
+      font-size: 1em;
+      font-weight: 600;
+    }
+  }
+
+  &__labels-head {
+    color: $secondary-text;
+    font-weight: 600;
+    margin-left: 1.2em;
+    margin-top: 1.2em;
+    height: 1rem;
+  } 
+  
+  &__labels-block {
+    overflow-x: hidden;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    height: 15em;
+  }
+  
+  &__label {
+    margin: 0.3em 1.2em;
+    height: 2.5em;
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-evenly;
+
+    > p {
+      border-radius: 0.2em;
+      height: 100%;
+      width: 90%;
+      padding-top: 0.8em;
+      text-align: center; 
+    }
+
+    > i {
+      float: right;
+      margin-left: 1.2em;
+      padding-top: 0.8em;
+      color: $secondary-text;
+    }
+    
+    > i:hover{
+      filter: brightness(70%);
+    }
+    > p:hover {
+      filter: brightness(90%);
+    }
+  }
+
+  &__create {
+    border: 0;
+    height: 2em;
+    margin: 0.6em 1.2em;
+    border-radius: 0.2em;
+    color: black;
+  }
+  
+  &__create-block {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: wrap;
+    margin: 0.6em 0.4em;
+    padding-left: 0.6em;
+  }
+  
+  &__create-label {
+    margin-bottom: 0.5em;
+    margin-right: 0.7em;
+
+    > button {
+      width: 4.82em;  
+      height: 3em;
+      border: 0;
+      border-radius: 4px;
+    } 
+    
+    > button:hover{
+      filter: brightness(90%);
+    }
+    
+    &:last-of-type {
+      > button {
+        background-color: white;
+      }
+      > button:hover {
+        background-color: lighten($secondary-text, 40);
+      }
+    }
+
+  }
+
+  &__create-button {
+    background-color: green; 
+    border: 0;
+    margin-top: 1.2em;
+    margin-bottom: 1.2em;
+    margin-left: 1.2em;
+    margin-right: auto;
+    font-weight: 600;
+  }
+  
+  &--create{
+    width: 25em;
+  }
+  &__error {
+    color: darken($blue, 60);
+    margin: 0.5em 1.3em 1.3em 1.3em;
+    > li {
+      margin-bottom: 0.4em;
+      font-weight: 300;
+    }
+  }
+}
