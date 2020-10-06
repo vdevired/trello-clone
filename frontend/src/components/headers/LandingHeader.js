@@ -1,4 +1,6 @@
 import React from 'react';
+import { Link } from "react-router-dom";
+
 import logo from '../../static/img/logo.png';
 
 const LandingHeader = () => {
@@ -31,14 +33,14 @@ const LandingHeader = () => {
 			<div className="landing-header__section">
 				<ul className="landing-header__list">
 					<li className="landing-header__li">
-						<a>
+						<Link to="/login">
 							Login
-						</a>
+						</Link>
 					</li>
 					<li className="landing-header__li">
-						<a className="btn">
+						<Link to="/register" className="btn">
 							Sign Up
-						</a>
+						</Link>
 					</li>
 				</ul>
 			</div>

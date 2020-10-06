@@ -740,6 +740,9 @@ button, input, select, textarea, input::placeholder {
   color: white;
   background: transparent;
 }
+.landing-header a {
+  color: white;
+}
 .landing-header__logo {
   object-fit: cover;
   height: 35px;
@@ -1143,11 +1146,11 @@ button, input, select, textarea, input::placeholder {
 }
 
 .label-modal__label:nth-child(6n+1) > p {
-  background-color: #ffc776;
+  background-color: #cda9ef;
 }
 
 .label-modal__create-label:nth-child(6n+1) > button {
-  background-color: #ffc776;
+  background-color: #6f9cff;
 }
 
 .label-modal__label:nth-child(6n+2) > p {
@@ -1155,47 +1158,47 @@ button, input, select, textarea, input::placeholder {
 }
 
 .label-modal__create-label:nth-child(6n+2) > button {
-  background-color: #ffc776;
+  background-color: #ff9d79;
 }
 
 .label-modal__label:nth-child(6n+3) > p {
-  background-color: #6f9cff;
-}
-
-.label-modal__create-label:nth-child(6n+3) > button {
-  background-color: #cda9ef;
-}
-
-.label-modal__label:nth-child(6n+4) > p {
   background-color: #67e3a5;
 }
 
-.label-modal__create-label:nth-child(6n+4) > button {
-  background-color: #cda9ef;
+.label-modal__create-label:nth-child(6n+3) > button {
+  background-color: #67e3a5;
 }
 
-.label-modal__label:nth-child(6n+5) > p {
-  background-color: #ffd67f;
-}
-
-.label-modal__create-label:nth-child(6n+5) > button {
+.label-modal__label:nth-child(6n+4) > p {
   background-color: #ffc776;
 }
 
+.label-modal__create-label:nth-child(6n+4) > button {
+  background-color: #ff9d79;
+}
+
+.label-modal__label:nth-child(6n+5) > p {
+  background-color: #ff9d79;
+}
+
+.label-modal__create-label:nth-child(6n+5) > button {
+  background-color: #67e3a5;
+}
+
 .label-modal__label:nth-child(6n+6) > p {
-  background-color: #cda9ef;
+  background-color: #ffc776;
 }
 
 .label-modal__create-label:nth-child(6n+6) > button {
-  background-color: #ffd67f;
+  background-color: #6f9cff;
 }
 
 .label-modal__label:nth-child(6n+7) > p {
-  background-color: #cda9ef;
+  background-color: #6f9cff;
 }
 
 .label-modal__create-label:nth-child(6n+7) > button {
-  background-color: #ffd67f;
+  background-color: #6f9cff;
 }
 
 .label-modal__label:nth-child(6n+8) > p {
@@ -1203,23 +1206,23 @@ button, input, select, textarea, input::placeholder {
 }
 
 .label-modal__create-label:nth-child(6n+8) > button {
-  background-color: #ffd67f;
+  background-color: #67e3a5;
 }
 
 .label-modal__label:nth-child(6n+9) > p {
-  background-color: #ffc776;
+  background-color: #6f9cff;
 }
 
 .label-modal__create-label:nth-child(6n+9) > button {
-  background-color: #ffc776;
+  background-color: #ff9d79;
 }
 
 .label-modal__label:nth-child(6n+10) > p {
-  background-color: #cda9ef;
+  background-color: #ffc776;
 }
 
 .label-modal__create-label:nth-child(6n+10) > button {
-  background-color: #ff9d79;
+  background-color: #ffd67f;
 }
 
 .label-modal {

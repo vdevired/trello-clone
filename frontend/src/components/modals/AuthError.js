@@ -1,19 +1,22 @@
-import React from "react";
+import React, {useEffect} from "react";
+import {modalBlurHandler} from "../../static/js/util";
 
 const capitalize = (s) => {
   return s[0].toUpperCase() + s.slice(1).toLowerCase();
 };
 
 const AuthError = ({ signup, msgs, position, setErrMsgs}) => {
+  useEffect(modalBlurHandler(setErrMsgs), [])
+
   position.position = 'fixed';
   return (
-    <div class="label-modal" style = {position}>
-      <div class="label-modal__header label-modal__header--noborder">
+    <div className="label-modal" style = {position}>
+      <div className="label-modal__header label-modal__header--noborder">
         { signup?  <p>Error Signing up</p> : <p> Error Logging in </p>
         }
-        <i class="fal fa-times" onClick={() => setErrMsgs({msgs: msgs, err: false})}></i>
+        <i className="fal fa-times" onClick={() => setErrMsgs({msgs: msgs, err: false})}></i>
       </div>
-      <ul class="label-modal__error">
+      <ul className="label-modal__error">
         { Object.keys(msgs).map((k,v) => (
           <li>
             <span style={{ color: "red" }}>{capitalize(k.toString())}:</span>{" "}
