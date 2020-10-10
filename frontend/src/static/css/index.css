@@ -341,7 +341,7 @@ button, input, select, textarea, input::placeholder {
 }
 
 .board {
-  background-color: #F6F7FB;
+  background-color: #f6f7fb;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -389,6 +389,15 @@ button, input, select, textarea, input::placeholder {
   margin-right: 0;
 }
 
+.board__create-list {
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  width: 300px;
+  margin-top: 0.5em;
+  margin-left: 1em;
+}
+
 .list {
   background-color: white;
   padding: 2em 1em 1em 1em;
@@ -398,8 +407,8 @@ button, input, select, textarea, input::placeholder {
   max-height: 97%;
   border: 0;
   border-radius: 5px;
-  -webkit-box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;
-          box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;
+  -webkit-box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3;
+          box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -550,6 +559,7 @@ button, input, select, textarea, input::placeholder {
 .card--edit {
   z-index: 4;
   overflow: visible;
+  cursor: auto;
 }
 
 .card--edit:hover {
@@ -1069,7 +1079,7 @@ button, input, select, textarea, input::placeholder {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  background-color: #F6F7FB;
+  background-color: #f6f7fb;
   padding: 100px 200px 0;
   width: 100vw;
   min-height: 100vh;
@@ -1162,11 +1172,11 @@ button, input, select, textarea, input::placeholder {
 }
 
 .home__boards > .board-preview {
-  margin: 0 1em 2em;
+  margin: 0 1em 1.5em;
   width: calc(25% - 1.5em);
 }
 
-.home__boards > .board-preview:nth-of-type(4n+1) {
+.home__boards > .board-preview:nth-of-type(4n + 1) {
   margin-left: 0;
 }
 

@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
 const HomeSidebar = () => {
-	return (
-		<div className="home-menu">
+    return (
+        <div className="home-menu">
             <ul>
                 <li>
                     <a className="btn btn--transparent btn--small btn--active">
@@ -35,7 +35,7 @@ const HomeSidebar = () => {
                 </li>
             </ul>
         </div>
-	);
-}
+    );
+};
 
-export default HomeSidebar()
+export default HomeSidebar;

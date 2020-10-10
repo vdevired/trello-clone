@@ -1,54 +1,47 @@
-import React, {useEffect, useContext} from "react";
+import React, { useEffect, useContext } from "react";
 import { Route, Switch } from "react-router-dom";
-import Card from './components/boards/Card';
 
 import globalContext from "./context/globalContext";
 import Header from "./components/headers/Header";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-
-const card = {
-    title: 'Shite',
-    labels: [],
-    assigned_to: [],
-    attachments: [],
-    comments: [], 
-    description: ''
-};
+import Home from "./pages/Home";
+import Board from "./pages/Board";
 
 function App() {
-  const { checkAuth, checkedAuth, user } = useContext(globalContext);
+    const { checkAuth, checkedAuth, user } = useContext(globalContext);
 
-  useEffect(() => {
-    checkAuth();
-  }, [])
+    useEffect(() => {
+        checkAuth();
+    }, []);
 
-  if (!checkedAuth) {
-    return (null);
-  }
+    if (!checkedAuth) {
+        return null;
+    }
 
-  return (
-      <Switch>
-        {user && 
-          <>
-          <Route path="/" component={Header} />
-          <Card card={card} />
-          </>
-        }
-        
-        {!user &&
-          <>
-            <Route exact path="/" component={Landing} />
-            <Route exact path="/login" component={Login} />
-            <Route
-              exact
-              path="/register"
-              render={(props) => <Login {...props} login={false} />}
-            />
-          </>
-        }
-      </Switch>
-  );
+    return (
+        <Switch>
+            {user && (
+                <>
+                    <Route path="/" component={Header} />
+                    <Route exact path="/" component={Home} />
+                    <Route exact path="/b/:id" component={Board} />
+                </>
+            )}
+
+            {!user && (
+                <>
+                    <Route exact path="/" component={Landing} />
+                    <Route exact path="/login" component={Login} />
+                    <Route
+                        exact
+                        path="/register"
+                        render={(props) => <Login {...props} login={false} />}
+                    />
+                </>
+            )}
+        </Switch>
+    );
 }
 
 export default App;
