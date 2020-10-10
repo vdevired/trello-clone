@@ -5,16 +5,19 @@ import {modalBlurHandler} from '../../static/js/util';
 import Labels from './Labels';
 import ProfilePic from './ProfilePic';
 import EditCardModal from '../modals/EditCardModal';
+import LabelModal from '../modals/LabelModal';
 
 const Card = ({card}) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [showEditModal, setShowEditModal] = useState(false);
+	const [showLabelModal, setShowLabelModal] = useState(false);
 
 	const cardElem = useRef(null);
 
 	const handleState = e => {
 		if (!cardElem.current.contains(e.target)) setIsEditing(false);
 		else if (e.target.className.includes("pen")) setIsEditing(true);
+		else if (e.target.closest('.card__edit-controls')) setIsEditing(true);
 		else setShowEditModal(true);
 	}
 
@@ -55,10 +58,11 @@ const Card = ({card}) => {
 			            </p>
 			        }
 			        <Members members={card.assigned_to} />
-			        {isEditing && <EditControls cardElem={cardElem} setShowModal={setIsEditing}/>}
+			        {isEditing && <EditControls cardElem={cardElem} setShowModal={setIsEditing} setShowLabelModal={setShowLabelModal}/>}
 		        </div>
 		    </div>
 		    {showEditModal && <EditCardModal card={card} setShowModal={setShowEditModal} />}
+		    {showLabelModal && <LabelModal cardElem={cardElem} setShowModal={setShowLabelModal} />}
 	    </>
 	);
 }
@@ -74,21 +78,21 @@ const Members = ({members}) => (
     </div>
 )
 
-export const getEditControlsSidePosition = (cardElem, height=10) => { // pass in ref.current
+export const getEditControlsSidePosition = (cardElem, offset=0) => { // pass in ref.current
 	if (!cardElem) return null;
 	return {
-		top: cardElem.getBoundingClientRect().y + "px",
-		left : cardElem.getBoundingClientRect().x + cardElem.getBoundingClientRect().width + height + "px"
+		top: cardElem.getBoundingClientRect().y + offset + "px",
+		left : cardElem.getBoundingClientRect().x + cardElem.getBoundingClientRect().width + 10 + "px"
 	}
 }
 
-const EditControls = ({cardElem, setShowModal}) => {
+const EditControls = ({cardElem, setShowModal, setShowLabelModal}) => {
 	useEffect(modalBlurHandler(setShowModal), []);
 	return (
 		<div className="card__edit-controls">
 			<a className="btn">Save</a>
 			<ul className="card__edit-controls-side" style={getEditControlsSidePosition(cardElem.current)}>
-				<li><i className="fal fa-tags"></i> Edit Labels</li>
+				<li><button onClick={() => setShowLabelModal(true)}><i className="fal fa-tags"></i> Edit Labels</button></li>
 				<li><i className="fal fa-user"></i> Change Members</li>
 				<li><i className="fal fa-arrow-right"></i> Move</li>
 				<li><i className="fal fa-clock"></i> Change Due Date</li>

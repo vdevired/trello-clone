@@ -79,6 +79,8 @@ const RegisterForm = ({setErrMsgs}) => {
     } catch (err) {
       if (err.response?.status === 400) {
           setErrMsgs({signup: true , err: true, msgs: err.response.data});
+      }else {
+          setErrMsgs({signup: false, err: true, msgs: { Connection: 'Refused', Server: 'Maybe Down'}});
       }
     }
   };
