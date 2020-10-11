@@ -17,6 +17,7 @@ uritemplate = "*"
 django-cors-headers = "*"
 djangorestframework = "*"
 pyyaml = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"

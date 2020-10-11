@@ -1,6 +1,6 @@
 import React from "react";
 
-const HomeSidebar = () => {
+const HomeSidebar = ({ setShowTeamModal }) => {
     return (
         <div className="home-menu">
             <ul>
@@ -24,7 +24,9 @@ const HomeSidebar = () => {
             <div className="home-menu__section">
                 <p className="home-menu__title">Projects</p>
                 <a className="btn btn--transparent btn--small">
-                    <i className="fal fa-plus"></i>
+                    <button onClick={() => setShowTeamModal(true)}>
+                        <i className="fal fa-plus"></i>
+                    </button>
                 </a>
             </div>
             <ul>
