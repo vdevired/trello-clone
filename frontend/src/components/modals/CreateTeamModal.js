@@ -11,6 +11,14 @@ const CreateTeamModal = ({ setShowModal }) => {
     const { register, handleSubmit, errors, watch } = useForm();
     const titleValue = watch("title", "");
 
+    const animateFaces = () => {
+        const face1 = document.querySelector(".create-team__face--1");
+        if (titleValue !== "") {
+            face1.style.top = "230px";
+            face1.style.left = "60px";
+        }
+    };
+
     const onSubmit = async (data) => {
         const invitedMembers = data.members
             .split(",")
@@ -51,6 +59,7 @@ const CreateTeamModal = ({ setShowModal }) => {
                         ref={register({ required: true })}
                         type="text"
                         placeholder="The Boys"
+                        onBlur={animateFaces}
                     />
 
                     <label htmlFor="description">Project Description</label>
