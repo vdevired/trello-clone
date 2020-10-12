@@ -1523,8 +1523,14 @@ button, input, select, textarea, input::placeholder {
 }
 
 .label-modal--bg .label-modal__create-label > button {
-  width: 6.5em;
-  height: 4em;
+  width: 5em;
+  height: 3.5em;
+  background-size: cover;
+}
+
+.label-modal--bg .label-modal__create-block {
+  height: 10em;
+  overflow-y: scroll;
 }
 
 .label-modal--bg .label-modal__labels-head {
@@ -1734,5 +1740,96 @@ button, input, select, textarea, input::placeholder {
 .label-modal__error > li {
   margin-bottom: 0.4em;
   font-weight: 300;
+}
+
+.addboard-modal {
+  top: 0;
+  right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  left: 0;
+  position: fixed;
+}
+
+.addboard-modal__title-block {
+  height: 160px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 5px;
+  width: 350px;
+}
+
+.addboard-modal__title {
+  border: 0;
+  font-weight: 600;
+  color: white;
+  margin-left: 0.5em;
+  margin-top: 0.5em;
+  background-color: transparent;
+  border-radius: 5px;
+  padding: 0.5em;
+  font-size: 1.125rem;
+}
+
+.addboard-modal__title:hover, .addboard-modal__title:focus {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.addboard-modal__exit {
+  float: right;
+  margin-right: 1em;
+  margin-top: 1em;
+  font-size: 1.125rem;
+  color: white;
+}
+
+.addboard-modal__create {
+  margin-top: 0.5em;
+}
+
+.addboard-modal__right {
+  margin-left: 0.5em;
+  width: 200px;
+}
+
+.addboard-modal__color-box {
+  height: 48px;
+  width: 48px;
+  border: 0;
+  border-radius: 5px;
+  margin-bottom: 0.5em;
+  margin-right: 0.5em;
+  position: relative;
+  background-color: white;
+}
+
+.addboard-modal__color-box > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  color: white;
+  font-size: 1.6rem;
+}
+
+.addboard-modal__color-box:hover {
+  -webkit-filter: brightness(90%);
+          filter: brightness(90%);
+}
+
+.addboard-modal__color-box--img {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.addboard-modal__color-box--tick {
+  -webkit-filter: brightness(70%);
+          filter: brightness(70%);
+}
+
+.addboard-modal__color-box .fa-ellipsis-h {
+  color: #838282;
 }
 /*# sourceMappingURL=index.css.map */
