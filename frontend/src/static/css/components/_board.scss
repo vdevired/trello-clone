@@ -1,161 +1,168 @@
 .board {
-	background-color: #F6F7FB;
-	height: 100vh;
-	width: 100vw;
-	overflow: hidden;
-	padding: 100px 50px 40px;
-	display: flex;
-	flex-direction: column; // So we can make up lists take up remaining space
+    background-color: #f6f7fb;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    padding: 100px 50px 40px;
+    display: flex;
+    flex-direction: column; // So we can make up lists take up remaining space
 
-	&__title {
-		font-weight: 500;
-		font-size: 1.25rem;
-	}
+    &__title {
+        font-weight: 500;
+        font-size: 1.25rem;
+    }
 
-	&__subtitle {
-		font-size: 0.875rem;
-		color: $secondary-text;
-		margin-bottom: 1.5em;
-	}
+    &__subtitle {
+        font-size: 0.875rem;
+        color: $secondary-text;
+        margin-bottom: 1.5em;
+    }
 
-	&__lists {
-		flex: 1;
-		display: flex;
-		width: 100%;
-		overflow-x: auto;
+    &__lists {
+        flex: 1;
+        display: flex;
+        width: 100%;
+        overflow-x: auto;
 
-		& > .list {
-			margin: 0.5em 1em 0;
+        & > .list {
+            margin: 0.5em 1em 0;
 
-			&:first-of-type {
-				margin-left: 0;
-			}
+            &:first-of-type {
+                margin-left: 0;
+            }
 
-			&:last-of-type {
-				margin-right: 0;
-			}
-		}
-	}
+            &:last-of-type {
+                margin-right: 0;
+            }
+        }
+    }
+
+    &__create-list {
+        height: fit-content;
+        width: 300px;
+        margin-top: 0.5em;
+        margin-left: 1em;
+    }
 }
 
 .list {
-	background-color: white;
-	padding: 2em 1em 1em 1em;
-	width: fit-content; // Use card width
-	max-height: 97%;
-	border: 0;
-	border-radius: 5px;
-	box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #B3B3B3;
-	display: flex; // So we can use margin-top: auto on add-card
-	flex-direction: column;
+    background-color: white;
+    padding: 2em 1em 1em 1em;
+    width: fit-content; // Use card width
+    max-height: 97%;
+    border: 0;
+    border-radius: 5px;
+    box-shadow: 0 0.5px 0 0 #ffffff inset, 0 1px 2px 0 #b3b3b3;
+    display: flex; // So we can use margin-top: auto on add-card
+    flex-direction: column;
 
-	&__title {
-		font-weight: 500;
-		font-size: 1.25rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
+    &__title {
+        font-weight: 500;
+        font-size: 1.25rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
 
-		& > .far {
-			color: $secondary-text;
-		}
-	}
+        & > .far {
+            color: $secondary-text;
+        }
+    }
 
-	&__cards {
-		margin: 1.5em 0;
-		max-height: calc(100% - 110px);
-		overflow-y: auto;
+    &__cards {
+        margin: 1.5em 0;
+        max-height: calc(100% - 110px);
+        overflow-y: auto;
 
-		& > .card {
-			margin: 1em 0;
+        & > .card {
+            margin: 1em 0;
 
-			&:first-of-type {
-				margin-top: 0;
-			}
+            &:first-of-type {
+                margin-top: 0;
+            }
 
-			&:last-of-type {
-				margin-bottom: 0;
-			}
-		}
-	}
+            &:last-of-type {
+                margin-bottom: 0;
+            }
+        }
+    }
 
-	&__add-card {
-		margin-top: auto;
-		text-align: center;
-		font-size: 0.875rem;
-		width: 300px;
-		padding: 0.75em 0;
-		color: $secondary-text;
-	}
+    &__add-card {
+        margin-top: auto;
+        text-align: center;
+        font-size: 0.875rem;
+        width: 300px;
+        padding: 0.75em 0;
+        color: $secondary-text;
+    }
 }
 
 .card {
-	background: white;
-	border: 1px rgba($border-color, 0.55) solid;
-	border-radius: 5px;
-	padding: 0.75em;
-	width: 300px;
-	position: relative;
-	cursor: pointer;
+    background: white;
+    border: 1px rgba($border-color, 0.55) solid;
+    border-radius: 5px;
+    padding: 0.75em;
+    width: 300px;
+    position: relative;
+    cursor: pointer;
 
-	&__pen {
-		position: absolute;
-		top: 3px;
-		right: 3px;
-		font-size: 0.75rem;
-		color: $secondary-text;
-		padding: 0.5em;
-		border-radius: 5px;
-		display: none;
+    &__pen {
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        font-size: 0.75rem;
+        color: $secondary-text;
+        padding: 0.5em;
+        border-radius: 5px;
+        display: none;
 
-		&:hover {
-			background: darken(white, 8%);
-			color: darken($secondary-text, 16%);
-		}
-	}
+        &:hover {
+            background: darken(white, 8%);
+            color: darken($secondary-text, 16%);
+        }
+    }
 
-	&:hover {
-		background: darken(white, 2%);
+    &:hover {
+        background: darken(white, 2%);
 
-		.card__pen {
-			display: block;			
-		}
-	}
+        .card__pen {
+            display: block;
+        }
+    }
 
-	&__title {
-		margin-top: 1em;
-	}
+    &__title {
+        margin-top: 1em;
+    }
 
-	&__subtitle {
-		margin-top: 0.75em;
-		font-size: 0.75rem;
-		color: $secondary-text;
-	}
+    &__subtitle {
+        margin-top: 0.75em;
+        font-size: 0.75rem;
+        color: $secondary-text;
+    }
 
-	&__members {
-		display: flex;
-		justify-content: flex-end;
-		margin-top: 1.5em;
-	}
+    &__members {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 1.5em;
+    }
 
-	&__image {
-		width: calc(100% + 1.5em); // + Twice parent's padding
-		height: 125px;
-		margin-left: -0.75em;
-		margin-top: -0.75em;
-		margin-bottom: 0.35em; // Too close to labels otherwise
+    &__image {
+        width: calc(100% + 1.5em); // + Twice parent's padding
+        height: 125px;
+        margin-left: -0.75em;
+        margin-top: -0.75em;
+        margin-bottom: 0.35em; // Too close to labels otherwise
 
-		img {
-			border-radius: 5px 5px 0 0;
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-		}
-	}
+        img {
+            border-radius: 5px 5px 0 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
 
-	&--image:hover {
-		.card__pen {
-			background: darken(white, 2%);
-		}
-	}
+    &--image:hover {
+        .card__pen {
+            background: darken(white, 2%);
+        }
+    }
 }

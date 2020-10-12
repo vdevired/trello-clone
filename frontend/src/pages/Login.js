@@ -9,7 +9,7 @@ const Login = ({ login }) => {
   const [errmsgs, setErrMsgs] = useState({ msgs: {}, err: false });
   return (
     <>
-      <div class="out-of-focus"></div>
+      <div className="out-of-focus"></div>
       {errmsgs.err ? (
         <AuthError
           position={{ left: "50%", right: "50%" }}

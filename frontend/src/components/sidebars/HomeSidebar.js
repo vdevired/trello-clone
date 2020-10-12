@@ -1,8 +1,8 @@
-import React from 'react';
+import React from "react";
 
-const HomeSidebar = () => {
-	return (
-		<div className="home-menu">
+const HomeSidebar = ({ setShowTeamModal }) => {
+    return (
+        <div className="home-menu">
             <ul>
                 <li>
                     <a className="btn btn--transparent btn--small btn--active">
@@ -24,7 +24,9 @@ const HomeSidebar = () => {
             <div className="home-menu__section">
                 <p className="home-menu__title">Projects</p>
                 <a className="btn btn--transparent btn--small">
-                    <i className="fal fa-plus"></i>
+                    <button onClick={() => setShowTeamModal(true)}>
+                        <i className="fal fa-plus"></i>
+                    </button>
                 </a>
             </div>
             <ul>
@@ -35,7 +37,7 @@ const HomeSidebar = () => {
                 </li>
             </ul>
         </div>
-	);
-}
+    );
+};
 
-export default HomeSidebar()
+export default HomeSidebar;

@@ -1,33 +1,3 @@
-$colors: $yellow, coral, $blue, rgb(68, 221, 145), rgb(185, 134, 233), rgb(255, 201, 86);
-$list: bg1, bg2, bg3, bg4, bg5, bg6;
-
-$repeat: 10;
-$key: random(6);
-
-@for $i from 1 through 6{
-  .label-modal__create-label--img:nth-child(#{length($list)}n+#{$i}) {
-    > button {
-      //background-image: "../../img/#{nth($list, $key)}.jpg",
-      background-repeat: no-repeat;
-      background-size: cover;
-    }
-  }
-}
-
-@for $i from 1 through $repeat {
-    .label-modal__label:nth-child(#{length($colors)}n+#{$i}) {
-       > p {
-           background-color: lighten(nth($colors,random(length($colors))), 8%),
-       }      
-    }
-    
-    .label-modal__create-label:nth-child(#{length($colors)}n+#{$i}) {
-      > button {
-         background-color: lighten(nth($colors,random(length($colors))), 8%),
-      }
-    }
-}
-
 .label-modal {
   background-color: white;
   position: fixed;
@@ -59,17 +29,10 @@ $key: random(6);
   }
 
   &__header {
-    margin: 1.2em 1.2em;
+    margin: 1.2em;
     display: flex;
     flex-direction: row;
-    padding-bottom: 1.2em;
-    border-bottom: 1px solid lighten(black, 80);
     color: $secondary-text;
-
-    &--noborder {
-      border-bottom: 0;
-      margin-bottom: 0;
-    }
 
     > p {
       width: 90%;
@@ -128,6 +91,7 @@ $key: random(6);
     display: flex;
     flex-direction: column;
     height: 15em;
+    margin-bottom: 1.2em;
   }
   
   &__label {
@@ -143,19 +107,20 @@ $key: random(6);
       width: 90%;
       padding-top: 0.8em;
       text-align: center; 
+      color: white;
     }
 
     > i {
       float: right;
-      margin-left: 1.2em;
       padding-top: 0.8em;
       color: $secondary-text;
     }
     
+    
     > i:hover{
       filter: brightness(70%);
     }
-    > p:hover {
+    > p:hover, &--selected{
       filter: brightness(90%);
     }
   }
@@ -185,12 +150,18 @@ $key: random(6);
       height: 3em;
       border: 0;
       border-radius: 4px;
+      > i {
+        color: white;
+      }
     } 
     
     > button:hover{
       filter: brightness(90%);
     }
     
+    &--selected {
+      filter: brightness(90%);
+    }
     &:last-of-type {
       > button {
         background-color: white;

@@ -20,7 +20,6 @@ const LoginForm = ({setErrMsgs}) => {
       }
       catch (err) {
         if (err.response?.status === 401){
-            //console.log('Invalid Credentials');
             setErrMsgs({signup: false, err: true, msgs: { Invalid: 'username or password'}});
         }
       }

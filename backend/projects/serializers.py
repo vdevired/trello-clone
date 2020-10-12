@@ -4,11 +4,10 @@ from users.serializers import UserSerializer
 from rest_framework import serializers
 
 
-
-
 class ProjectSerializer(serializers.ModelSerializer):
     owner = UserSerializer(read_only=True)
-    members = UserSerializer(read_only=True,many=True)
+    members = UserSerializer(read_only=True, many=True)
+
     class Meta:
         model = Project
         fields = [
@@ -16,15 +15,16 @@ class ProjectSerializer(serializers.ModelSerializer):
             'owner',
             'title',
             'description',
-            'profile_picture',
             'members'
         ]
         read_only_fields = ['owner']
 
+
 class ProjectMembershipSerializer(serializers.ModelSerializer):
     project = serializers.CharField(source='project.title', read_only=True)
     member = UserSerializer(read_only=True)
+
     class Meta:
         model = ProjectMembership
-        fields = ['id','project', 'member', 'access_level']
+        fields = ['id', 'project', 'member', 'access_level']
         read_only_fields = ['project', 'member']
