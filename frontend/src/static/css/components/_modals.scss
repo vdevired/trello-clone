@@ -18,11 +18,15 @@
     
     .label-modal__create-label {
       > button {
-        width: 6.5em;
-        height: 4em;
+        width: 5em;
+        height: 3.5em;
+        background-size: cover;
       }
     }
-    
+    .label-modal__create-block {
+      height: 10em;
+      overflow-y: scroll;
+    } 
     .label-modal__labels-head {
       margin-top: 0.8em;
     }

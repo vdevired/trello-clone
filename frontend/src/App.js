@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Board from "./pages/Board";
+import AddBoardModal from "./components/modals/AddBoardModal";
 
 function App() {
     const { checkAuth, checkedAuth, user } = useContext(globalContext);
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/" component={Header} />
                     <Route exact path="/" component={Home} />
                     <Route exact path="/b/:id" component={Board} />
+                    <Route exact path="/test" component={AddBoardModal}/>
                 </>
             )}
 

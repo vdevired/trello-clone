@@ -16,8 +16,6 @@ const Card = ({ card }) => {
 
     const handleCardClick = (e) => {
         if (isEditing) return;
-        // Not in editing
-        // Did we click pen?
         if (e.target.className.includes("pen")) return;
         setShowEditModal(true);
     };

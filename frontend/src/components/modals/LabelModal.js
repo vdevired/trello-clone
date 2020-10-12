@@ -1,18 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { getEditControlsSidePosition } from "../boards/Card";
+import { colors } from '../../static/js/const';
 
-const colors = [
-    { backgroundColor: "#0079bf" },
-    { backgroundColor: "#70b500" },
-    { backgroundColor: "#ff9f1a" },
-    { backgroundColor: "#eb5a46" },
-    { backgroundColor: "#f2d600" },
-    { backgroundColor: "#c377e0" },
-    { backgroundColor: "#ff78cb" },
-    { backgroundColor: "#00c2e0" },
-    { backgroundColor: "#51e898" },
-    { backgroundColor: "#c4c9cc" },
-];
 
 const zipWith3 = (xs, ys, zs, f) => xs.map((n, i) => f(n, ys[i], zs[i]));
 

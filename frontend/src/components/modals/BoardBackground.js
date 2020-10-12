@@ -1,13 +1,13 @@
 import React, {useState} from "react";
 import { colors, images } from "../../static/js/const";
 
-const BoardBackground = (/*{ setShowBoardModal }*/) => {
+const BoardBackground = ({ position, setShowBoardModal, setBackground}) => {
   const [selected, setSelected] = useState({});
   return (
-    <div className="label-modal--bg label-modal">
+    <div style={position} className="label-modal--bg label-modal">
       <div className="label-modal__header">
         <p>Board Background</p>
-        <button /*onClick={setShowBoardModal(false)}*/>
+        <button onClick={() => setShowBoardModal(false)}>
           <i className="fal fa-times"></i>
         </button>
       </div>
@@ -17,8 +17,7 @@ const BoardBackground = (/*{ setShowBoardModal }*/) => {
           {images.map((s) => {
             return (
               <li
-                className="label-modal__create-label label-modal__create-label--img"
-              >
+                className={`label-modal__create-label ${selected === s ? "label-modal__create-label--selected": ""}`}              >
               <button style={s}
                 onClick={() => setSelected(s)}
               >
@@ -36,7 +35,7 @@ const BoardBackground = (/*{ setShowBoardModal }*/) => {
         <ul className="label-modal__create-block">
           {colors.map((s) => {
             return (
-              <li className="label-modal__create-label">
+              <li className={`label-modal__create-label ${selected === s ? "label-modal__create-label--selected": ""}`}>
               <button style={s}
                 onClick={()=> setSelected(s)}
               >
@@ -52,6 +51,17 @@ const BoardBackground = (/*{ setShowBoardModal }*/) => {
           </li>
         </ul>
       </div>
+      <button
+          onClick={() => {
+              setShowBoardModal(false);
+              if (selected.backgroundColor === undefined && selected.backgroundImage === undefined)
+                return;
+              else  setBackground(selected);
+          }}
+          className="btn label-modal__create-button"
+      >
+          Select Background
+      </button>
     </div>
   );
 };
