@@ -5,6 +5,7 @@ import globalContext from "./context/globalContext";
 import Header from "./components/headers/Header";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import AddBoardModal from "./components/modals/AddBoardModal";
 
 function App() {
   const { checkAuth, checkedAuth, user } = useContext(globalContext);
@@ -20,7 +21,10 @@ function App() {
   return (
       <Switch>
         {user && 
-          <Route path="/" component={Header} />
+          <>
+          <AddBoardModal /> 
+          
+          </>
         }
         
         {!user &&
