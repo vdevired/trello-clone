@@ -124,13 +124,15 @@ const Project = (props) => {
                     <div className="team__members">
                         <div className="team__members-header">
                             <p>Team Members ({project.members.length})</p>
-                            <button
-                                className="btn btn--medium"
-                                onClick={() => setIsInviting(true)}
-                            >
-                                <i className="fal fa-user-plus"></i> Invite Team
-                                Members
-                            </button>
+                            {authUserAccessLevel === 2 && (
+                                <button
+                                    className="btn btn--medium"
+                                    onClick={() => setIsInviting(true)}
+                                >
+                                    <i className="fal fa-user-plus"></i> Invite
+                                    Team Members
+                                </button>
+                            )}
                         </div>
                         <ul className="team__members-list">
                             {project.members.map((member) => (
@@ -148,7 +150,7 @@ const Project = (props) => {
                     </div>
                 )}
             </div>
-            {isInviting && (
+            {authUserAccessLevel === 2 && isInviting && (
                 <InviteMembersModal
                     project={project}
                     setShowModal={setIsInviting}

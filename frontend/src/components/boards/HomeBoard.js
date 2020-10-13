@@ -24,7 +24,7 @@ const Members = ({ members }) => {
     return (
         <div className="board-preview__members">
             {members.slice(0, 3).map((member) => (
-                <ProfilePic member={member} key={uuidv4()} />
+                <ProfilePic user={member} key={uuidv4()} />
             ))}
             {members.length > 3 && (
                 <p>{`+${members.length - 3} other${
