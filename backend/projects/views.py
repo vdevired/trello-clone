@@ -3,6 +3,7 @@ import uuid
 import redis
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db.models import Case, When
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, mixins, status
@@ -17,10 +18,21 @@ from projects.serializers import ProjectMembershipSerializer, ProjectSerializer
 
 class ProjectList(mixins.ListModelMixin, mixins.CreateModelMixin,
                   generics.GenericAPIView):
-    serializer_class = ProjectSerializer
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return ProjectSerializer  # ShortProjectSerializer
+
+        return ProjectSerializer
 
     def get_queryset(self):
-        return Project.objects.filter(owner=self.request.user)
+        # Sort by access_level so projects where you're admin at top
+        project_ids = ProjectMembership.objects.filter(
+            member=self.request.user).order_by('-access_level').values_list('project__id', flat=True)
+
+        preserved = Case(*[When(pk=pk, then=pos)
+                           for pos, pk in enumerate(project_ids)])
+        return Project.objects.filter(pk__in=project_ids).order_by(preserved)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -39,7 +51,7 @@ class ProjectDetail(APIView):
     def get(self, request, pk):
         proj = get_object_or_404(Project, pk=pk)
         self.check_object_permissions(self.request, proj)
-        serializer = ProjectSerializer(proj)
+        serializer = ProjectSerializer(proj, context={"request": request})
         return Response(serializer.data)
 
     def put(self, request, pk):
@@ -85,25 +97,27 @@ class ProjectMemberDetail(APIView):
         self.check_object_permissions(self.request, obj.project)
         return obj
 
-    def put(self, request, pk1, pk2):
-        pmem = self.get_object(pk2)
-        serializer = ProjectMembershipSerializer(pmem, data=request.data)
+    def put(self, request, pk):
+        pmem = self.get_object(pk)
+        serializer = ProjectMembershipSerializer(
+            pmem, data=request.data, context={"request": request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk1, pk2):
-        pmem = self.get_object(pk2)
+    def delete(self, request, pk):
+        pmem = self.get_object(pk)
         pmem.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 site_url = "http://localhost:8000/"
 r = redis.Redis(
-        host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
-        charset="utf-8", decode_responses=True
-    )
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
+    charset="utf-8", decode_responses=True
+)
+
 
 class SendProjectInvite(APIView):
     permission_classes = [IsProjectAdminOrMemberReadOnly]
@@ -125,10 +139,10 @@ class SendProjectInvite(APIView):
                 # Can't invite a member
                 if ProjectMembership.objects.filter(project=project, member=user).exists() or project.owner == user:
                     continue
-                
+
                 token = str(uuid.uuid4())
                 redis_key = f'ProjectInvitation:{token}'
-                r.hmset(redis_key, {"user" : user.id, "project" : project.id})
+                r.hmset(redis_key, {"user": user.id, "project": project.id})
                 subject = f'{request.user.full_name} has invited you to join {project.title}'
                 message = (f'Click on the following link to accept: {site_url}projects/join'
                            f'/{token}')

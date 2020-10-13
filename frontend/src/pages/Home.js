@@ -2,13 +2,18 @@ import React, { useState } from "react";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
 import HomeBoard from "../components/boards/HomeBoard";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
+import useAxiosGet from "../hooks/useAxiosGet";
 
 const Home = () => {
     const [showTeamModal, setShowTeamModal] = useState(false);
+    const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
     return (
         <>
             <div className="home-wrapper">
-                <HomeSidebar setShowTeamModal={setShowTeamModal} />
+                <HomeSidebar
+                    setShowTeamModal={setShowTeamModal}
+                    projects={projects || []}
+                />
                 <div className="home">
                     <div className="home__section">
                         <p className="home__title">
@@ -31,7 +36,10 @@ const Home = () => {
                 </div>
             </div>
             {showTeamModal && (
-                <CreateTeamModal setShowModal={setShowTeamModal} />
+                <CreateTeamModal
+                    setShowModal={setShowTeamModal}
+                    addProject={addProject}
+                />
             )}
         </>
     );

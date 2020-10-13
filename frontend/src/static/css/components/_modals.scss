@@ -1,201 +1,261 @@
 .label-modal {
-  background-color: white;
-  position: fixed;
-  left: 40%;
-  top: 20%;
-  width: 20em;
-  display: flex;
-  flex-direction: column;
-  z-index: 5;
-  font-weight: 600;
-  border-radius: 0.4em;
-  
-  &--bg {
-    width: 20em;
-    .label-modal__header {
-      margin-bottom: 0;
-    } 
-    
-    .label-modal__create-label {
-      > button {
-        width: 5em;
-        height: 3.5em;
-        background-size: cover;
-      }
-    }
-    .label-modal__create-block {
-      height: 10em;
-      overflow-y: scroll;
-    } 
-    .label-modal__labels-head {
-      margin-top: 0.8em;
-    }
-  }
-
-  &__header {
-    margin: 1.2em;
-    display: flex;
-    flex-direction: row;
-    color: $secondary-text;
-
-    > p {
-      width: 90%;
-      justify-content: space-evenly;
-      text-align:  center;
-    }
-    
-    > i:hover{
-      filter: brightness(70%);
-    }
-  }
-  
-  &__search {
+    background-color: white;
+    position: fixed;
+    left: 40%;
+    top: 20%;
+    width: 320px;
     display: flex;
     flex-direction: column;
-    margin: 0.6em 1.2em;
-
-    > p {
-      color: $secondary-text;
-      filter: brightness(90%);
-      margin-bottom: 0.4em;
-      font-size: 0.9em;
-    }
-    
-    > input[type=text] {
-      width: 100%;
-      font-weight: 600;
-      height: 2em;
-      border-width: 1px;
-      border-color: $border-color;
-      border-radius: 0.2em;
-    }
-
-    > input[type=text]:hover{
-      border-color: $blue;
-      border-width: 2px;
-    }
-    
-    > ::-webkit-input-placeholder, ::-moz-placeholder{
-      font-size: 1em;
-      font-weight: 600;
-    }
-  }
-
-  &__labels-head {
-    color: $secondary-text;
+    z-index: 5;
     font-weight: 600;
-    margin-left: 1.2em;
-    margin-top: 1.2em;
-    height: 1rem;
-  } 
-  
-  &__labels-block {
-    overflow-x: hidden;
-    overflow-y: scroll;
-    display: flex;
-    flex-direction: column;
-    height: 15em;
-    margin-bottom: 1.2em;
-  }
-  
-  &__label {
-    margin: 0.3em 1.2em;
-    height: 2.5em;
-    display: flex;
-    flex-direction: row; 
-    justify-content: space-evenly;
+    border-radius: 5px;
 
-    > p {
-      border-radius: 0.2em;
-      height: 100%;
-      width: 90%;
-      padding-top: 0.8em;
-      text-align: center; 
-      color: white;
+    &--bg {
+        width: 20em;
+        .label-modal__header {
+            margin-bottom: 0;
+        }
+
+        .label-modal__create-label {
+            > button {
+                width: 5em;
+                height: 3.5em;
+                background-size: cover;
+            }
+        }
+
+        .label-modal__create-block {
+            height: 10em;
+            overflow-y: scroll;
+        }
+
+        .label-modal__labels-head {
+            margin-top: 0.8em;
+        }
     }
 
-    > i {
-      float: right;
-      padding-top: 0.8em;
-      color: $secondary-text;
-    }
-    
-    
-    > i:hover{
-      filter: brightness(70%);
-    }
-    > p:hover, &--selected{
-      filter: brightness(90%);
-    }
-  }
+    &__header {
+        margin: 1.2em;
+        display: flex;
+        flex-direction: row;
+        color: $secondary-text;
 
-  &__create {
-    border: 0;
-    height: 2em;
-    margin: 0.6em 1.2em;
-    border-radius: 0.2em;
-    color: black;
-  }
-  
-  &__create-block {
-    display: flex;
-    flex-flow: row;
-    flex-wrap: wrap;
-    margin: 0.6em 0.4em;
-    padding-left: 0.6em;
-  }
-  
-  &__create-label {
-    margin-bottom: 0.5em;
-    margin-right: 0.7em;
+        > p {
+            width: 90%;
+            justify-content: space-evenly;
+            text-align: center;
+        }
 
-    > button {
-      width: 4.82em;  
-      height: 3em;
-      border: 0;
-      border-radius: 4px;
-      > i {
-        color: white;
-      }
-    } 
-    
-    > button:hover{
-      filter: brightness(90%);
-    }
-    
-    &--selected {
-      filter: brightness(90%);
-    }
-    &:last-of-type {
-      > button {
-        background-color: white;
-      }
-      > button:hover {
-        background-color: lighten($secondary-text, 40);
-      }
+        > i:hover {
+            filter: brightness(70%);
+        }
     }
 
-  }
+    &__search {
+        display: flex;
+        flex-direction: column;
+        margin: 0.6em 1.2em;
 
-  &__create-button {
-    background-color: green; 
-    border: 0;
-    margin-top: 1.2em;
-    margin-bottom: 1.2em;
-    margin-left: 1.2em;
-    margin-right: auto;
-    font-weight: 600;
-  }
-  
-  &--create{
-    width: 25em;
-  }
-  &__error {
-    color: darken($blue, 60);
-    margin: 0.5em 1.3em 1.3em 1.3em;
-    > li {
-      margin-bottom: 0.4em;
-      font-weight: 300;
+        > p {
+            color: $secondary-text;
+            filter: brightness(90%);
+            margin-bottom: 0.4em;
+            font-size: 0.9em;
+        }
+
+        > input[type="text"] {
+            width: 100%;
+            font-weight: 600;
+            height: 2em;
+            border-width: 1px;
+            border-color: $border-color;
+            border-radius: 0.2em;
+        }
+
+        > input[type="text"]:hover {
+            border-color: $blue;
+            border-width: 2px;
+        }
+
+        > ::-webkit-input-placeholder,
+        ::-moz-placeholder {
+            font-size: 1em;
+            font-weight: 600;
+        }
     }
-  }
+
+    &__labels-head {
+        color: $secondary-text;
+        font-weight: 600;
+        margin-left: 1.2em;
+        margin-top: 1.2em;
+        height: 1rem;
+    }
+
+    &__labels-block {
+        overflow-x: hidden;
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        height: 15em;
+        margin-bottom: 1.2em;
+    }
+
+    &__label {
+        margin: 0.3em 1.2em;
+        height: 2.5em;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+
+        > p {
+            border-radius: 0.2em;
+            height: 100%;
+            width: 90%;
+            padding-top: 0.8em;
+            text-align: center;
+            color: white;
+        }
+
+        > i {
+            float: right;
+            padding-top: 0.8em;
+            color: $secondary-text;
+        }
+
+        > i:hover {
+            filter: brightness(70%);
+        }
+        > p:hover,
+        &--selected {
+            filter: brightness(90%);
+        }
+    }
+
+    &__create {
+        border: 0;
+        height: 2em;
+        margin: 0.6em 1.2em;
+        border-radius: 0.2em;
+        color: black;
+    }
+
+    &__create-block {
+        display: flex;
+        flex-flow: row;
+        flex-wrap: wrap;
+        margin: 0.6em 0.4em;
+        padding-left: 0.6em;
+    }
+
+    &__create-label {
+        margin-bottom: 0.5em;
+        margin-right: 0.7em;
+
+        > button {
+            width: 4.82em;
+            height: 3em;
+            border: 0;
+            border-radius: 4px;
+            > i {
+                color: white;
+            }
+        }
+
+        > button:hover {
+            filter: brightness(90%);
+        }
+
+        &--selected {
+            filter: brightness(90%);
+        }
+        &:last-of-type {
+            > button {
+                background-color: white;
+            }
+            > button:hover {
+                background-color: lighten($secondary-text, 40);
+            }
+        }
+    }
+
+    &__create-button {
+        background-color: $blue;
+        border: 0;
+        margin-top: 1.2em;
+        margin-bottom: 1.2em;
+        margin-left: 1.2em;
+        margin-right: auto;
+        font-weight: 600;
+    }
+
+    &--create {
+        width: 25em;
+    }
+    &__error {
+        color: darken($blue, 60);
+        margin: 0.5em 1.3em 1.3em 1.3em;
+        > li {
+            margin-bottom: 0.4em;
+            font-weight: 300;
+        }
+    }
+
+    // Vik's additions
+    &--shadow {
+        box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
+            0 0 0 1px rgba(9, 30, 66, 0.08);
+        border: 1px solid $border-color;
+    }
+
+    &__content {
+        padding: 0 1em 1em;
+
+        button {
+            width: 100%;
+        }
+    }
+
+    &__invite-header {
+        font-size: 0.875rem;
+        margin-bottom: 0.625em;
+
+        i {
+            margin-right: 0.5em;
+        }
+    }
+
+    &__input {
+        padding: 0.5em;
+        width: 100%;
+        margin-bottom: 1.4em;
+        border: 1px darken($border-color, 40%) solid;
+
+        &:focus {
+            border: 1px $blue solid;
+        }
+    }
+
+    &__option {
+        &:first-of-type {
+            margin-bottom: 1em;
+        }
+
+        i {
+            color: $blue;
+            margin-left: 0.5em;
+        }
+    }
+
+    &__option-header {
+        color: black;
+        font-weight: 500;
+        margin-bottom: 0.25em;
+        width: fit-content !important;
+    }
+
+    &__option-subtitle {
+        font-weight: 400;
+        color: $secondary-text;
+    }
 }

@@ -1,142 +1,148 @@
 .btn {
-	background-color: $blue;
-	border-radius: 7px;
-	padding: 0.75em 1.25em;
-	color: white;
+    background-color: $blue;
+    border-radius: 7px;
+    padding: 0.75em 1.25em;
+    color: white;
 
-	&:hover {
-		opacity: 0.9;
-	}
+    &:hover {
+        opacity: 0.9;
+    }
 
-	&--secondary {
-		background-color: #F2F2F2;
-		color: darken($secondary-text, 20%);
+    &--secondary {
+        background-color: #f2f2f2;
+        color: darken($secondary-text, 20%);
 
-		&:hover {
-			background-color: darken(#F2F2F2, 6%);
-		}
-	}
+        &:hover {
+            background-color: darken(#f2f2f2, 6%);
+        }
+    }
 
-	&--transparent {
-		background-color: transparent;
-		color: darken($secondary-text, 20%);
+    &--transparent {
+        background-color: transparent;
+        color: darken($secondary-text, 20%);
 
-		&:hover {
-			background-color: darken(#F2F2F2, 6%);
-		}
-	}
+        &:hover {
+            background-color: darken(#f2f2f2, 6%);
+        }
+    }
 
-	&--active { // For home sidebar, when you're on that page
-		background-color: $light-blue;
-		color: $blue;
+    &--active {
+        // For home sidebar, when you're on that page
+        background-color: $light-blue;
+        color: $blue;
 
-		&:hover {
-			background-color: $light-blue;
-			color: $blue;
-		}
-	}
+        &:hover {
+            background-color: $light-blue;
+            color: $blue;
+        }
+    }
 
-	&--small {
-		padding: 0.5em 0.75em;
-		font-size: 0.875rem;
-	}
+    &--medium {
+        padding: 0.625em 1em;
+        font-size: 0.875rem;
+    }
 
-	&--disabled {
-		cursor: not-allowed;
-		color: lighten(#42526e, 25%);
-		background-color: $border-color;
+    &--small {
+        padding: 0.5em 0.75em;
+        font-size: 0.875rem;
+    }
 
-		&:hover {
-			color: lighten(#42526e, 25%);
-			background-color: $border-color;
-			opacity: 1;
-		}
-	}
+    &--disabled {
+        cursor: not-allowed;
+        color: lighten(#42526e, 25%);
+        background-color: $border-color;
+
+        &:hover {
+            color: lighten(#42526e, 25%);
+            background-color: $border-color;
+            opacity: 1;
+        }
+    }
 }
 
 .member {
-	border: 0;
-	font-weight: 600;
-	border-radius: 4px;
+    border: 0;
+    font-weight: 600;
+    border-radius: 4px;
 
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
-	text-align: center;
-	vertical-align: middle;
-	margin: 0 0.125em;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    vertical-align: middle;
+    margin: 0 0.125em;
 
-	&:first-of-type {
-		margin-left: 0;
-	}
+    &:first-of-type {
+        margin-left: 0;
+    }
 
-	&:last-of-type {
-		margin-right: 0;
-	}
+    &:last-of-type {
+        margin-right: 0;
+    }
 
-	&--red {
-		background-color: $light-red;
-		color: $red;
-	}
+    &--red {
+        background-color: $light-red;
+        color: $red;
+    }
 
-	&--blue {
-		background-color: $light-blue;
-		color: $blue;
-	}
+    &--blue {
+        background-color: $light-blue;
+        color: $blue;
+    }
 
-	&--yellow {
-		background-color: $light-yellow;
-		color: $yellow;
-	}
+    &--yellow {
+        background-color: $light-yellow;
+        color: $yellow;
+    }
 
-	&--add {
-		border: 1px rgba($border-color, 0.75) dashed;
-		color: rgba($border-color, 0.85);
-		font-weight: 400;
-	}
+    &--add {
+        border: 1px rgba($border-color, 0.75) dashed;
+        color: rgba($border-color, 0.85);
+        font-weight: 400;
+    }
 
-	&--large {
-		width: 35px;
-		height: 35px;
-		line-height: 35px;
-	}
+    &--large {
+        width: 35px;
+        height: 35px;
+        line-height: 35px;
+    }
 
-	&--image {
-		> img {
-			width: 100%;
-			height: 100%;
-			object-fit: cover;
-			border-radius: 4px;
-		}
-	}
+    &--image {
+        > img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+    }
 }
 
 .labels {
-		display: flex;
+    display: flex;
 
-	&__label {
-		font-weight: 900;
-		margin: 0 0.25em;
-		line-height: 1px;
+    &__label {
+        font-weight: 900;
+        margin: 0 0.25em;
+        line-height: 1px;
 
-		&:first-of-type {
-			margin-left: 0;
-		}
+        &:first-of-type {
+            margin-left: 0;
+        }
 
-		&:last-of-type {
-			margin-right: 0;
-		}
+        &:last-of-type {
+            margin-right: 0;
+        }
 
-		&--red {
-			color: $red;
-		}
+        &--red {
+            color: $red;
+        }
 
-		&--blue {
-			color: $blue;
-		}
+        &--blue {
+            color: $blue;
+        }
 
-		&--yellow {
-			color: $yellow;
-		}
-	}
+        &--yellow {
+            color: $yellow;
+        }
+    }
 }

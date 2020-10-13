@@ -1,6 +1,8 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
-const HomeSidebar = ({ setShowTeamModal }) => {
+const HomeSidebar = ({ setShowTeamModal, projects }) => {
     return (
         <div className="home-menu">
             <ul>
@@ -31,9 +33,15 @@ const HomeSidebar = ({ setShowTeamModal }) => {
             </div>
             <ul>
                 <li>
-                    <a className="btn btn--transparent btn--small">
-                        <i className="fal fa-users"></i> The Boys
-                    </a>
+                    {projects.map((project) => (
+                        <Link
+                            to={`/p/${project.id}`}
+                            className="btn btn--transparent btn--small"
+                            key={uuidv4()}
+                        >
+                            <i className="fal fa-users"></i> {project.title}
+                        </Link>
+                    ))}
                 </li>
             </ul>
         </div>

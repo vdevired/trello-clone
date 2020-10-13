@@ -6,7 +6,7 @@ import { backendUrl } from "../../static/js/const";
 
 import { useForm } from "react-hook-form";
 
-const CreateTeamModal = ({ setShowModal }) => {
+const CreateTeamModal = ({ setShowModal, addProject }) => {
     useEffect(modalBlurHandler(setShowModal), []);
     const { register, handleSubmit, errors, watch } = useForm();
     const titleValue = watch("title", "");
@@ -20,9 +20,10 @@ const CreateTeamModal = ({ setShowModal }) => {
     };
 
     const onSubmit = async (data) => {
-        const invitedMembers = data.members
-            .split(",")
-            .map((user) => user.trim()); // usernames and emails
+        const invitedMembers =
+            data.members !== ""
+                ? data.members.split(",").map((user) => user.trim()) // usernames and emails
+                : [];
 
         try {
             const { data: resData } = await authAxios.post(
@@ -37,6 +38,7 @@ const CreateTeamModal = ({ setShowModal }) => {
                     }
                 );
             }
+            addProject(resData);
         } catch (error) {
             console.log(error);
         }

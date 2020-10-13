@@ -66,7 +66,8 @@
         font-size: 1.25rem;
     }
 
-    &__boards {
+    &__boards,
+    .team__boards {
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 1em;
