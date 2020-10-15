@@ -470,6 +470,7 @@ button, input, select, textarea, input::placeholder {
 .list__cards {
   margin: 1.5em 0;
   max-height: calc(100% - 110px);
+  min-height: calc(100% - 110px);
   overflow-y: auto;
 }
 

@@ -7,7 +7,30 @@ import ProfilePic from "./ProfilePic";
 import EditCardModal from "../modals/EditCardModal";
 import LabelModal from "../modals/LabelModal";
 
-const Card = ({ card }) => {
+const mergeRefs = (...refs) => {
+    const filteredRefs = refs.filter(Boolean);
+    if (!filteredRefs.length) return null;
+    if (filteredRefs.length === 0) return filteredRefs[0];
+    return (inst) => {
+        for (const ref of filteredRefs) {
+            if (typeof ref === "function") {
+                ref(inst);
+            } else if (ref) {
+                ref.current = inst;
+            }
+        }
+    };
+};
+
+const getCardStyle = (isDragging, defaultStyle) => {
+    if (!isDragging) return defaultStyle;
+    return {
+        ...defaultStyle,
+        transform: defaultStyle.transform + " rotate(5deg)",
+    };
+};
+
+const Card = ({ card, list, provided, isDragging }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     const [showLabelModal, setShowLabelModal] = useState(false);
@@ -20,14 +43,18 @@ const Card = ({ card }) => {
         setShowEditModal(true);
     };
 
+    const { innerRef, draggableProps, dragHandleProps } = provided;
     return (
         <>
             <div
                 className={`card${card.image ? " card--image" : ""}${
                     isEditing ? " card--edit" : ""
                 }`}
-                ref={cardElem}
+                ref={mergeRefs(cardElem, innerRef)}
                 onClick={handleCardClick}
+                {...draggableProps}
+                style={getCardStyle(isDragging, draggableProps.style)}
+                {...dragHandleProps}
             >
                 {card.image && (
                     <div className="card__image">
@@ -76,7 +103,11 @@ const Card = ({ card }) => {
                 </div>
             </div>
             {showEditModal && (
-                <EditCardModal card={card} setShowModal={setShowEditModal} />
+                <EditCardModal
+                    card={card}
+                    setShowModal={setShowEditModal}
+                    list={list}
+                />
             )}
             {showLabelModal && (
                 <LabelModal

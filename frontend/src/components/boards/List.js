@@ -1,6 +1,7 @@
 import React from "react";
 import { v4 as uuidv4 } from "uuid";
-import Card from "./Card";
+import { Droppable } from "react-beautiful-dnd";
+import DraggableCard from "./DraggableCard";
 
 const List = ({ list }) => {
     return (
@@ -9,11 +10,25 @@ const List = ({ list }) => {
                 <p>{list.title}</p>
                 <i className="far fa-ellipsis-h"></i>
             </div>
-            <div className="list__cards">
-                {list.cards.map((card) => (
-                    <Card card={card} key={uuidv4()} />
-                ))}
-            </div>
+            <Droppable droppableId={list.id.toString()}>
+                {(provided) => (
+                    <div
+                        className="list__cards"
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                    >
+                        {list.items.map((card, index) => (
+                            <DraggableCard
+                                card={card}
+                                list={list}
+                                key={uuidv4()}
+                                index={index}
+                            />
+                        ))}
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
             <div className="list__add-card">Add card</div>
         </div>
     );

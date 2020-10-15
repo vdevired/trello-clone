@@ -5,7 +5,7 @@ import { timeSince, modalBlurHandler } from "../../static/js/util";
 import Labels from "../boards/Labels";
 import ProfilePic from "../boards/ProfilePic";
 
-const EditCardModal = ({ card, setShowModal }) => {
+const EditCardModal = ({ card, list, setShowModal }) => {
     const [editingDescription, setEditingDescription] = useState(false);
 
     useEffect(modalBlurHandler(setShowModal), []);
@@ -43,7 +43,7 @@ const EditCardModal = ({ card, setShowModal }) => {
                     <Labels labels={card.labels} />
                     <div className="edit-modal__title">{card.title}</div>
                     <div className="edit-modal__subtitle">
-                        in list <span>{card.list}</span>
+                        in list <span>{list.title}</span>
                     </div>
 
                     <div className="edit-modal__section-header">
