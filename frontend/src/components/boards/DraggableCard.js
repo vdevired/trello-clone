@@ -5,14 +5,26 @@ import Card from "./Card";
 const DraggableCard = ({ card, list, index }) => {
     return (
         <Draggable draggableId={card.id.toString()} index={index}>
-            {(provided, snapshot) => (
-                <Card
-                    card={card}
-                    list={list}
-                    provided={provided}
-                    isDragging={snapshot.isDragging}
-                />
-            )}
+            {(provided, snapshot) => {
+                if (
+                    typeof provided.draggableProps.onTransitionEnd ===
+                    "function"
+                ) {
+                    const anim = window?.requestAnimationFrame(() =>
+                        provided.draggableProps.onTransitionEnd({
+                            propertyName: "transform",
+                        })
+                    );
+                }
+                return (
+                    <Card
+                        card={card}
+                        list={list}
+                        provided={provided}
+                        isDragging={snapshot.isDragging}
+                    />
+                );
+            }}
         </Draggable>
     );
 };
