@@ -2132,4 +2132,43 @@ button, input, select, textarea, input::placeholder {
 .team__edit-form button {
   margin-right: 0.5em;
 }
+
+.error-page {
+  position: relative;
+}
+
+.error-page__image {
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 100vw;
+  height: 100vh;
+  -webkit-filter: brightness(80%);
+          filter: brightness(80%);
+}
+
+.error-page__content {
+  color: white;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.error-page__title {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+}
+
+.error-page__subtitle {
+  width: 70%;
+  margin: 0 auto 2em;
+}
+
+.error-page__link {
+  color: #4680ff;
+  text-decoration: underline;
+}
 /*# sourceMappingURL=index.css.map */

@@ -17,12 +17,14 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import InviteMembersModal from "../components/modals/InviteMembersModal";
 import ChangePermissionsModal from "../components/modals/ChangePermissionsModal";
+import Error404 from "./Error404";
 
 const defaultImageUrl =
     "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2250&q=80";
 
 const Project = (props) => {
     const { id } = props.match.params;
+    const { authUser } = useContext(globalContext);
 
     const [curTab, setCurTab] = useState(1);
     const [isEditing, setIsEditing] = useState(false);
@@ -42,18 +44,20 @@ const Project = (props) => {
         }
     }, [isInviting]);
 
-    const { data: project, setData: setProject } = useAxiosGet(
+    const { data: project, loading, setData: setProject } = useAxiosGet(
         `/projects/${id}/`
     );
 
-    const { authUser } = useContext(globalContext);
-    const authUserAccessLevel = project
-        ? project.members.find(
-              (member) => member.username === authUser.username
-          ).access_level
-        : 1;
+    if (!project && loading) return null;
+    if (!project && !loading) return <Error404 />; // No project with given id
 
-    if (!project) return null;
+    // Project exists
+    const authUserMembership = project.members.find(
+        (member) => member.username === authUser.username
+    );
+    if (!authUserMembership) return <Error404 />; // Not a member
+    const authUserAccessLevel = authUserMembership.access_level;
+
     return (
         <div className="team">
             <div className="team__header">
@@ -61,7 +65,7 @@ const Project = (props) => {
                     <div className="team__header-top">
                         <img
                             src={project.image || defaultImageUrl}
-                            alt="Team Profile Picture"
+                            alt="Team"
                         />
                         {!isEditing ? (
                             <div className="team__profile">
@@ -193,7 +197,13 @@ const EditForm = ({ project, setProject, setIsEditing }) => {
             <label htmlFor="description">Project Description</label>
             <textarea name="description" ref={register}></textarea>
 
-            <button className="btn btn--medium">Save</button>
+            {titleValue.trim() !== "" ? (
+                <button className="btn btn--medium">Save</button>
+            ) : (
+                <button className="btn btn--medium btn--disabled" disabled>
+                    Save
+                </button>
+            )}
             <button
                 className="btn btn--secondary btn--medium"
                 onClick={() => setIsEditing(false)}

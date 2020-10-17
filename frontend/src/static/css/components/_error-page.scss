@@ -1,0 +1,35 @@
+.error-page {
+    position: relative; // So we can postion children absolutely
+
+    &__image {
+        object-fit: cover;
+        width: 100vw;
+        height: 100vh;
+        filter: brightness(80%);
+    }
+
+    &__content {
+        color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+    }
+
+    &__title {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5em;
+    }
+
+    &__subtitle {
+        width: 70%;
+        margin: 0 auto 2em;
+    }
+
+    &__link {
+        color: $blue;
+        text-decoration: underline;
+    }
+}
