@@ -40,12 +40,14 @@
     &__create-list {
         height: fit-content;
         width: 300px;
+        min-width: 300px;
         margin-top: 0.5em;
         margin-left: 1em;
     }
 
     &__create-list-form {
         width: 300px;
+        min-width: 300px;
         padding: 1em;
         margin-top: 0.5em;
         margin-left: 1em;
