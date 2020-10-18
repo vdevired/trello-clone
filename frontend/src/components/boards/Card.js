@@ -1,26 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { modalBlurHandler } from "../../static/js/util";
+import { modalBlurHandler, mergeRefs } from "../../static/js/util";
 import Labels from "./Labels";
 import ProfilePic from "./ProfilePic";
 import EditCardModal from "../modals/EditCardModal";
 import LabelModal from "../modals/LabelModal";
-
-const mergeRefs = (...refs) => {
-    const filteredRefs = refs.filter(Boolean);
-    if (!filteredRefs.length) return null;
-    if (filteredRefs.length === 0) return filteredRefs[0];
-    return (inst) => {
-        for (const ref of filteredRefs) {
-            if (typeof ref === "function") {
-                ref(inst);
-            } else if (ref) {
-                ref.current = inst;
-            }
-        }
-    };
-};
 
 const getCardStyle = (isDragging, defaultStyle) => {
     if (!isDragging) return defaultStyle;

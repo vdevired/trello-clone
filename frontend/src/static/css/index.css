@@ -437,6 +437,9 @@ button, input, select, textarea, input::placeholder {
   width: -webkit-fit-content;
   width: -moz-fit-content;
   width: fit-content;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
   max-height: 97%;
   border: 0;
   border-radius: 5px;
@@ -470,7 +473,7 @@ button, input, select, textarea, input::placeholder {
 }
 
 .list__cards {
-  margin: 1.5em 0;
+  margin: 1.5em 0 1em;
   max-height: calc(100% - 110px);
   min-height: calc(100% - 110px);
   overflow-y: auto;
@@ -489,12 +492,26 @@ button, input, select, textarea, input::placeholder {
 }
 
 .list__add-card {
-  margin-top: auto;
   text-align: center;
   font-size: 0.875rem;
   width: 300px;
   padding: 0.75em 0;
   color: #838282;
+}
+
+.list__add-card--active {
+  color: white;
+}
+
+.list__add-card-form {
+  margin-top: 1em;
+}
+
+.list__add-card-form input {
+  width: 100%;
+  border: 1px solid rgba(211, 211, 211, 0.55);
+  border-radius: 5px;
+  padding: 0.75em;
 }
 
 .card {

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
+import { mergeRefs } from "../../static/js/util";
 
 const getListStyle = (isDragging, defaultStyle) => {
     if (!isDragging) return defaultStyle;
@@ -12,6 +13,40 @@ const getListStyle = (isDragging, defaultStyle) => {
 };
 
 const List = ({ list, index }) => {
+    const [addingCard, setAddingCard] = useState(false);
+    const [title, setTitle] = useState("");
+    const listCards = useRef(null);
+
+    const startAddingCard = () => {
+        setAddingCard(true);
+        listCards.current.scrollTop = listCards.current.scrollHeight;
+    };
+
+    const onAddCard = (e) => {
+        e.preventDefault();
+        if (title.trim() === "") return;
+        setAddingCard(false);
+    };
+
+    const handleHideAddCard = useCallback((e) => {
+        const addCardForm = document.querySelector(".list__add-card-form");
+        if (!addCardForm) return;
+        if (!addCardForm.contains(e.target)) setAddingCard(false);
+    }, []);
+
+    useEffect(() => {
+        if (addingCard) {
+            document.addEventListener("click", handleHideAddCard);
+        } else {
+            document.removeEventListener("click", handleHideAddCard);
+        }
+    }, [addingCard]);
+
+    useEffect(() => {
+        if (addingCard)
+            listCards.current.scrollTop = listCards.current.scrollHeight;
+    }, [addingCard]);
+
     return (
         <Draggable draggableId={"list" + list.id.toString()} index={index}>
             {(provided, snapshot) => {
@@ -46,7 +81,10 @@ const List = ({ list, index }) => {
                             {(provided) => (
                                 <div
                                     className="list__cards"
-                                    ref={provided.innerRef}
+                                    ref={mergeRefs(
+                                        provided.innerRef,
+                                        listCards
+                                    )}
                                     {...provided.droppableProps}
                                 >
                                     {list.items.map((card, index) => (
@@ -58,10 +96,46 @@ const List = ({ list, index }) => {
                                         />
                                     ))}
                                     {provided.placeholder}
+                                    {addingCard && (
+                                        <form
+                                            className="list__add-card-form"
+                                            onSubmit={onAddCard}
+                                        >
+                                            <input
+                                                type="text"
+                                                name="title"
+                                                placeholder="Enter card title..."
+                                                onChange={(e) =>
+                                                    setTitle(e.target.value)
+                                                }
+                                            />
+                                        </form>
+                                    )}
                                 </div>
                             )}
                         </Droppable>
-                        <div className="list__add-card">Add card</div>
+                        {!addingCard ? (
+                            <button
+                                className="list__add-card"
+                                onClick={startAddingCard}
+                            >
+                                Add card
+                            </button>
+                        ) : title.trim() !== "" ? (
+                            <button
+                                className="list__add-card list__add-card--active btn"
+                                onClick={onAddCard}
+                            >
+                                Add
+                            </button>
+                        ) : (
+                            <button
+                                className="list__add-card list__add-card--active btn btn--disabled"
+                                disabled
+                            >
+                                Add
+                            </button>
+                        )}
                     </div>
                 );
             }}
