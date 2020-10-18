@@ -10,6 +10,7 @@ import HomeBoard from "../components/boards/HomeBoard";
 import ProfilePic from "../components/boards/ProfilePic";
 import globalContext from "../context/globalContext";
 import useAxiosGet from "../hooks/useAxiosGet";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 import { authAxios } from "../static/js/util";
 import { backendUrl } from "../static/js/const";
 import { useHistory } from "react-router-dom";
@@ -47,6 +48,7 @@ const Project = (props) => {
     const { data: project, loading, setData: setProject } = useAxiosGet(
         `/projects/${id}/`
     );
+    useDocumentTitle(project ? `${project.title} | Trello` : "");
 
     if (!project && loading) return null;
     if (!project && !loading) return <Error404 />; // No project with given id

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 import { addList, onDragEnd } from "../static/js/board";
 import List from "../components/boards/List";
@@ -99,6 +100,8 @@ const Board = (props) => {
             },
         ],
     }); // Get using route params
+
+    useDocumentTitle(board ? `${board.title} | Trello` : "");
 
     const handleHideCreateList = useCallback((e) => {
         const createListForm = document.querySelector(

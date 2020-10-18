@@ -1,10 +1,12 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 import globalContext from "../context/globalContext";
 import bg from "../static/img/404.jpg";
 
 const Error404 = () => {
+    useDocumentTitle("Error | Trello");
     const { authUser } = useContext(globalContext);
 
     return (

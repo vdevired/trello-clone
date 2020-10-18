@@ -3,8 +3,10 @@ import HomeSidebar from "../components/sidebars/HomeSidebar";
 import HomeBoard from "../components/boards/HomeBoard";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
 import useAxiosGet from "../hooks/useAxiosGet";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 const Home = () => {
+    useDocumentTitle("Boards | Trello");
     const [showTeamModal, setShowTeamModal] = useState(false);
     const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
     return (

@@ -1,9 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import useDocumentTitle from "../hooks/useDocumentTitle";
 
 import bgImage from "../static/img/bg1.jpg";
 
 const Landing = () => {
+    useDocumentTitle("Trello");
     return (
         <div className="landing-banner">
             <img className="landing-banner__image" src={bgImage} />
