@@ -8,10 +8,15 @@ import EditCardModal from "../modals/EditCardModal";
 import LabelModal from "../modals/LabelModal";
 
 const getCardStyle = (isDragging, defaultStyle) => {
-    if (!isDragging) return defaultStyle;
+    if (!isDragging)
+        return {
+            ...defaultStyle,
+            cursor: "pointer",
+        };
     return {
         ...defaultStyle,
         transform: defaultStyle.transform + " rotate(5deg)",
+        cursor: "grabbing",
     };
 };
 

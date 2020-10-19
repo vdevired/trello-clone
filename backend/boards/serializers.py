@@ -16,8 +16,8 @@ class BoardSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Board
-        fields = ['id' , 'title', 'description', 'image', 'created_at', 'owner']
-    
+        fields = ['id', 'title', 'description', 'image', 'created_at', 'owner']
+
     def get_owner(self, obj):
         object_app = obj.owner._meta.app_label
         object_name = obj.owner._meta.object_name
@@ -26,13 +26,7 @@ class BoardSerializer(serializers.ModelSerializer):
         serializer_module_path = f'{object_app}.serializers.{object_name}Serializer'
         serializer_class = import_string(serializer_module_path)
         return serializer_class(obj.owner).data
-            
 
-class ListSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = List
-        exclude = ['board']
 
 class ItemSerializer(serializers.ModelSerializer):
 
@@ -40,17 +34,28 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = '__all__'
 
+
+class ListSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = List
+        exclude = ['board']
+
+
 class CommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Comment
         fields = '__all__'
 
+
 class LabelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Label
         fields = '__all__'
+
 
 class AttachmentSerializer(serializers.ModelSerializer):
 

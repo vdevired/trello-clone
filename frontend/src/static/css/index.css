@@ -468,12 +468,33 @@ button, input, select, textarea, input::placeholder {
           align-items: center;
 }
 
+.list__title p {
+  height: 25px;
+}
+
 .list__title > .far {
   color: #838282;
 }
 
+.list__title-edit {
+  width: 100%;
+  margin-right: 1em;
+  font-weight: 500;
+  font-size: 1.25rem;
+  padding: 0.25em;
+  border: 1px rgba(109, 109, 109, 0.55) solid;
+  height: 25px;
+  position: relative;
+  top: -3px;
+  left: -6px;
+}
+
+.list__title-edit:focus {
+  border: 1px #4680ff solid;
+}
+
 .list__cards {
-  margin: 1.5em 0 1em;
+  margin: 1.125em 0 1em;
   max-height: calc(100% - 110px);
   min-height: calc(100% - 110px);
   overflow-y: auto;

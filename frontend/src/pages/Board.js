@@ -5,6 +5,8 @@ import useDocumentTitle from "../hooks/useDocumentTitle";
 
 import { addList, onDragEnd } from "../static/js/board";
 import List from "../components/boards/List";
+import { authAxios } from "../static/js/util";
+import { backendUrl } from "../static/js/const";
 
 const Board = (props) => {
     const { id } = props.match.params;
@@ -140,6 +142,8 @@ const Board = (props) => {
                                     list={list}
                                     index={index}
                                     key={uuidv4()}
+                                    board={board}
+                                    setBoard={setBoard}
                                 />
                             ))}
                             {provided.placeholder}
@@ -168,9 +172,13 @@ const Board = (props) => {
 const CreateList = ({ board, setBoard, setAddingList }) => {
     const [title, setTitle] = useState("");
 
-    const onAddList = (e) => {
+    const onAddList = async (e) => {
         e.preventDefault();
-        // TO DO
+        const { data } = await authAxios.post(`${backendUrl}/boards/lists/`, {
+            board: board.id,
+            title,
+        });
+        addList(board, setBoard)(data);
         setAddingList(false);
     };
 

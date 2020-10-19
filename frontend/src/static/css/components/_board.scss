@@ -89,13 +89,35 @@
         justify-content: space-between;
         align-items: center;
 
+        p {
+            height: 25px;
+        }
+
         & > .far {
             color: $secondary-text;
         }
     }
 
+    &__title-edit {
+        width: 100%;
+        margin-right: 1em;
+        font-weight: 500;
+        font-size: 1.25rem;
+        padding: 0.25em;
+        border: 1px darken($border-color, 40%) solid;
+        height: 25px;
+
+        position: relative;
+        top: -3px;
+        left: -6px;
+
+        &:focus {
+            border: 1px $blue solid;
+        }
+    }
+
     &__cards {
-        margin: 1.5em 0 1em;
+        margin: 1.125em 0 1em;
         max-height: calc(100% - 110px);
         min-height: calc(100% - 110px);
         overflow-y: auto;

@@ -90,3 +90,16 @@ export const addList = (board, setBoard) => (list) => {
 
     setBoard(newBoard);
 };
+
+export const updateList = (board, setBoard) => (updatedList) => {
+    const newLists = board.lists.map((list) =>
+        list.id === updatedList.id ? updatedList : list
+    );
+
+    const newBoard = {
+        ...board,
+        lists: newLists,
+    };
+
+    setBoard(newBoard);
+};
