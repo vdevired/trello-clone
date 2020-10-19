@@ -16,7 +16,7 @@ class Project(models.Model):
     members = models.ManyToManyField(
         User, through='ProjectMembership', through_fields=('project', 'member'))
 
-    boards = GenericRelation(Board, related_query_name='owner', object_id_field='owner_id', content_type_field='owner_model')
+    boards = GenericRelation(Board, object_id_field='owner_id', content_type_field='owner_model')
 
     def __str__(self):
         return self.title

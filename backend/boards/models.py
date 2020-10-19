@@ -11,11 +11,11 @@ class Board(models.Model):
                                     related_name='board',
                                     on_delete=models.CASCADE,
                                     limit_choices_to= models.Q(app_label = 'users', model = 'user') | models.Q(app_label = 'projects', model = 'project'))
-    owner_id = models.PositiveIntegerField(null=True, blank=True)
+    owner_id = models.PositiveIntegerField(null=False, blank=False)
     owner = GenericForeignKey('owner_model', 'owner_id')
 
     title = models.CharField(max_length=255, blank=False, null=False)
-    description = models.TextField(blank=True, null=False)
+    description = models.TextField(blank=False, null=False)
     image = models.ImageField(blank=True, upload_to='board_images')
     created_at = models.DateTimeField(default=timezone.now)
 
