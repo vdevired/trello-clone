@@ -1,0 +1,82 @@
+.landing-header {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 2;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	color: white;
+	background: transparent;
+
+	a {
+		color: white;
+	}
+
+	&__logo {
+		object-fit:cover;
+		height: 35px;
+		width: 114px;
+	}
+
+	&__section {
+		margin: 1em 0;
+
+		&:first-of-type {
+			margin-left: 2em;
+		}
+
+		&:last-of-type {
+			margin-right: 2em;
+		}
+	}
+
+	&__list {
+		display: flex;
+		align-items: center;
+	}
+
+	&__li {
+		margin: 0 0.75em;
+
+		&:first-of-type {
+			margin-left: 0;
+		}
+
+		&:last-of-type {
+			margin-right: 0;
+		}
+	}
+}
+
+.landing-banner {
+	position: relative; // So we can postion children absolutely
+
+	&__image {
+		object-fit: cover;
+		width: 100vw;
+		height: 100vh;
+		filter: brightness(80%);
+	}
+
+	&__content {
+		color: white;
+		position:absolute;
+	    top:50%;
+	    left:50%;
+	    transform:translate(-50%, -50%);
+	    text-align: center;
+	}
+
+	&__title {
+		font-size: 3rem;
+		font-weight: 700;
+		margin-bottom: 0.5em;
+	}
+
+	&__subtitle {
+		width: 70%;
+		margin: 0 auto 2em;
+	}
+}

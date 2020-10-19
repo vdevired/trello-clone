@@ -1,0 +1,123 @@
+.slideshow {
+    position: absolute;
+    z-index: 1; 
+    position: fixed;
+    left: 500px;
+    height: 100%;
+    width: 100%;
+
+    &__img {
+        object-fit: contain;
+        height: auto;
+        max-width: 100%;
+    }
+}
+
+.splash-text {
+    font-size: large;
+    position: absolute;
+    z-index: 2;
+    color: white;
+    bottom: 100px;
+    left: 100px;
+
+    &__h1 {
+       font-size: 3.4rem;
+       font-weight: 600;
+       line-height: 5rem;
+    }
+}
+
+.sidebar{
+     position: fixed;
+     width: 500px;
+     height: 100%;
+     overflow-x: hidden;
+     overflow-y: auto;
+     background: white;
+     display: flex;
+     flex-direction: column;
+
+     &--left {
+          left: 0;
+     }
+     
+     &--right {
+          right: 0;
+     }
+
+     &-logo {
+       &__img{
+            width: 7em;
+            position: relative;
+            margin: 12% 12%;
+            left: 2em;
+       }
+     }
+}
+
+.sidebar-input {
+     padding: 0.5em;
+     margin: 0.5em auto;
+     height: 3em;
+     width: 80%;
+     z-index: 1;
+     font-size: 1rem;
+}
+
+.login {
+        position: relative;
+        width: 100%;
+        margin: 8% auto;
+
+        &-fieldset {
+          display: flex;
+          flex-direction: column;
+          width: 81%;
+          margin: auto;
+          text-align: center;
+
+          &__submit:hover{
+               transform: scale(0.9);
+               cursor: pointer;
+          }
+          
+          &__submit {
+               text-align: center;
+          }
+
+          > .btn {
+               margin-top: 1.5em;
+               margin-left: auto;
+               margin-right: 10%;
+               width: fit-content;
+          }
+     }
+   }
+   
+.border {
+     &--gray{
+          border: rgba($border-color, 0.7);
+          border-style: solid;
+          border-width: 1px;
+          border-radius: 5px;
+     }
+
+     &--onHoverBlue:hover{
+          border: $blue;
+          border-style: solid;
+          border-width: 1px;
+     }
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    justify-items: space-evenly;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 15px;
+    > .btn {
+         flex: 1;
+    }
+}

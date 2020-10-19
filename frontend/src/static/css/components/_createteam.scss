@@ -1,0 +1,103 @@
+.create-team {
+    z-index: 4;
+    background-color: white;
+    border-radius: 5px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 925px;
+
+    display: flex;
+
+    &__form {
+        flex: 1;
+        padding: 3em 0 3em 3em;
+
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.3em;
+        }
+
+        input {
+            padding: 0.5em;
+            width: 80%;
+            margin-bottom: 1.4em;
+            border: 1px darken($border-color, 40%) solid;
+
+            &:focus {
+                border: 1px $blue solid;
+            }
+        }
+
+        textarea {
+            padding: 0.5em;
+            width: 80%;
+            height: 100px;
+            resize: none;
+            border: 1px darken($border-color, 40%) solid;
+            margin-bottom: 1.4em;
+
+            &:focus {
+                border: 1px $blue solid;
+            }
+        }
+
+        .btn {
+            display: block;
+            width: 80%;
+            text-align: center;
+        }
+    }
+
+    &__title {
+        font-weight: 600;
+        font-size: 1.5rem;
+        margin-bottom: 0.75em;
+    }
+
+    &__subtitle {
+        color: $secondary-text;
+        margin-bottom: 1.5em;
+    }
+
+    &__bg {
+        flex: 1;
+        background-image: url("../img/teambg.svg");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        background-position: right;
+
+        position: relative;
+        overflow: hidden;
+
+        .fal {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.25rem;
+        }
+    }
+
+    &__img {
+        margin: 0 auto;
+        margin-top: 70px;
+    }
+
+    &__face {
+        position: absolute;
+        transition: all 100ms ease;
+        height: 70px;
+        width: 70px;
+
+        &--1 {
+            left: -100px;
+            top: 460px;
+            //Animate to
+            //left: 60px;
+            //top: 230px;
+        }
+    }
+}

@@ -1,0 +1,177 @@
+.team {
+    &__header {
+        padding: 100px 50px 0;
+        background-color: $grey;
+        width: 100%;
+        border-bottom: 1px solid $border-color;
+    }
+
+    &__header-content {
+        width: fit-content;
+        margin: 0 auto;
+    }
+
+    &__header-top {
+        display: flex;
+        margin-bottom: 2em;
+
+        img {
+            border-radius: 5px;
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+        }
+    }
+
+    &__profile {
+        margin-left: 1.5em;
+        display: flex;
+        flex-direction: column;
+
+        p {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        button {
+            margin-top: auto;
+        }
+    }
+
+    &__header-bottom {
+        display: flex;
+    }
+
+    &__tab {
+        padding: 0.75em 1.25em;
+        border-radius: 5px 5px 0 0;
+        background-color: #dfe1e6;
+        margin-right: 0.25em;
+        font-weight: 500;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #c1c7d0;
+        }
+
+        &--active {
+            background-color: white;
+            cursor: default;
+            border: 1px solid $border-color;
+            border-bottom-color: white;
+
+            position: relative;
+            top: 1px;
+
+            &:hover {
+                background-color: white;
+            }
+        }
+    }
+
+    &__body {
+        width: fit-content;
+        margin: 0 auto;
+        padding: 40px 100px 20px;
+    }
+
+    &__members-header {
+        font-weight: 600;
+        font-size: 1.125rem;
+        display: flex;
+        justify-content: space-between;
+        width: 900px;
+        margin-bottom: 2.5em;
+
+        i {
+            margin-right: 0.5em;
+        }
+    }
+
+    &__member {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.25em;
+    }
+
+    &__member-info {
+        margin-left: 1em;
+    }
+
+    &__member-name {
+        font-weight: 500;
+        margin-bottom: 0.25em;
+    }
+
+    &__member-username {
+        font-weight: 300;
+        color: $secondary-text;
+        font-size: 0.875rem;
+    }
+
+    &__member-buttons {
+        display: flex;
+        align-items: center;
+        margin-left: auto;
+        position: relative;
+
+        p {
+            right: calc(95px + 1em);
+            position: absolute;
+            min-width: 69px; // So admin and member are same width
+        }
+
+        button {
+            text-align: left;
+            margin-left: 1em;
+
+            &:last-of-type {
+                min-width: 95px; // So leave and remove are same width
+            }
+        }
+
+        i {
+            margin-right: 0.5em;
+        }
+    }
+
+    &__edit-form {
+        margin-left: 1.5em;
+        width: 200px;
+        label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-bottom: 0.3em;
+            color: darken($secondary-text, 20%);
+        }
+
+        input {
+            width: 100%;
+            padding: 0.5em;
+            margin-bottom: 1.4em;
+            border: 1px darken($border-color, 40%) solid;
+
+            &:focus {
+                border: 1px $blue solid;
+            }
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5em;
+            height: 60px;
+            resize: none;
+            border: 1px darken($border-color, 40%) solid;
+            margin-bottom: 1.4em;
+
+            &:focus {
+                border: 1px $blue solid;
+            }
+        }
+
+        button {
+            margin-right: 0.5em;
+        }
+    }
+}

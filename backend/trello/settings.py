@@ -42,11 +42,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'users',
     'projects.apps.ProjectsConfig',
-    'boards',
-    'drf_yasg'
+    'boards.apps.BoardsConfig',
+    'drf_yasg',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -87,7 +89,8 @@ DATABASES = {
     }
 }
 
-AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend', 'users.auth.EmailBackend']
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend', 'users.auth.EmailBackend']
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -151,7 +154,7 @@ SIMPLE_JWT = {
 
 SWAGGER_SETTINGS = {
     'token_type': 'Bearer',
-    'SECURITY_DEFINITIONS' : {
+    'SECURITY_DEFINITIONS': {
         'Bearer': {
             'type': 'apiKey',
             'name': 'Authorization',
@@ -159,3 +162,9 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+CORS_ALLOWED_ORIGINS = ['http://localhost:3000']
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6380
+REDIS_DB = 0

@@ -1,0 +1,89 @@
+.addboard-modal {
+    top: 0;
+    right: 0;
+    display: flex;
+    left: 0;
+    position: fixed;
+    
+    &__title-block {
+        height: 160px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        //background-image: ;
+        border-radius: 5px;
+        width: 350px;
+
+    }
+
+    &__title {
+        border: 0;
+        font-weight: 600;
+        color: white;
+        margin-left: 0.5em;
+        margin-top: 0.5em;
+        background-color: transparent;
+        border-radius: 5px;
+        padding: 0.5em;
+        font-size: 1.125rem;
+        &:hover, &:focus {
+            background-color: rgba(white, 0.2);
+        }
+    }
+
+    &__exit {
+        float: right;
+        margin-right: 1em;
+        margin-top: 1em;
+        font-size: 1.125rem;
+        color: white;
+    }
+
+    &__create{
+        margin-top: 0.5em;
+    }
+
+    &__right {
+        margin-left: 0.5em;
+        width: 200px;
+    }
+
+
+    &__color-box {
+        height: 48px;
+        width: 48px;
+        border: 0;
+        border-radius: 5px;
+        margin-bottom: 0.5em ;
+        margin-right: 0.5em;
+        position: relative;
+        background-color: white;
+
+        > i{
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 1.6rem;
+        }
+
+        &:hover {
+            filter: brightness(90%);
+        }
+
+        &--img {
+            //background-image: url("img/bg6.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        &--tick {
+            filter: brightness(70%);
+        }
+
+        .fa-ellipsis-h {
+            color: $secondary-text;
+            
+        }
+    }
+}
