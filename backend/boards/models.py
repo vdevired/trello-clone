@@ -15,7 +15,7 @@ class Board(models.Model):
     owner = GenericForeignKey('owner_model', 'owner_id')
 
     title = models.CharField(max_length=255, blank=False, null=False)
-    description = models.TextField(blank=False, null=False)
+    description = models.TextField(blank=True, null=False)
     image = models.ImageField(blank=True, upload_to='board_images')
     created_at = models.DateTimeField(default=timezone.now)
 
@@ -85,7 +85,7 @@ class Comment(models.Model):
     body = models.TextField(blank=False, null=False)
 
     def __str__(self):
-        return f'{self.author.full_name} - {self.body[:12]}'
+        return f'{self.body[:50]}{"..." if len(self.body) > 50 else ""}'
 
 
 class Attachment(models.Model):
@@ -95,13 +95,14 @@ class Attachment(models.Model):
 
 
 # https://help.trello.com/article/793-receiving-trello-notifications
-extra_word_dict = {'commented': 'on',
-                   'assigned': 'to', 'invited': 'to', 'made': 'you'}
+extra_word_dict = {'commented': 'on'}
 
 
 class Notification(models.Model):
     actor = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='actions')
+    recipient = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='notifications')
     verb = models.CharField(max_length=255, blank=False, null=False)
     unread = models.BooleanField(default=True, blank=False, db_index=True)
 
@@ -124,7 +125,7 @@ class Notification(models.Model):
     def __str__(self):
         if self.target:
             if self.action_object:
-                return f'{self.actor.full_name} {self.verb} {extra_word_dict[self.verb]} {self.target}'
+                return f'{self.actor.full_name} {self.verb} {self.action_object} {extra_word_dict[self.verb]} {self.target}'
             else:
                 return f'{self.actor.full_name} {self.verb} {self.target}'
         else:
@@ -132,7 +133,7 @@ class Notification(models.Model):
 
     """
     <actor> commented <comment> on <item>, you were assigned to this item
-    <actor> assigned <you> to <item>
-    <actor> invited <you> to <project>
-    <actor> made <you> admin of <project>
+    <actor> assigned you to <item>
+    <actor> invited you to <project>
+    <actor> made you admin of <project>
     """
