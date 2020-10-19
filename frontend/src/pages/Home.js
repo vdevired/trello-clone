@@ -14,6 +14,7 @@ const Home = () => {
     const [showTeamModal, setShowTeamModal] = useState(false);
     const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
     const { data: boards, addItem: addBoard } = useAxiosGet("/boards/");
+    const { data: recentlyViewedBoards } = useAxiosGet("/boards/?sort=recent");
     const [userBoards, projectBoards] = filterBoards(boards);
 
     if (!boards) return null;
@@ -26,12 +27,21 @@ const Home = () => {
                     projects={projects || []}
                 />
                 <div className="home">
-                    <div className="home__section">
-                        <p className="home__title">
-                            <i className="fal fa-clock"></i> Recently Viewed
-                        </p>
-                    </div>
-                    <div className="home__boards"></div>
+                    {(recentlyViewedBoards || []).length !== 0 && (
+                        <>
+                            <div className="home__section">
+                                <p className="home__title">
+                                    <i className="fal fa-clock"></i> Recently
+                                    Viewed
+                                </p>
+                            </div>
+                            <div className="home__boards">
+                                {recentlyViewedBoards.map((board) => (
+                                    <HomeBoard board={board} key={uuidv4()} />
+                                ))}
+                            </div>
+                        </>
+                    )}
 
                     <div className="home__section">
                         <p className="home__title">
@@ -57,19 +67,25 @@ const Home = () => {
                                 <div>
                                     <Link
                                         className="btn btn--secondary"
+                                        to={`/p/${project.id}`}
+                                    >
+                                        <i className="fab fa-trello"></i> Boards
+                                    </Link>
+                                    <Link
+                                        className="btn btn--secondary"
                                         to={`/p/${project.id}?tab=2`}
                                     >
                                         <i className="fal fa-user"></i> Members
                                     </Link>
                                     <Link
                                         className="btn btn--secondary"
-                                        to={`/p/${project.id}`}
+                                        to={`/p/${project.id}?tab=3`}
                                     >
                                         <i className="fal fa-cogs"></i> Settings
                                     </Link>
-                                    <button className="btn">
+                                    <a className="btn">
                                         <i className="fal fa-plus"></i> Create
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                             <div className="home__boards">

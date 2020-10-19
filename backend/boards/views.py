@@ -1,6 +1,9 @@
+import redis
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q
+from django.db.models import Q, Case, When
 from django.shortcuts import get_object_or_404, render
+from django.utils import timezone
 from django.utils.module_loading import import_string
 from projects.models import Project, ProjectMembership
 from projects.permissions import (IsProjectAdminOrMemberReadOnly,
@@ -15,6 +18,10 @@ from .serializers import (AttachmentSerializer, BoardSerializer,
                           CommentSerializer, ItemSerializer, LabelSerializer,
                           ListSerializer)
 
+r = redis.Redis(
+    host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
+    charset="utf-8", decode_responses=True
+)
 
 class BoardList(generics.ListCreateAPIView):
 
@@ -29,6 +36,15 @@ class BoardList(generics.ListCreateAPIView):
     def get_queryset(self, *args, **kwargs):
         
         project_id = self.request.GET.get('project', None)
+        sort = self.request.GET.get('sort', None)
+
+        if sort == "recent":
+            redis_key = f'{self.request.user.username}:RecentlyViewedBoards'
+            board_ids = r.zrange(redis_key, 0, 3, desc=True)
+            
+            preserved = Case(*[When(pk=pk, then=pos)
+                           for pos, pk in enumerate(board_ids)])
+            return Board.objects.filter(pk__in=board_ids).order_by(preserved)
         
         if project_id is None:
             project_ids = ProjectMembership.objects.filter(member=self.request.user).values_list('project__id', flat=True)
@@ -51,6 +67,7 @@ class BoardList(generics.ListCreateAPIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             
+
 class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = BoardSerializer
@@ -60,6 +77,13 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
         project_ids = ProjectMembership.objects.filter(member=self.request.user).values_list('project__id', flat=True)
         return Board.objects.filter(Q(owner_id=self.request.user.id, owner_model=ContentType.objects.get(model='user')) |
                                     Q(owner_id__in=project_ids, owner_model=ContentType.objects.get(model='project')))
+
+    def get_object(self):
+        board_id = self.kwargs.get('pk')
+        redis_key = f'{self.request.user.username}:RecentlyViewedBoards'
+        cur_time_int = int(timezone.now().strftime("%Y%m%d%H%M%S"))
+        r.zadd(redis_key, {board_id: cur_time_int})
+        return super().get_object()
         
 class ListShow(generics.ListCreateAPIView):
 

@@ -33,6 +33,12 @@ const Card = ({ card, list, provided, isDragging }) => {
         setShowEditModal(true);
     };
 
+    useEffect(() => {
+        if (!isEditing) {
+            setShowLabelModal(false);
+        }
+    }, [isEditing]);
+
     const { innerRef, draggableProps, dragHandleProps } = provided;
     return (
         <>
@@ -84,11 +90,19 @@ const Card = ({ card, list, provided, isDragging }) => {
                     )}
                     <Members members={card.assigned_to} />
                     {isEditing && (
-                        <EditControls
-                            cardElem={cardElem}
-                            setShowModal={setIsEditing}
-                            setShowLabelModal={setShowLabelModal}
-                        />
+                        <>
+                            <EditControls
+                                cardElem={cardElem}
+                                setShowModal={setIsEditing}
+                                setShowLabelModal={setShowLabelModal}
+                            />
+                            {showLabelModal && (
+                                <LabelModal
+                                    cardElem={cardElem}
+                                    setShowModal={setShowLabelModal}
+                                />
+                            )}
+                        </>
                     )}
                 </div>
             </div>
@@ -97,12 +111,6 @@ const Card = ({ card, list, provided, isDragging }) => {
                     card={card}
                     setShowModal={setShowEditModal}
                     list={list}
-                />
-            )}
-            {showLabelModal && (
-                <LabelModal
-                    cardElem={cardElem}
-                    setShowModal={setShowLabelModal}
                 />
             )}
         </>
