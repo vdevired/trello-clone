@@ -66,12 +66,12 @@
         font-size: 1.25rem;
     }
 
-    &__boards,
-    .team__boards {
+    &__boards {
         display: flex;
         flex-wrap: wrap;
         margin-bottom: 1em;
         > .board-preview {
+            color: black;
             margin: 0 1em 1.5em;
             width: calc(25% - 1.5em);
 

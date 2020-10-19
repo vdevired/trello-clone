@@ -75,6 +75,26 @@
         padding: 40px 100px 20px;
     }
 
+    &__boards {
+        width: 900px;
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 1em;
+        > .board-preview {
+            color: black;
+            margin: 0 1em 1.5em;
+            width: calc(25% - 1.5em);
+
+            &:nth-of-type(4n + 1) {
+                margin-left: 0;
+            }
+
+            &:nth-of-type(4n) {
+                margin-right: 0;
+            }
+        }
+    }
+
     &__members-header {
         font-weight: 600;
         font-size: 1.125rem;

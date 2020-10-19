@@ -5,6 +5,7 @@ import React, {
     useCallback,
     useRef,
 } from "react";
+import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import HomeBoard from "../components/boards/HomeBoard";
 import ProfilePic from "../components/boards/ProfilePic";
@@ -25,9 +26,12 @@ const defaultImageUrl =
 
 const Project = (props) => {
     const { id } = props.match.params;
+    const { tab } = qs.parse(props.location.search, {
+        ignoreQueryPrefix: true,
+    });
     const { authUser } = useContext(globalContext);
 
-    const [curTab, setCurTab] = useState(1);
+    const [curTab, setCurTab] = useState(tab || 1);
     const [isEditing, setIsEditing] = useState(false);
     const [isInviting, setIsInviting] = useState(false);
 
@@ -48,6 +52,10 @@ const Project = (props) => {
     const { data: project, loading, setData: setProject } = useAxiosGet(
         `/projects/${id}/`
     );
+    const { data: boards, addItem: addBoard } = useAxiosGet(
+        "/boards?project=" + id
+    );
+    console.log(boards);
     useDocumentTitle(project ? `${project.title} | Trello` : "");
 
     if (!project && loading) return null;
@@ -93,7 +101,7 @@ const Project = (props) => {
                     <ul className="team__header-bottom">
                         <li
                             className={`team__tab${
-                                curTab === 1 ? " team__tab--active" : ""
+                                curTab == 1 ? " team__tab--active" : ""
                             }`}
                             onClick={() => setCurTab(1)}
                         >
@@ -101,7 +109,7 @@ const Project = (props) => {
                         </li>
                         <li
                             className={`team__tab${
-                                curTab === 2 ? " team__tab--active" : ""
+                                curTab == 2 ? " team__tab--active" : ""
                             }`}
                             onClick={() => setCurTab(2)}
                         >
@@ -109,14 +117,14 @@ const Project = (props) => {
                         </li>
                         <li
                             className={`team__tab${
-                                curTab === 3 ? " team__tab--active" : ""
+                                curTab == 3 ? " team__tab--active" : ""
                             }`}
                         >
                             Settings
                         </li>
                         <li
                             className={`team__tab${
-                                curTab === 4 ? " team__tab--active" : ""
+                                curTab == 4 ? " team__tab--active" : ""
                             }`}
                         >
                             Business Class
@@ -125,8 +133,14 @@ const Project = (props) => {
                 </div>
             </div>
             <div className="team__body">
-                {curTab === 1 && <div className="team__boards"></div>}
-                {curTab === 2 && (
+                {curTab == 1 && (
+                    <div className="team__boards">
+                        {(boards || []).map((board) => (
+                            <HomeBoard board={board} key={uuidv4()} />
+                        ))}
+                    </div>
+                )}
+                {curTab == 2 && (
                     <div className="team__members">
                         <div className="team__members-header">
                             <p>Team Members ({project.members.length})</p>

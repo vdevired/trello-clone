@@ -103,3 +103,32 @@ export const updateList = (board, setBoard) => (updatedList) => {
 
     setBoard(newBoard);
 };
+
+// Filter boards into user boards and project boards
+export const filterBoards = (boards) => {
+    const userBoards = []; // Array of board objects
+    const projectBoards = []; // Array of project objects with boards key as we need titles
+    if (!boards) return [(userBoards, projectBoards)];
+
+    for (let i = 0; i < boards.length; i++) {
+        let board = boards[i];
+        if ("title" in board.owner) {
+            let project = projectBoards.find(
+                (project) => project.title === board.owner.title
+            );
+            if (!project) {
+                projectBoards.push({
+                    title: board.owner.title,
+                    id: board.owner.id,
+                    boards: [board],
+                });
+            } else {
+                project.boards.push(board);
+            }
+        } else {
+            userBoards.push(board);
+        }
+    }
+
+    return [userBoards, projectBoards];
+};
