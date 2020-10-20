@@ -25,7 +25,7 @@ const Board = (props) => {
                         title: "Hello",
                         description: "",
                         assigned_to: [],
-                        labels: [],
+                        labels: [{ color: "red" }],
                         attachments: [],
                         comments: [],
                     },

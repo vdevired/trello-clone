@@ -1,21 +1,49 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    useContext,
+    useCallback,
+} from "react";
 import logo from "../../static/img/logo2.png";
 import SearchModal from "../modals/SearchModal";
 import ProfilePic from "../boards/ProfilePic";
 import { Link } from "react-router-dom";
+import useAxiosGet from "../../hooks/useAxiosGet";
 
 import globalContext from "../../context/globalContext";
+import NotificationsModal from "../modals/NotificationsModal";
 
 const Header = () => {
+    const { authUser } = useContext(globalContext);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearch, setShowSearch] = useState(false);
     const searchElem = useRef(null);
-    const { authUser } = useContext(globalContext);
 
     useEffect(() => {
         if (searchQuery !== "") setShowSearch(true);
         else if (searchQuery === "" && showSearch) setShowSearch(false);
     }, [searchQuery]);
+
+    const [showNotifications, setShowNotifications] = useState(false);
+    const { data: notifications, setData: setNotifications } = useAxiosGet(
+        "/notifications/"
+    );
+
+    const handleHideNotificationsModal = useCallback((e) => {
+        const notificationsModal = document.querySelector(".label-modal");
+        if (!notificationsModal) return;
+        if (!notificationsModal.contains(e.target)) setShowNotifications(false);
+    }, []);
+
+    useEffect(() => {
+        if (showNotifications) {
+            document.addEventListener("click", handleHideNotificationsModal);
+        } else {
+            document.removeEventListener("click", handleHideNotificationsModal);
+        }
+    }, [showNotifications]);
 
     return (
         <>
@@ -53,10 +81,13 @@ const Header = () => {
                             <ProfilePic user={authUser} large={true} />
                             Hello, {authUser.full_name.replace(/ .*/, "")}
                         </li>
-                        <li className="header__li">
-                            <a>
+                        <li className="header__li header__li--notifications">
+                            <button onClick={() => setShowNotifications(true)}>
                                 <i className="fal fa-bell"></i>
-                            </a>
+                            </button>
+                            {(notifications || []).find(
+                                (notification) => notification.unread == true
+                            ) && <div class="header__unread"></div>}
                         </li>
                         <li className="header__li header__li--border">
                             <a>
@@ -72,6 +103,13 @@ const Header = () => {
                     searchQuery={searchQuery}
                     searchElem={searchElem}
                     setShowModal={setShowSearch}
+                />
+            )}
+            {showNotifications && (
+                <NotificationsModal
+                    setShowModal={setShowNotifications}
+                    notifications={notifications}
+                    setNotifications={setNotifications}
                 />
             )}
         </>

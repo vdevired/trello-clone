@@ -5,24 +5,94 @@ html {
           box-sizing: border-box;
 }
 
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   -webkit-box-sizing: inherit;
           box-sizing: inherit;
 }
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -32,8 +102,17 @@ time, mark, audio, video {
 }
 
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
   display: block;
 }
 
@@ -41,17 +120,21 @@ body {
   line-height: 1;
 }
 
-ol, ul {
+ol,
+ul {
   list-style: none;
 }
 
-blockquote, q {
+blockquote,
+q {
   quotes: none;
 }
 
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
   content: none;
 }
 
@@ -76,7 +159,9 @@ button:focus {
   outline: none;
 }
 
-button, input[type="submit"], input[type="reset"] {
+button,
+input[type="submit"],
+input[type="reset"] {
   background: none;
   color: inherit;
   border: none;
@@ -226,6 +311,7 @@ button, input, select, textarea, input::placeholder {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
+  margin-bottom: 1em;
 }
 
 .labels__label {
@@ -316,6 +402,20 @@ button, input, select, textarea, input::placeholder {
   outline: 0;
   border: 0;
   width: 100%;
+}
+
+.header__li--notifications {
+  position: relative;
+}
+
+.header__li--notifications .header__unread {
+  height: 7px;
+  width: 7px;
+  border-radius: 50%;
+  background-color: #4680ff;
+  position: absolute;
+  top: 22px;
+  right: 22px;
 }
 
 .header__li--active {
@@ -570,7 +670,7 @@ button, input, select, textarea, input::placeholder {
 }
 
 .card__title {
-  margin-top: 1em;
+  margin-top: 0.25em;
 }
 
 .card__subtitle {
@@ -1615,23 +1715,22 @@ button, input, select, textarea, input::placeholder {
 }
 
 .label-modal__header {
-  margin: 1.2em;
+  padding: 1.2em;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   color: #838282;
 }
 
-.label-modal__header > p {
-  width: 90%;
-  -webkit-box-pack: space-evenly;
-      -ms-flex-pack: space-evenly;
-          justify-content: space-evenly;
-  text-align: center;
+.label-modal__header p {
+  margin-left: auto;
+}
+
+.label-modal__header button {
+  margin-left: auto;
 }
 
 .label-modal__header > i:hover {
@@ -1824,6 +1923,10 @@ button, input, select, textarea, input::placeholder {
   -webkit-box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.08);
           box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25), 0 0 0 1px rgba(9, 30, 66, 0.08);
   border: 1px solid rgba(211, 211, 211, 0.55);
+}
+
+.label-modal--large {
+  width: 500px;
 }
 
 .label-modal__content {
@@ -2231,5 +2334,99 @@ button, input, select, textarea, input::placeholder {
 .error-page__link {
   color: #4680ff;
   text-decoration: underline;
+}
+
+.notification {
+  margin-bottom: 0.5em;
+  font-weight: 400;
+  border-bottom: 1px solid rgba(211, 211, 211, 0.55);
+  padding: 1em;
+  padding-bottom: 1.75em;
+}
+
+.notification:last-of-type {
+  border: 0;
+  padding-bottom: 1em;
+}
+
+.notification__card {
+  border: 1px solid rgba(211, 211, 211, 0.55);
+  border-radius: 5px;
+  padding: 0.5em;
+  margin-bottom: 0.875em;
+}
+
+.notification__header {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.notification__name {
+  font-weight: 500;
+  margin-left: 0.5em;
+}
+
+.notification__subtitle {
+  font-size: 0.875rem;
+  font-weight: 300;
+  color: #838282;
+  margin-left: 0.5em;
+}
+
+.notification__text {
+  margin-top: 0.875em;
+  line-height: 1.2;
+}
+
+.notification__text i {
+  margin-right: 0.5em;
+}
+
+.notification__none {
+  height: 100px;
+}
+
+.label-modal__filter {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-weight: 400;
+  font-size: 0.875rem;
+  color: #4680ff;
+  margin-bottom: 0.875em;
+}
+
+.label-modal__filter button {
+  width: -webkit-fit-content !important;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+}
+
+.label-modal__no-notif {
+  height: 250px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+.label-modal__no-notif img {
+  margin-bottom: 2em;
 }
 /*# sourceMappingURL=index.css.map */

@@ -11,12 +11,13 @@ from projects.permissions import (IsProjectAdminOrMemberReadOnly,
 from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
-from .models import Attachment, Board, Comment, Item, Label, List
+from .models import Attachment, Board, Comment, Item, Label, List, Notification
 from .permissions import CanViewBoard
 from .serializers import (AttachmentSerializer, BoardSerializer,
                           CommentSerializer, ItemSerializer, LabelSerializer,
-                          ListSerializer)
+                          ListSerializer, NotificationSerializer)
 
 r = redis.Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
@@ -199,3 +200,13 @@ class AttachmentDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [
         permissions.AllowAny
     ]
+
+class NotificationList(APIView):
+    def get(self, *args, **kwargs):
+        notifications = Notification.objects.filter(recipient=self.request.user)
+        serializer = NotificationSerializer(notifications, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, *args, **kwargs): # Mark all as read
+        Notification.objects.filter(recipient=self.request.user, unread=True).update(unread=False)
+        return Response(status=status.HTTP_204_NO_CONTENT)

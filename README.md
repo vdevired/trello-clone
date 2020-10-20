@@ -21,6 +21,11 @@ A Trello clone made using Django Rest Framework, SASS, React, and Redis.
         - Add attachments to cards
         - Add comments to cards
     - Search
+- Notifications
+    - When someone assigns you to a card
+    - When someone comments on a card you're assigned to
+    - When you're invited to a project
+    - When someone makes you admin of a project
 
 ## Getting Started
 1. Install [Python](https://www.python.org/downloads/), [Yarn](https://classic.yarnpkg.com/en/docs/install/), [Redis](https://redis.io/download).

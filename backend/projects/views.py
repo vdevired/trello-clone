@@ -10,7 +10,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404
 from projects.models import Project, ProjectMembership
 from projects.permissions import IsProjectAdminOrMemberReadOnly
-from projects.serializers import ProjectMembershipSerializer, ProjectSerializer
+from projects.serializers import ProjectMembershipSerializer, ProjectSerializer, ShortProjectSerializer
 from rest_framework import generics, mixins, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -22,7 +22,7 @@ class ProjectList(mixins.ListModelMixin, mixins.CreateModelMixin,
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return ProjectSerializer  # ShortProjectSerializer
+            return ShortProjectSerializer 
 
         return ProjectSerializer
 

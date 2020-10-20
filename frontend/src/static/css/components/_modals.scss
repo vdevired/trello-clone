@@ -35,15 +35,17 @@
     }
 
     &__header {
-        margin: 1.2em;
+        padding: 1.2em;
         display: flex;
-        flex-direction: row;
+        justify-content: center;
         color: $secondary-text;
 
-        > p {
-            width: 90%;
-            justify-content: space-evenly;
-            text-align: center;
+        p {
+            margin-left: auto;
+        }
+
+        button {
+            margin-left: auto;
         }
 
         > i:hover {
@@ -206,6 +208,10 @@
         box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
             0 0 0 1px rgba(9, 30, 66, 0.08);
         border: 1px solid $border-color;
+    }
+
+    &--large {
+        width: 500px;
     }
 
     &__content {

@@ -1,0 +1,73 @@
+.notification {
+    margin-bottom: 0.5em;
+    font-weight: 400; // To override label-modal font-weight
+    border-bottom: 1px solid $border-color;
+    padding: 1em;
+    padding-bottom: 1.75em;
+
+    &:last-of-type {
+        border: 0;
+        padding-bottom: 1em;
+    }
+
+    &__card {
+        border: 1px solid $border-color;
+        border-radius: 5px;
+        padding: 0.5em;
+        margin-bottom: 0.875em;
+    }
+
+    &__header {
+        display: flex;
+        align-items: center;
+    }
+
+    &__name {
+        font-weight: 500;
+        margin-left: 0.5em;
+    }
+
+    &__subtitle {
+        font-size: 0.875rem;
+        font-weight: 300;
+        color: $secondary-text;
+        margin-left: 0.5em;
+    }
+
+    &__text {
+        margin-top: 0.875em;
+        line-height: 1.2;
+        i {
+            margin-right: 0.5em;
+        }
+    }
+
+    &__none {
+        height: 100px;
+    }
+}
+
+.label-modal__filter {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 400;
+    font-size: 0.875rem;
+    color: $blue;
+    margin-bottom: 0.875em;
+
+    button {
+        width: fit-content !important;
+    }
+}
+
+.label-modal__no-notif {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    img {
+        margin-bottom: 2em;
+    }
+}

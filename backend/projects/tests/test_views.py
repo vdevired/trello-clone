@@ -5,6 +5,8 @@ from projects.models import Project, ProjectMembership
 from projects.serializers import ProjectMembershipSerializer, ProjectSerializer
 from rest_framework.test import APIClient
 from users.models import User
+from boards.models import Notification
+from django.contrib.contenttypes.models import ContentType
 
 pytestmark = pytest.mark.django_db
 
@@ -130,30 +132,19 @@ class TestProjectMember:
         (user1, proj) = make_proj
         client = APIClient()
         client.force_authenticate(user=user1)
-        response = client.get('/projects/1/members/')
+        response = client.get('/projects/members/')
         assert response.status_code == 200
         user2 = mixer.blend(User)
         client.force_authenticate(user2)
-        response = client.get('/projects/1/members/')
+        response = client.get('/projects/members/')
         assert response.status_code == 200
-    
-    def test_owner_put(self, make_proj):
-        (user1, proj) = make_proj
-        pmem = mixer.blend(ProjectMembership, project=proj, access_level=1)
-        client = APIClient()
-        client.force_authenticate(user=user1)
-        response = client.put('/projects/1/members/1/', {
-            "access_level" : 2
-        })
-        assert response.data['access_level'] == 2
     
     def test_admin_put(self, make_proj):
         (user1, proj) = make_proj
         pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=2)
-        pmem2 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.put('/projects/1/members/2/', {
+        response = client.put('/projects/members/1/', {
             "access_level" : 2
         })
         assert response.data['access_level'] == 2
@@ -163,24 +154,15 @@ class TestProjectMember:
         pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.put('/projects/1/members/1/', { "access_level" : 2 })
+        response = client.put('/projects/members/1/', { "access_level" : 2 })
         assert response.status_code == 403
-    
-    def test_owner_delete(self, make_proj):
-        (user1, proj) = make_proj
-        pmem = mixer.blend(ProjectMembership, project=proj, access_level=1)
-        client = APIClient()
-        client.force_authenticate(user=user1)
-        response = client.delete('/projects/1/members/1/')
-        assert response.status_code == 204
     
     def test_admin_delete(self, make_proj):
         (user1, proj) = make_proj
-        pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=2)
-        pmem2 = mixer.blend(ProjectMembership, project=proj, access_level=1)
+        pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
-        client.force_authenticate(pmem1.member)
-        response = client.delete('/projects/1/members/2/')
+        client.force_authenticate(user1)
+        response = client.delete('/projects/members/2/')
         assert response.status_code == 204
     
     def test_unauth_delete(self, make_proj):
@@ -188,7 +170,7 @@ class TestProjectMember:
         pmem1 = mixer.blend(ProjectMembership, project=proj, access_level=1)
         client = APIClient()
         client.force_authenticate(pmem1.member)
-        response = client.delete('/projects/1/members/1/')
+        response = client.delete('/projects/members/1/')
         assert response.status_code == 403
     
     def test_put_inconsistent(self, make_proj):
@@ -198,14 +180,14 @@ class TestProjectMember:
         client.force_authenticate(user1)
         modproj = ProjectMembershipSerializer(pmem1).data
         modproj['access_level'] = 3
-        response = client.put('/projects/1/members/1/', modproj, format='json')
+        response = client.put('/projects/members/1/', modproj, format='json')
         assert response.status_code == 400
 
     def test_project_members_get(self, make_proj):
         (user1, proj) = make_proj
         pmem1 = mixer.blend(ProjectMembership, project=proj)
         client = APIClient()
-        response = client.get('/projects/2/members/')
+        response = client.get('/projects/members/')
         assert response.status_code == 404
 
 class TestProjectInvite:
@@ -261,3 +243,60 @@ class TestProjectInvite:
         response = client.post(f'/projects/join/{token}/')
 
         assert response.status_code == 400
+
+
+class TestNotification:
+    @pytest.fixture
+    def make_proj(self):
+        user1 = mixer.blend(User)
+        proj  = mixer.blend(Project, owner=user1)
+        return (user1, proj)
+
+    def test_invite_notif(self, make_proj, mailoutbox):
+        (owner, project) = make_proj
+        user2 = mixer.blend(User)
+        client = APIClient()
+        client.force_authenticate(owner)
+        response = client.post('/projects/1/invite/', {
+            'users' : [user2.username]
+        }, format='json')
+        
+        activation_link = mailoutbox[0].body.split(" ")[-1]
+        token = activation_link.split("/")[-1]
+        client.force_authenticate(user2)
+
+        assert Notification.objects.filter(
+            actor=owner, recipient=user2, 
+            verb="invited you to", 
+            target_id=project.id, target_model=ContentType.objects.get(model='project')).exists() == True
+        response = client.post(f'/projects/join/{token}/')
+
+        assert Notification.objects.filter(
+            actor=owner, recipient=user2, 
+            verb="invited you to", 
+            target_id=project.id, target_model=ContentType.objects.get(model='project')).exists() == False
+
+    def test_admin_notif(self, make_proj):
+        (owner, project) = make_proj
+        user2 = mixer.blend(User)
+        ProjectMembership.objects.create(member=user2, project=project, access_level=1)
+        client = APIClient()
+        client.force_authenticate(owner)
+        response = client.put('/projects/members/2/', {
+            'access_level' : 2
+        }, format='json')
+
+        assert Notification.objects.filter(
+            actor=owner, recipient=user2, 
+            verb="made you admin of", 
+            target_id=project.id, target_model=ContentType.objects.get(model='project')).exists() == True
+
+        response = client.put('/projects/members/2/', {
+            'access_level' : 1
+        }, format='json')
+
+        assert Notification.objects.filter(
+            actor=owner, recipient=user2, 
+            verb="made you admin of", 
+            target_id=project.id, target_model=ContentType.objects.get(model='project')).exists() == False
+
