@@ -13,12 +13,17 @@ from .models import Attachment, Board, Comment, Item, Label, List, Notification
 
 
 class BoardSerializer(serializers.ModelSerializer):
-
     owner = serializers.SerializerMethodField()
+    is_starred = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['id', 'title', 'description', 'image', 'created_at', 'owner']
+        fields = ['id', 'title', 'description', 'image',
+                  'created_at', 'owner', 'is_starred']
+
+    def get_is_starred(self, obj):
+        request_user = self.context.get('request').user
+        return request_user.starred_boards.filter(pk=obj.pk).exists()
 
     def get_owner(self, obj):
         object_app = obj.owner._meta.app_label
@@ -29,6 +34,7 @@ class BoardSerializer(serializers.ModelSerializer):
         serializer_class = import_string(serializer_module_path)
         return serializer_class(obj.owner).data
 
+
 class LabelSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -38,6 +44,7 @@ class LabelSerializer(serializers.ModelSerializer):
 
 class ItemSerializer(serializers.ModelSerializer):
     labels = LabelSerializer(many=True, read_only=True)
+
     class Meta:
         model = Item
         fields = '__all__'
@@ -64,6 +71,7 @@ class AttachmentSerializer(serializers.ModelSerializer):
         model = Attachment
         fields = '__all__'
 
+
 class NotificationSerializer(serializers.ModelSerializer):
     actor = UserSerializer(read_only=True)
     target_model = serializers.SerializerMethodField()
@@ -72,7 +80,8 @@ class NotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Notification
-        fields = ['id', 'actor', 'verb', 'target_model', 'target', 'action_object', 'unread', 'created_at']
+        fields = ['id', 'actor', 'verb', 'target_model',
+                  'target', 'action_object', 'unread', 'created_at']
 
     def get_target_model(self, obj):
         object_name = obj.target._meta.object_name

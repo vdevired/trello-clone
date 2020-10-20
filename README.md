@@ -13,7 +13,7 @@ A Trello clone made using Django Rest Framework, SASS, React, and Redis.
 - Boards
     - Create personal boards or project boards
     - Recently Viewed Boards
-    - Favorite boards
+    - Starred Boards
     - Create and reorder lists
     - Create, reorder, and change list of cards
         - Add labels to cards

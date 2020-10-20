@@ -104,6 +104,11 @@
         &:hover {
             transform: scale(1.1);
         }
+
+        &--starred {
+            right: 0.75em;
+            color: #ffd700;
+        }
     }
 
     &:hover {

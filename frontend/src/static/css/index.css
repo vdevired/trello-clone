@@ -1380,6 +1380,11 @@ button, input, select, textarea, input::placeholder {
           transform: scale(1.1);
 }
 
+.board-preview__star--starred {
+  right: 0.75em;
+  color: #ffd700;
+}
+
 .board-preview:hover {
   background: #fafafa;
 }

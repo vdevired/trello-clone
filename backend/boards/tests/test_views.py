@@ -9,6 +9,7 @@ from .. import views
 
 pytestmark = pytest.mark.django_db
 
+
 class TestBoardListView:
     def test_get(self):
         user = mixer.blend(User)
@@ -39,6 +40,7 @@ class TestBoardListView:
         })
         assert response.status_code == 201, "Should be created(Project)"
 
+
 class TestBoardDetailView:
     @pytest.fixture
     def make_board(self):
@@ -63,18 +65,19 @@ class TestBoardDetailView:
         (user, project, board1, board2) = make_board
         client = APIClient()
         client.force_authenticate(user)
-        response = client.put('/boards/1/', 
-        {"title": "Vs",
-         "description": "Test"
-        })
+        response = client.put('/boards/1/',
+                              {"title": "Vs",
+                               "description": "Test"
+                               })
         assert response.status_code == 200
-        assert (response.data['title'] == "Vs" and response.data['description'] == "Test"), "Should be edited"
+        assert (response.data['title'] ==
+                "Vs" and response.data['description'] == "Test"), "Should be edited"
         user1 = mixer.blend(User)
         client.force_authenticate(user1)
-        response = client.put('/boards/1/', 
-        {"title": "Vs",
-         "description": "Test"
-        })
+        response = client.put('/boards/1/',
+                              {"title": "Vs",
+                               "description": "Test"
+                               })
         assert response.status_code == 404, "Should be inaccessible"
 
     def test_delete(self, make_board):
@@ -90,6 +93,27 @@ class TestBoardDetailView:
         response = client.delete('/boards/2/')
         assert response.status_code == 404, "Should be inaccessible"
 
+
+class TestBoardStarView:
+    def test_can_favorite(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board, owner=user)
+
+        client = APIClient()
+        client.force_authenticate(user)
+        response = client.post('/boards/star/', {
+            "board": 1
+        })
+        assert response.status_code == 204
+
+        assert user.starred_boards.filter(pk=board.pk).exists()
+
+        response = client.post('/boards/star/', {
+            "board": 1
+        })
+        assert user.starred_boards.filter(pk=board.pk).exists() == False
+
+
 class TestListShowView:
     @pytest.fixture
     def make_list(self):
@@ -99,7 +123,8 @@ class TestListShowView:
         list = mixer.blend(List, board=board)
         user1 = mixer.blend(User)
         user2 = mixer.blend(User)
-        pmem = mixer.blend(ProjectMembership, access_level=1, project=proj, member=user1)
+        pmem = mixer.blend(ProjectMembership, access_level=1,
+                           project=proj, member=user1)
         return (user, proj, board, list, user1, user2, pmem)
 
     def test_get(self, make_list):
@@ -120,25 +145,26 @@ class TestListShowView:
         client = APIClient()
         client.force_authenticate(user)
         response = client.post('/boards/lists/',
-        {
-            "title": "FPL",
-            "board": 1
-        })
+                               {
+                                   "title": "FPL",
+                                   "board": 1
+                               })
         assert response.status_code == 201
         client.force_authenticate(user1)
         response = client.post('/boards/lists/',
-        {
-            "title": "Rodriguez",
-            "board": 1
-        })
+                               {
+                                   "title": "Rodriguez",
+                                   "board": 1
+                               })
         assert response.status_code == 201
         client.force_authenticate(user2)
         response = client.post('/boards/lists/',
-        {
-            "title": "Salah",
-            "board": 1
-        })
+                               {
+                                   "title": "Salah",
+                                   "board": 1
+                               })
         assert response.status_code == 403
+
 
 class TestListDetailView:
     @pytest.fixture
@@ -149,7 +175,8 @@ class TestListDetailView:
         list = mixer.blend(List, board=board)
         user1 = mixer.blend(User)
         user2 = mixer.blend(User)
-        pmem = mixer.blend(ProjectMembership, access_level=1, project=proj, member=user1)
+        pmem = mixer.blend(ProjectMembership, access_level=1,
+                           project=proj, member=user1)
         return (user, proj, board, list, user1, user2, pmem)
 
     def test_get(self, make_list):
@@ -170,21 +197,21 @@ class TestListDetailView:
         client = APIClient()
         client.force_authenticate(user)
         response = client.put('/boards/lists/1/',
-        {
-            "title": "Check"   
-        })
+                              {
+                                  "title": "Check"
+                              })
         assert response.status_code == 200 and response.data['title'] == "Check"
         client.force_authenticate(user1)
         response = client.put('/boards/lists/1/',
-        {
-            "title": "Checkmate"   
-        })
+                              {
+                                  "title": "Checkmate"
+                              })
         assert response.status_code == 200 and response.data['title'] == "Checkmate"
         client.force_authenticate(user2)
         response = client.put('/boards/lists/1/',
-        {
-            "title": "Chess"   
-        })
+                              {
+                                  "title": "Chess"
+                              })
         assert response.status_code == 403
 
     def test_delete(self, make_list):

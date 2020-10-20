@@ -13,9 +13,13 @@ const Home = () => {
     useDocumentTitle("Boards | Trello");
     const [showTeamModal, setShowTeamModal] = useState(false);
     const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
-    const { data: boards, addItem: addBoard } = useAxiosGet("/boards/");
+    const {
+        data: boards,
+        addItem: addBoard,
+        replaceItem: replaceBoard,
+    } = useAxiosGet("/boards/"); // replaceBoard when you star or unstar
     const { data: recentlyViewedBoards } = useAxiosGet("/boards/?sort=recent");
-    const [userBoards, projectBoards] = filterBoards(boards);
+    const [userBoards, projectBoards, starredBoards] = filterBoards(boards);
 
     if (!boards) return null;
 
@@ -27,21 +31,46 @@ const Home = () => {
                     projects={projects || []}
                 />
                 <div className="home">
-                    {(recentlyViewedBoards || []).length !== 0 && (
+                    {starredBoards.length !== 0 && (
                         <>
                             <div className="home__section">
                                 <p className="home__title">
-                                    <i className="fal fa-clock"></i> Recently
-                                    Viewed
+                                    <i className="fal fa-star"></i> Starred
+                                    Boards
                                 </p>
                             </div>
                             <div className="home__boards">
-                                {recentlyViewedBoards.map((board) => (
-                                    <HomeBoard board={board} key={uuidv4()} />
+                                {starredBoards.map((board) => (
+                                    <HomeBoard
+                                        board={board}
+                                        replaceBoard={replaceBoard}
+                                        key={uuidv4()}
+                                    />
                                 ))}
                             </div>
                         </>
                     )}
+
+                    {(recentlyViewedBoards || []).length !== 0 &&
+                        starredBoards.length === 0 && (
+                            <>
+                                <div className="home__section">
+                                    <p className="home__title">
+                                        <i className="fal fa-clock"></i>{" "}
+                                        Recently Viewed
+                                    </p>
+                                </div>
+                                <div className="home__boards">
+                                    {recentlyViewedBoards.map((board) => (
+                                        <HomeBoard
+                                            board={board}
+                                            replaceBoard={replaceBoard}
+                                            key={uuidv4()}
+                                        />
+                                    ))}
+                                </div>
+                            </>
+                        )}
 
                     <div className="home__section">
                         <p className="home__title">
@@ -53,7 +82,11 @@ const Home = () => {
                     </div>
                     <div className="home__boards">
                         {userBoards.map((board) => (
-                            <HomeBoard board={board} key={uuidv4()} />
+                            <HomeBoard
+                                board={board}
+                                replaceBoard={replaceBoard}
+                                key={uuidv4()}
+                            />
                         ))}
                     </div>
 
@@ -90,7 +123,11 @@ const Home = () => {
                             </div>
                             <div className="home__boards">
                                 {project.boards.map((board) => (
-                                    <HomeBoard board={board} key={uuidv4()} />
+                                    <HomeBoard
+                                        board={board}
+                                        replaceBoard={replaceBoard}
+                                        key={uuidv4()}
+                                    />
                                 ))}
                             </div>
                         </React.Fragment>

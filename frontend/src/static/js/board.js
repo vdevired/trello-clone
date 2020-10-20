@@ -106,9 +106,10 @@ export const updateList = (board, setBoard) => (updatedList) => {
 
 // Filter boards into user boards and project boards
 export const filterBoards = (boards) => {
+    const starredBoards = [];
     const userBoards = []; // Array of board objects
     const projectBoards = []; // Array of project objects with boards key as we need titles
-    if (!boards) return [userBoards, projectBoards];
+    if (!boards) return [userBoards, projectBoards, starredBoards];
 
     for (let i = 0; i < boards.length; i++) {
         let board = boards[i];
@@ -128,7 +129,8 @@ export const filterBoards = (boards) => {
         } else {
             userBoards.push(board);
         }
+        if (board.is_starred) starredBoards.push(board);
     }
 
-    return [userBoards, projectBoards];
+    return [userBoards, projectBoards, starredBoards];
 };
