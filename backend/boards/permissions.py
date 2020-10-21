@@ -15,4 +15,11 @@ class CanViewBoard(permissions.BasePermission):
             if obj.owner_id != request.user.id:
                 return False
         return True
+
+class IsAuthorOrReadOnly(CanViewBoard):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return super().has_object_permission(request, view, obj.item.list.board)
+        else:
+            return request.user == obj.author
         

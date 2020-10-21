@@ -14,7 +14,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Attachment, Board, Comment, Item, Label, List, Notification
-from .permissions import CanViewBoard
+from .permissions import CanViewBoard, IsAuthorOrReadOnly
 from .serializers import (AttachmentSerializer, BoardSerializer,
                           CommentSerializer, ItemSerializer, LabelSerializer,
                           ListSerializer, NotificationSerializer)
@@ -216,20 +216,51 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentList(generics.ListCreateAPIView):
 
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [
-        permissions.AllowAny
-    ]
+    permission_classes = [ CanViewBoard ]
+
+    def get_item(self, pk):
+        item = get_object_or_404(Item, pk=pk)
+        self.check_object_permissions(self.request, item.list.board)
+        return item
+
+    def get_queryset(self, *args, **kwargs):
+        
+        item_id = self.request.GET.get('item', None)
+        
+        item = self.get_item(item_id)
+        return Comment.objects.filter(item=item).order_by('-created_at')
+
+    def get(self, request, *args, **kwargs):
+
+        item_id = self.request.GET.get('item', None)
+
+        if item_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if 'item' in request.data.keys():
+            item = self.get_item(request.data['item'])
+            return super().post(request, *args, **kwargs)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        item = self.get_item(self.request.data['item'])
+        serializer.save(item=item, author=self.request.user)
 
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [
-        permissions.AllowAny
-    ]
+    permission_classes = [ IsAuthorOrReadOnly ]
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        comment = get_object_or_404(Comment, pk=pk)
+        self.check_object_permissions(self.request, comment)
+        return comment
 
 
 class LabelList(generics.ListCreateAPIView):

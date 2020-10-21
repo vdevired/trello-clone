@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from users.models import User
 
 from .. import views
-from ..models import Board, Item, List
+from ..models import Board, Item, List, Comment
 
 pytestmark = pytest.mark.django_db
 
@@ -360,16 +360,14 @@ class TestItemDetailView:
         client.force_authenticate(user_admin)
         response = client.put('/boards/items/1/', 
                                 {
-                                    "title": "Put",
-                                    "list": 1
+                                    "title": "Put"
                                 })
         assert response.status_code == 200 and response.data['title'] == "Put"
         response = client.put('/boards/items/2/', 
                                 {
-                                    "title": "Put",
-                                    "list": 3
+                                    "title": "Put"
                                 })
-        assert response.status_code == 200 and response.data['title'] == "Put" and response.data['list'] == 3
+        assert response.status_code == 200 and response.data['title'] == "Put"
         client.force_authenticate(user_member)
         response = client.put('/boards/items/1/', 
                                 {
@@ -378,10 +376,9 @@ class TestItemDetailView:
         assert response.status_code == 403
         response = client.put('/boards/items/2/', 
                                 {
-                                    "title": "Put back",
-                                    "list": 2
+                                    "title": "Put back"
                                 })
-        assert response.status_code == 200 and response.data['title'] == "Put back" and response.data['list'] == 2
+        assert response.status_code == 200 and response.data['title'] == "Put back"
         client.force_authenticate(user2)
         response = client.put('/boards/items/1/', 
                                 {
@@ -390,8 +387,7 @@ class TestItemDetailView:
         assert response.status_code == 403
         response = client.put('/boards/items/2/', 
                                 {
-                                    "title": "Put",
-                                    "list": 3
+                                    "title": "Put"
                                 })
         assert response.status_code == 403
 
@@ -413,4 +409,207 @@ class TestItemDetailView:
         response = client.delete('/boards/items/1/')
         assert response.status_code == 204
         response = client.delete('/boards/items/3/')
+        assert response.status_code == 204
+
+class TestCommentListView:
+    @pytest.fixture
+    def make_comment(self):
+        user = mixer.blend(User)
+        proj = mixer.blend(Project, owner=user)
+        board1 = mixer.blend(Board, owner=user)
+        board2 = mixer.blend(Board, owner=proj)
+        list1 = mixer.blend(List, board=board1)
+        list2 = mixer.blend(List, board=board2)
+        list3 = mixer.blend(List, board=board2)
+        user1 = mixer.blend(User)
+        user2 = mixer.blend(User)
+        pmem = mixer.blend(ProjectMembership, access_level=1,
+                           project=proj, member=user1)
+        item1 = mixer.blend(Item, list=list1)
+        item2 = mixer.blend(Item, list=list2)
+        item3 = mixer.blend(Item, list=list3)
+        comment1 = mixer.blend(Comment, item=item1)
+        comment2 = mixer.blend(Comment, item=item2)
+        comment3 = mixer.blend(Comment, item=item2)
+        return (user, user1, user2, proj, board1, board2, list1, list2, list3, item1, item2, item3, comment1, comment2, comment3)
+
+    def test_get(self, make_comment):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.get('/boards/comments/?item=1')
+        assert response.status_code == 200
+        client.force_authenticate(user_member)
+        response = client.get('/boards/comments/?item=1')
+        assert response.status_code == 403
+        response = client.get('/boards/comments/?item=2')
+        assert response.status_code == 200
+        client.force_authenticate(user2)
+        response = client.get('/boards/comments/?item=1')
+        assert response.status_code == 403
+        response = client.get('/boards/comments/?item=2')
+        assert response.status_code == 403
+
+    def test_post(self, make_comment):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 1,
+                                    "body": "personal comment attached"
+                                })
+        assert response.status_code == 201 and response.data['body'] == "personal comment attached"
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 2,
+                                    "body": "comment attached to board item"
+                                })
+        assert response.status_code == 201 and response.data['body'] == "comment attached to board item"
+        client.force_authenticate(user_member)
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 1,
+                                    "body": "personal comment attached"
+                                })
+        assert response.status_code == 403
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 2,
+                                    "body": "comment attached to board item by member"
+                                })
+        assert response.status_code == 201 and response.data['body'] == "comment attached to board item by member"
+        client.force_authenticate(user2)
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 1,
+                                    "body": "personal comment attached"
+                                })
+        assert response.status_code == 403
+        response = client.post('/boards/comments/',
+                                {
+                                    "item": 2,
+                                    "body": "comment attached to board item"
+                                })
+        assert response.status_code == 403
+
+class TestCommentDetailView:
+    @pytest.fixture
+    def make_comment(self):
+        user = mixer.blend(User)
+        proj = mixer.blend(Project, owner=user)
+        board1 = mixer.blend(Board, owner=user)
+        board2 = mixer.blend(Board, owner=proj)
+        list1 = mixer.blend(List, board=board1)
+        list2 = mixer.blend(List, board=board2)
+        list3 = mixer.blend(List, board=board2)
+        user1 = mixer.blend(User)
+        user2 = mixer.blend(User)
+        pmem = mixer.blend(ProjectMembership, access_level=1,
+                           project=proj, member=user1)
+        item1 = mixer.blend(Item, list=list1)
+        item2 = mixer.blend(Item, list=list2)
+        item3 = mixer.blend(Item, list=list3)
+        comment1 = mixer.blend(Comment, item=item1, author=user)
+        comment2 = mixer.blend(Comment, item=item2, author=user1)
+        comment3 = mixer.blend(Comment, item=item2, author=user)
+        return (user, user1, user2, proj, board1, board2, list1, list2, list3, item1, item2, item3, comment1, comment2, comment3)
+
+    def test_get(self, make_comment):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.get('/boards/comments/1/')
+        assert response.status_code == 200 and response.data['body'] == personal_comment.body
+        response = client.get('/boards/comments/2/')
+        assert response.status_code == 200 and response.data['body'] == comment1.body
+        client.force_authenticate(user_member)
+        response = client.get('/boards/comments/1/')
+        assert response.status_code == 403
+        response = client.get('/boards/comments/2/')
+        assert response.status_code == 200 and response.data['body'] == comment1.body
+        client.force_authenticate(user2)
+        response = client.get('/boards/comments/1/')
+        assert response.status_code == 403
+        response = client.get('/boards/comments/2/')
+        assert response.status_code == 403
+
+    def test_put(self, make_comment):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.put('/boards/comments/1/', 
+                                {
+                                    "body": "Personal comment was edited"
+                                })
+        assert response.status_code == 200 and response.data["body"] == "Personal comment was edited"
+        response = client.put('/boards/comments/2/',
+                                {
+                                    "body": "Board comment was edited"
+                                })
+        assert response.status_code == 403
+        response = client.put('/boards/comments/3/',
+                                {
+                                    "body": "Board comment was edited"
+                                })
+        assert response.status_code == 200 and response.data["body"] == "Board comment was edited"
+        client.force_authenticate(user_member)
+        response = client.put('/boards/comments/1/', 
+                                {
+                                    "body": "Personal comment was edited"
+                                })
+        assert response.status_code == 403
+        response = client.put('/boards/comments/2/',
+                                {
+                                    "body": "Board comment was edited by a member"
+                                })
+        assert response.status_code == 200 and response.data["body"] == "Board comment was edited by a member"
+        response = client.put('/boards/comments/3/', 
+                                {
+                                    "body": "Board comment was edited"
+                                })
+        assert response.status_code == 403
+        client.force_authenticate(user2)
+        response = client.put('/boards/comments/1/', 
+                                {
+                                    "body": "Personal comment was edited"
+                                })
+        assert response.status_code == 403
+        response = client.put('/boards/comments/2/',
+                                {
+                                    "body": "Board comment was edited"
+                                })
+        assert response.status_code == 403
+        response = client.put('/boards/comments/3/',
+                                {
+                                    "body": "Board comment was edited"
+                                })
+        assert response.status_code == 403
+
+    def test_delete(self, make_comment):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
+        client = APIClient()
+        client.force_authenticate(user2)
+        response = client.delete('/boards/comments/1/')
+        assert response.status_code == 403
+        response = client.delete('/boards/comments/2/')
+        assert response.status_code == 403
+        response = client.delete('/boards/comments/3/')
+        assert response.status_code == 403
+        client.force_authenticate(user_member)
+        response = client.delete('/boards/comments/1/')
+        assert response.status_code == 403
+        response = client.delete('/boards/comments/2/')
+        assert response.status_code == 204
+        response = client.delete('/boards/comments/3/')
+        assert response.status_code == 403
+        client.force_authenticate(user_admin)
+        response = client.delete('/boards/comments/1/')
+        assert response.status_code == 204
+        response = client.delete('/boards/comments/3/')
         assert response.status_code == 204
