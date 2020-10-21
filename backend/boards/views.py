@@ -168,21 +168,51 @@ class ListDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class ItemList(generics.ListCreateAPIView):
 
-    queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    permission_classes = [
-        permissions.AllowAny
-    ]
+    permission_classes = [ CanViewBoard ]
+
+    def get_list(self, pk):
+        list = get_object_or_404(List, pk=pk)
+        self.check_object_permissions(self.request, list.board)
+        return list
+
+    def get_queryset(self, *args, **kwargs):
+        
+        list_id = self.request.GET.get('list', None)
+        
+        list = self.get_list(list_id)
+        return Item.objects.filter(list=list).order_by('order')
+
+    def get(self, request, *args, **kwargs):
+
+        list_id = self.request.GET.get('list', None)
+
+        if list_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        if 'list' in request.data.keys():
+            list = self.get_list(request.data['list'])
+            return super().post(request, *args, **kwargs)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        list = self.get_list(self.request.data['list'])
+        serializer.save(list=list)
 
 
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
-    queryset = Item.objects.all()
     serializer_class = ItemSerializer
-    permission_classes = [
-        permissions.AllowAny
-    ]
+    permission_classes = [ CanViewBoard ]
 
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        item = get_object_or_404(Item, pk=pk)
+        self.check_object_permissions(self.request, item.list.board)
+        return item
 
 class CommentList(generics.ListCreateAPIView):
 
