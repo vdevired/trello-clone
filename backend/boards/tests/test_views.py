@@ -29,14 +29,16 @@ class TestBoardListView:
         client.force_authenticate(user)
         response = client.post('/boards/', {
             "title": "Vik",
-            "description": "Small"
+            "description": "Small",
+            "color": "000000"
         })
         assert response.status_code == 201, "Should be created"
         proj = mixer.blend(Project, owner=user)
         response = client.post('/boards/', {
             "title": "Small",
             "description": "Vik",
-            "project": proj.id
+            "project": proj.id,
+            "color": "000000"
         })
         assert response.status_code == 201, "Should be created(Project)"
 
@@ -81,6 +83,26 @@ class TestBoardDetailView:
                                "description": "Test"
                                })
         assert response.status_code == 404, "Should be inaccessible"
+
+    def test_background_clear(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board, owner=user, color="000000",
+                            image=None, image_url="")
+        client = APIClient()
+        client.force_authenticate(user)
+        response = client.put('/boards/1/', {
+            "title": "Vs",
+            "image_url": "https://images.unsplash.com/photo-1603199506016-b9a594b593c0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=934&q=80"
+        })
+
+        assert response.data['color'] == ""
+
+        response = client.put('/boards/1/', {
+            "title": "Vs",
+            "color": "000000"
+        })
+
+        assert response.data['image_url'] == ""
 
     def test_delete(self, make_board):
         (user, project, board1, board2) = make_board
@@ -274,43 +296,43 @@ class TestItemListView:
          board, personal_list, list, personal_item, item) = make_item
         client = APIClient()
         client.force_authenticate(user_admin)
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Post",
-                                    "list": 1
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Post",
+                                   "list": 1
+                               })
         assert response.status_code == 201
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Post",
-                                    "list": 2
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Post",
+                                   "list": 2
+                               })
         assert response.status_code == 201
         client.force_authenticate(user_member)
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Post",
-                                    "list": 1
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Post",
+                                   "list": 1
+                               })
         assert response.status_code == 403
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Member",
-                                    "list": 2
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Member",
+                                   "list": 2
+                               })
         assert response.status_code == 201
         client.force_authenticate(user2)
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Post",
-                                    "list": 1
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Post",
+                                   "list": 1
+                               })
         assert response.status_code == 403
-        response = client.post('/boards/items/', 
-                                {
-                                    "title": "Post",
-                                    "list": 2
-                                })
+        response = client.post('/boards/items/',
+                               {
+                                   "title": "Post",
+                                   "list": 2
+                               })
         assert response.status_code == 403
 
 
@@ -346,7 +368,7 @@ class TestItemDetailView:
         response = client.get('/boards/items/1/')
         assert response.status_code == 403
         response = client.get('/boards/items/2/')
-        assert  response.status_code == 200
+        assert response.status_code == 200
         client.force_authenticate(user2)
         response = client.get('/boards/items/1/')
         assert response.status_code == 403
@@ -358,37 +380,37 @@ class TestItemDetailView:
          personal_list, list1, list2, personal_item, item1, item2) = make_item
         client = APIClient()
         client.force_authenticate(user_admin)
-        response = client.put('/boards/items/1/', 
-                                {
-                                    "title": "Put"
-                                })
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put"
+                              })
         assert response.status_code == 200 and response.data['title'] == "Put"
-        response = client.put('/boards/items/2/', 
-                                {
-                                    "title": "Put"
-                                })
+        response = client.put('/boards/items/2/',
+                              {
+                                  "title": "Put"
+                              })
         assert response.status_code == 200 and response.data['title'] == "Put"
         client.force_authenticate(user_member)
-        response = client.put('/boards/items/1/', 
-                                {
-                                    "title": "Put"
-                                })
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put"
+                              })
         assert response.status_code == 403
-        response = client.put('/boards/items/2/', 
-                                {
-                                    "title": "Put back"
-                                })
+        response = client.put('/boards/items/2/',
+                              {
+                                  "title": "Put back"
+                              })
         assert response.status_code == 200 and response.data['title'] == "Put back"
         client.force_authenticate(user2)
-        response = client.put('/boards/items/1/', 
-                                {
-                                    "title": "Put"
-                                })
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put"
+                              })
         assert response.status_code == 403
-        response = client.put('/boards/items/2/', 
-                                {
-                                    "title": "Put"
-                                })
+        response = client.put('/boards/items/2/',
+                              {
+                                  "title": "Put"
+                              })
         assert response.status_code == 403
 
     def test_delete(self, make_item):
@@ -410,6 +432,7 @@ class TestItemDetailView:
         assert response.status_code == 204
         response = client.delete('/boards/items/3/')
         assert response.status_code == 204
+
 
 class TestCommentListView:
     @pytest.fixture
@@ -457,43 +480,46 @@ class TestCommentListView:
         client = APIClient()
         client.force_authenticate(user_admin)
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 1,
-                                    "body": "personal comment attached"
-                                })
+                               {
+                                   "item": 1,
+                                   "body": "personal comment attached"
+                               })
         assert response.status_code == 201 and response.data['body'] == "personal comment attached"
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 2,
-                                    "body": "comment attached to board item"
-                                })
-        assert response.status_code == 201 and response.data['body'] == "comment attached to board item"
+                               {
+                                   "item": 2,
+                                   "body": "comment attached to board item"
+                               })
+        assert response.status_code == 201 and response.data[
+            'body'] == "comment attached to board item"
         client.force_authenticate(user_member)
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 1,
-                                    "body": "personal comment attached"
-                                })
+                               {
+                                   "item": 1,
+                                   "body": "personal comment attached"
+                               })
         assert response.status_code == 403
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 2,
-                                    "body": "comment attached to board item by member"
-                                })
-        assert response.status_code == 201 and response.data['body'] == "comment attached to board item by member"
+                               {
+                                   "item": 2,
+                                   "body": "comment attached to board item by member"
+                               })
+        assert response.status_code == 201 and response.data[
+            'body'] == "comment attached to board item by member"
         client.force_authenticate(user2)
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 1,
-                                    "body": "personal comment attached"
-                                })
+                               {
+                                   "item": 1,
+                                   "body": "personal comment attached"
+                               })
         assert response.status_code == 403
         response = client.post('/boards/comments/',
-                                {
-                                    "item": 2,
-                                    "body": "comment attached to board item"
-                                })
+                               {
+                                   "item": 2,
+                                   "body": "comment attached to board item"
+                               })
         assert response.status_code == 403
+
 
 class TestCommentDetailView:
     @pytest.fixture
@@ -542,52 +568,53 @@ class TestCommentDetailView:
          personal_list, list1, list2, personal_item, item1, item2, personal_comment, comment1, comment2) = make_comment
         client = APIClient()
         client.force_authenticate(user_admin)
-        response = client.put('/boards/comments/1/', 
-                                {
-                                    "body": "Personal comment was edited"
-                                })
+        response = client.put('/boards/comments/1/',
+                              {
+                                  "body": "Personal comment was edited"
+                              })
         assert response.status_code == 200 and response.data["body"] == "Personal comment was edited"
         response = client.put('/boards/comments/2/',
-                                {
-                                    "body": "Board comment was edited"
-                                })
+                              {
+                                  "body": "Board comment was edited"
+                              })
         assert response.status_code == 403
         response = client.put('/boards/comments/3/',
-                                {
-                                    "body": "Board comment was edited"
-                                })
+                              {
+                                  "body": "Board comment was edited"
+                              })
         assert response.status_code == 200 and response.data["body"] == "Board comment was edited"
         client.force_authenticate(user_member)
-        response = client.put('/boards/comments/1/', 
-                                {
-                                    "body": "Personal comment was edited"
-                                })
+        response = client.put('/boards/comments/1/',
+                              {
+                                  "body": "Personal comment was edited"
+                              })
         assert response.status_code == 403
         response = client.put('/boards/comments/2/',
-                                {
-                                    "body": "Board comment was edited by a member"
-                                })
-        assert response.status_code == 200 and response.data["body"] == "Board comment was edited by a member"
-        response = client.put('/boards/comments/3/', 
-                                {
-                                    "body": "Board comment was edited"
-                                })
+                              {
+                                  "body": "Board comment was edited by a member"
+                              })
+        assert response.status_code == 200 and response.data[
+            "body"] == "Board comment was edited by a member"
+        response = client.put('/boards/comments/3/',
+                              {
+                                  "body": "Board comment was edited"
+                              })
         assert response.status_code == 403
         client.force_authenticate(user2)
-        response = client.put('/boards/comments/1/', 
-                                {
-                                    "body": "Personal comment was edited"
-                                })
+        response = client.put('/boards/comments/1/',
+                              {
+                                  "body": "Personal comment was edited"
+                              })
         assert response.status_code == 403
         response = client.put('/boards/comments/2/',
-                                {
-                                    "body": "Board comment was edited"
-                                })
+                              {
+                                  "body": "Board comment was edited"
+                              })
         assert response.status_code == 403
         response = client.put('/boards/comments/3/',
-                                {
-                                    "body": "Board comment was edited"
-                                })
+                              {
+                                  "body": "Board comment was edited"
+                              })
         assert response.status_code == 403
 
     def test_delete(self, make_comment):

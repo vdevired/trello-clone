@@ -103,3 +103,85 @@ export const mergeRefs = (...refs) => {
         }
     };
 };
+
+const getImageBrightness = (imageSrc, callback) => {
+    var img = document.createElement("img"),
+        colorSum = 0,
+        i = 0,
+        len,
+        canvas,
+        ctx,
+        imageData,
+        data,
+        brightness,
+        r,
+        g,
+        b,
+        avg;
+
+    img.crossOrigin = "anonymous";
+    img.src = imageSrc;
+    img.style.display = "none";
+
+    document.body.appendChild(img);
+
+    img.onload = function () {
+        const canvas = document.createElement("canvas");
+        canvas.width = this.width;
+        canvas.height = this.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(this, 0, 0);
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        let r, g, b, avg;
+
+        for (let x = 0, len = data.length; x < len; x += 4) {
+            r = data[x];
+            g = data[x + 1];
+            b = data[x + 2];
+            avg = Math.floor((r + g + b) / 3);
+            colorSum += avg;
+        }
+
+        const brightness = Math.floor(colorSum / (this.width * this.height));
+        callback(brightness);
+    };
+};
+
+const getColorBrightness = (hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    const rgb = result
+        ? {
+              r: parseInt(result[1], 16),
+              g: parseInt(result[2], 16),
+              b: parseInt(result[3], 16),
+          }
+        : null;
+
+    const brightness = Math.round(
+        (parseInt(rgb.r) * 299 +
+            parseInt(rgb.g) * 587 +
+            parseInt(rgb.b) * 114) /
+            1000
+    );
+    return brightness;
+};
+
+export const handleBackgroundBrightness = (
+    board,
+    setIsBackgroundDark
+) => () => {
+    if (!board) return;
+    if (board.color) {
+        const brightness = getColorBrightness(`#${board.color}`);
+        if (brightness <= 125) setIsBackgroundDark(true);
+        else setIsBackgroundDark(false);
+    } else {
+        const image = board.image || board.image_url;
+        getImageBrightness(image, (brightness) => {
+            if (brightness <= 125) setIsBackgroundDark(true);
+            else setIsBackgroundDark(false);
+        });
+    }
+};

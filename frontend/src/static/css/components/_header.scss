@@ -81,4 +81,29 @@
             border-left: 1px rgba($border-color, 0.55) solid;
         }
     }
+
+    &--transparent {
+        // If board image is set
+        background-color: transparent;
+        color: white;
+
+        .header__li--search {
+            background-color: hsla(0, 0%, 100%, 0.3);
+            input {
+                background-color: transparent;
+
+                &::placeholder {
+                    color: white;
+                }
+            }
+
+            &:focus-within {
+                background-color: white;
+            }
+        }
+
+        .header__li--border {
+            border: 0;
+        }
+    }
 }

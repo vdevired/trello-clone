@@ -68,10 +68,12 @@ const Card = ({ card, list, provided, isDragging }) => {
     };
 
     const { innerRef, draggableProps, dragHandleProps } = provided;
+
+    const cardImage = card.image || card.image_url || card.color;
     return (
         <>
             <div
-                className={`card${card.image ? " card--image" : ""}${
+                className={`card${cardImage ? " card--image" : ""}${
                     isEditing ? " card--edit" : ""
                 }`}
                 ref={mergeRefs(cardElem, innerRef)}
@@ -84,11 +86,17 @@ const Card = ({ card, list, provided, isDragging }) => {
                 )}
                 {...dragHandleProps}
             >
-                {card.image && (
-                    <div className="card__image">
-                        <img src={card.image} />
-                    </div>
-                )}
+                {cardImage &&
+                    (card.color ? (
+                        <div
+                            className="card__color"
+                            style={{ backgroundColor: `#${card.color}` }}
+                        ></div>
+                    ) : (
+                        <div className="card__image">
+                            <img src={cardImage} />
+                        </div>
+                    ))}
                 <div>
                     {!isEditing && (
                         <button

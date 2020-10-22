@@ -6,10 +6,26 @@ import useBlurSetState from "../hooks/useBlurSetState";
 import useAxiosGet from "../hooks/useAxiosGet";
 import { addList, onDragEnd } from "../static/js/board";
 import List from "../components/boards/List";
-import { authAxios } from "../static/js/util";
+import { authAxios, handleBackgroundBrightness } from "../static/js/util";
 import { backendUrl } from "../static/js/const";
 import Error404 from "./Error404";
 import globalContext from "../context/globalContext";
+
+const getBoardStyle = (board) => {
+    if (board.image || board.image_url)
+        return {
+            backgroundImage: `linear-gradient( rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25) ), url(${
+                board.image || board.image_url
+            })`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "cover",
+            backgroundPosition: "center center",
+        };
+    else if (board.color)
+        return {
+            backgroundColor: `#${board.color}`,
+        };
+};
 
 const Board = (props) => {
     const { id } = props.match.params;
@@ -30,14 +46,18 @@ const Board = (props) => {
     const [editingTitle, setEditingTitle] = useState(false);
     useBlurSetState(".board__title-edit", editingTitle, setEditingTitle);
 
+    const [isBackgroundDark, setIsBackgroundDark] = useState(false);
+    useEffect(handleBackgroundBrightness(board, setIsBackgroundDark), [board]);
+
     if (!board && loading) return null;
     if (!board && !loading) return <Error404 />;
     return (
-        <div className="board">
+        <div className="board" style={getBoardStyle(board)}>
             {!editingTitle ? (
                 <p
                     className="board__title"
                     onClick={() => setEditingTitle(true)}
+                    style={isBackgroundDark ? { color: "white" } : null}
                 >
                     {board.title}
                 </p>

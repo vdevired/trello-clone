@@ -231,13 +231,17 @@
         margin-top: 1.5em;
     }
 
-    &__image {
+    &__image,
+    &__color {
         width: calc(100% + 1.5em); // + Twice parent's padding
-        height: 125px;
+        height: 65px;
         margin-left: -0.75em;
         margin-top: -0.75em;
         margin-bottom: 0.35em; // Too close to labels otherwise
+    }
 
+    &__image {
+        height: 125px;
         img {
             border-radius: 5px 5px 0 0;
             width: 100%;

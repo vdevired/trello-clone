@@ -32,9 +32,16 @@ const HomeBoard = ({ board, replaceBoard }) => {
                     <i className="fas fa-star"></i>
                 )}
             </button>
-            <div className="board-preview__image">
-                <img src={board.image} />
-            </div>
+            {board.color ? (
+                <div
+                    className="board-preview__color"
+                    style={{ backgroundColor: `#${board.color}` }}
+                ></div>
+            ) : (
+                <div className="board-preview__image">
+                    <img src={board.image || board.image_url} />
+                </div>
+            )}
             <p
                 className="board-preview__title"
                 style={{ marginBottom: board.members ? "1em" : 0 }}

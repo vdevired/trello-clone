@@ -135,18 +135,19 @@
         }
     }
 
-    &__image {
+    &__image,
+    &__color {
         width: calc(100% + 2em); // + Twice parent's padding
         height: 125px;
         margin-left: -1em;
         margin-top: -1em;
         margin-bottom: 1em; // Too close to title otherwise
+    }
 
-        img {
-            border-radius: 5px 5px 0 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+    &__image img {
+        border-radius: 5px 5px 0 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 }

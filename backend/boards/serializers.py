@@ -56,15 +56,15 @@ class ListSerializer(serializers.ModelSerializer):
         exclude = ['board']
 
 
-class BoardSerializer(serializers.ModelSerializer):
+# For homepage, exclude lists
+class ShortBoardSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
-    lists = ListSerializer(many=True, read_only=True)
     is_starred = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
-        fields = ['id', 'title', 'description', 'image',
-                  'created_at', 'owner', 'lists', 'is_starred', ]
+        fields = ['id', 'title', 'image', 'image_url',
+                  'color', 'owner', 'is_starred']
 
     def get_is_starred(self, obj):
         request_user = self.context.get('request').user
@@ -78,6 +78,26 @@ class BoardSerializer(serializers.ModelSerializer):
         serializer_module_path = f'{object_app}.serializers.{object_name}Serializer'
         serializer_class = import_string(serializer_module_path)
         return serializer_class(obj.owner).data
+
+    def validate(self, data):
+        background_keys = ["image", "image_url", "color"]
+        if any(item in data.keys() for item in background_keys) == False:
+            raise serializers.ValidationError(
+                "A board background must be provided")
+
+        return data
+
+
+class BoardSerializer(ShortBoardSerializer):
+    lists = ListSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Board
+        fields = ['id', 'title', 'description', 'image', 'image_url',
+                  'color', 'created_at', 'owner', 'lists', 'is_starred', ]
+
+    def validate(self, data):
+        return data  # No need to pass in image/image_url/color while editing board
 
 
 class NotificationSerializer(serializers.ModelSerializer):

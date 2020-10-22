@@ -445,6 +445,43 @@ button, input, select, textarea, input::placeholder {
   border-left: 1px rgba(211, 211, 211, 0.55) solid;
 }
 
+.header--transparent {
+  background-color: transparent;
+  color: white;
+}
+
+.header--transparent .header__li--search {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.header--transparent .header__li--search input {
+  background-color: transparent;
+}
+
+.header--transparent .header__li--search input::-webkit-input-placeholder {
+  color: white;
+}
+
+.header--transparent .header__li--search input:-ms-input-placeholder {
+  color: white;
+}
+
+.header--transparent .header__li--search input::-ms-input-placeholder {
+  color: white;
+}
+
+.header--transparent .header__li--search input::placeholder {
+  color: white;
+}
+
+.header--transparent .header__li--search:focus-within {
+  background-color: white;
+}
+
+.header--transparent .header__li--border {
+  border: 0;
+}
+
 .board {
   background-color: #f6f7fb;
   height: 100vh;
@@ -710,12 +747,16 @@ button, input, select, textarea, input::placeholder {
   margin-top: 1.5em;
 }
 
-.card__image {
+.card__image, .card__color {
   width: calc(100% + 1.5em);
-  height: 125px;
+  height: 65px;
   margin-left: -0.75em;
   margin-top: -0.75em;
   margin-bottom: 0.35em;
+}
+
+.card__image {
+  height: 125px;
 }
 
 .card__image img {
@@ -1453,7 +1494,7 @@ button, input, select, textarea, input::placeholder {
   font-size: 0.75rem;
 }
 
-.board-preview__image {
+.board-preview__image, .board-preview__color {
   width: calc(100% + 2em);
   height: 125px;
   margin-left: -1em;

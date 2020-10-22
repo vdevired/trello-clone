@@ -5,12 +5,12 @@ import ProfilePic from "../boards/ProfilePic";
 import { Link } from "react-router-dom";
 import useAxiosGet from "../../hooks/useAxiosGet";
 import useBlurSetState from "../../hooks/useBlurSetState";
-
+import { handleBackgroundBrightness } from "../../static/js/util";
 import globalContext from "../../context/globalContext";
 import NotificationsModal from "../modals/NotificationsModal";
 
-const Header = () => {
-    const { authUser } = useContext(globalContext);
+const Header = (props) => {
+    const { authUser, board } = useContext(globalContext);
 
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearch, setShowSearch] = useState(false);
@@ -27,9 +27,19 @@ const Header = () => {
         "/notifications/"
     );
 
+    const onBoardPage = props.location.pathname.split("/")[1] === "b";
+    const [isBackgroundDark, setIsBackgroundDark] = useState(false);
+    useEffect(handleBackgroundBrightness(board, setIsBackgroundDark), [board]);
+
     return (
         <>
-            <header className="header">
+            <header
+                className={`header${
+                    isBackgroundDark && onBoardPage
+                        ? " header--transparent"
+                        : ""
+                }`}
+            >
                 <div className="header__section">
                     <ul className="header__list">
                         <li className="header__li">

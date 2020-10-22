@@ -16,7 +16,12 @@ class Board(models.Model):
 
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
+
+    # Only one of the below will be used from the frontend
     image = models.ImageField(blank=True, upload_to='board_images')
+    image_url = models.URLField(blank=True, null=False)
+    color = models.CharField(blank=True, null=False, max_length=6)  # Hex Code
+
     created_at = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
@@ -48,7 +53,12 @@ class Item(models.Model):
         List, on_delete=models.CASCADE, related_name='items')
     title = models.CharField(max_length=255, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
+
+    # Only one of the below will be used from the frontend
     image = models.ImageField(blank=True, upload_to='item_images')
+    image_url = models.URLField(blank=True, null=False)
+    color = models.CharField(blank=True, null=False, max_length=6)  # Hex Code
+
     order = models.IntegerField(blank=True, null=True)
     assigned_to = models.ManyToManyField(User, blank=True)
     due_date = models.DateTimeField(blank=True, null=True)

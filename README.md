@@ -21,6 +21,8 @@ A Trello clone made using Django Rest Framework, SASS, React, and Redis.
         - Add attachments to cards
         - Add comments to cards
     - Search
+    - Unsplash API Integration
+    - Automatically adapt header and board title styling based on brightness of board background
 - Notifications
     - When someone assigns you to a card
     - When someone comments on a card you're assigned to

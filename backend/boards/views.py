@@ -17,7 +17,7 @@ from .models import Attachment, Board, Comment, Item, Label, List, Notification
 from .permissions import CanViewBoard, IsAuthorOrReadOnly
 from .serializers import (AttachmentSerializer, BoardSerializer,
                           CommentSerializer, ItemSerializer, LabelSerializer,
-                          ListSerializer, NotificationSerializer)
+                          ListSerializer, NotificationSerializer, ShortBoardSerializer)
 
 r = redis.Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
@@ -27,7 +27,7 @@ r = redis.Redis(
 
 class BoardList(generics.ListCreateAPIView):
 
-    serializer_class = BoardSerializer
+    serializer_class = ShortBoardSerializer
     permission_classes = [IsProjectMember]
 
     def get_project(self, pk):
@@ -58,7 +58,7 @@ class BoardList(generics.ListCreateAPIView):
         return Board.objects.filter(owner_id=project_id, owner_model=ContentType.objects.get(model='project'))
 
     def post(self, request, *args, **kwargs):
-        serializer = BoardSerializer(
+        serializer = ShortBoardSerializer(
             data=request.data, context={"request": request})
 
         if serializer.is_valid():
@@ -91,6 +91,19 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
         cur_time_int = int(timezone.now().strftime("%Y%m%d%H%M%S"))
         r.zadd(redis_key, {board_id: cur_time_int})
         return super().get_object()
+
+    def perform_update(self, serializer):
+        # When you update, you may pass in a new image/image_url/color
+        # If an image is passed, we need to clear the existing background - image_url/color
+        # and so on
+        req_data = self.request.data
+
+        if "image" in req_data:
+            serializer.save(image_url="", color="")
+        elif "image_url" in req_data:
+            serializer.save(image=None, color="")
+        else:
+            serializer.save(image=None, image_url="")
 
 
 class BoardStar(APIView):
@@ -213,6 +226,17 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
         item = get_object_or_404(Item, pk=pk)
         self.check_object_permissions(self.request, item.list.board)
         return item
+
+    def perform_update(self, serializer):
+        # Same logic as BoardDetail
+        req_data = self.request.data
+
+        if "image" in req_data:
+            serializer.save(image_url="", color="")
+        elif "image_url" in req_data:
+            serializer.save(image=None, color="")
+        else:
+            serializer.save(image=None, image_url="")
 
 
 class CommentList(generics.ListCreateAPIView):
