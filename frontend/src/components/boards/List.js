@@ -1,11 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { Droppable, Draggable } from "react-beautiful-dnd";
 import DraggableCard from "./DraggableCard";
+import useBlurSetState from "../../hooks/useBlurSetState";
 import { mergeRefs } from "../../static/js/util";
 import { authAxios } from "../../static/js/util";
 import { backendUrl } from "../../static/js/const";
-import { updateList } from "../../static/js/board";
+import { updateList, addCard } from "../../static/js/board";
+import globalContext from "../../context/globalContext";
 
 const getListStyle = (isDragging, defaultStyle) => {
     if (!isDragging) return defaultStyle;
@@ -27,29 +29,25 @@ const getListTitleStyle = (isDragging, defaultStyle) => {
     };
 };
 
-const List = ({ list, index, board, setBoard }) => {
+const List = ({ list, index }) => {
+    const { board, setBoard } = useContext(globalContext);
     const [addingCard, setAddingCard] = useState(false);
     const [cardTitle, setCardTitle] = useState("");
+    const [editingTitle, setEditingTitle] = useState(false);
 
-    const onAddCard = (e) => {
+    useBlurSetState(".list__add-card-form", addingCard, setAddingCard);
+    useBlurSetState(".list__title-edit", editingTitle, setEditingTitle);
+
+    const onAddCard = async (e) => {
         e.preventDefault();
         if (cardTitle.trim() === "") return;
+        const { data } = await authAxios.post(`${backendUrl}/boards/items/`, {
+            list: list.id,
+            title: cardTitle,
+        });
         setAddingCard(false);
+        addCard(board, setBoard)(list.id, data);
     };
-
-    const handleHideAddCard = useCallback((e) => {
-        const addCardForm = document.querySelector(".list__add-card-form");
-        if (!addCardForm) return;
-        if (!addCardForm.contains(e.target)) setAddingCard(false);
-    }, []);
-
-    useEffect(() => {
-        if (addingCard) {
-            document.addEventListener("click", handleHideAddCard);
-        } else {
-            document.removeEventListener("click", handleHideAddCard);
-        }
-    }, [addingCard]);
 
     const listCards = useRef(null);
     useEffect(() => {
@@ -57,22 +55,11 @@ const List = ({ list, index, board, setBoard }) => {
             listCards.current.scrollTop = listCards.current.scrollHeight;
     }, [addingCard]);
 
-    const [editingTitle, setEditingTitle] = useState(false);
-
-    const handleStopEditListTile = useCallback((e) => {
-        const editListTitle = document.querySelector(".list__title-edit");
-        if (!editListTitle) return;
-        if (!editListTitle.contains(e.target)) setEditingTitle(false);
-    }, []);
-
     useEffect(() => {
         if (editingTitle) {
-            document.addEventListener("click", handleStopEditListTile);
             const editListTitle = document.querySelector(".list__title-edit");
             editListTitle.focus();
             editListTitle.select();
-        } else {
-            document.removeEventListener("click", handleStopEditListTile);
         }
     }, [editingTitle]);
 
@@ -115,8 +102,6 @@ const List = ({ list, index, board, setBoard }) => {
                                 <EditList
                                     list={list}
                                     setEditingTitle={setEditingTitle}
-                                    board={board}
-                                    setBoard={setBoard}
                                 />
                             )}
                             <i className="far fa-ellipsis-h"></i>
@@ -135,8 +120,8 @@ const List = ({ list, index, board, setBoard }) => {
                                         <DraggableCard
                                             card={card}
                                             list={list}
-                                            key={uuidv4()}
                                             index={index}
+                                            key={uuidv4()}
                                         />
                                     ))}
                                     {provided.placeholder}
@@ -193,7 +178,8 @@ const AddCard = ({ onAddCard, cardTitle, setCardTitle }) => (
     </form>
 );
 
-const EditList = ({ list, setEditingTitle, board, setBoard }) => {
+const EditList = ({ list, setEditingTitle }) => {
+    const { board, setBoard } = useContext(globalContext);
     const [listTitle, setListTitle] = useState(list.title);
 
     const onEditList = async (e) => {
@@ -205,7 +191,6 @@ const EditList = ({ list, setEditingTitle, board, setBoard }) => {
                 title: listTitle,
             }
         );
-        console.log(data);
         updateList(board, setBoard)(data);
         setEditingTitle(false);
     };

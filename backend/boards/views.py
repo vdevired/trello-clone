@@ -169,7 +169,7 @@ class ListDetail(generics.RetrieveUpdateDestroyAPIView):
 class ItemList(generics.ListCreateAPIView):
 
     serializer_class = ItemSerializer
-    permission_classes = [ CanViewBoard ]
+    permission_classes = [CanViewBoard]
 
     def get_list(self, pk):
         list = get_object_or_404(List, pk=pk)
@@ -177,9 +177,9 @@ class ItemList(generics.ListCreateAPIView):
         return list
 
     def get_queryset(self, *args, **kwargs):
-        
+
         list_id = self.request.GET.get('list', None)
-        
+
         list = self.get_list(list_id)
         return Item.objects.filter(list=list).order_by('order')
 
@@ -189,7 +189,7 @@ class ItemList(generics.ListCreateAPIView):
 
         if list_id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -206,7 +206,7 @@ class ItemList(generics.ListCreateAPIView):
 class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = ItemSerializer
-    permission_classes = [ CanViewBoard ]
+    permission_classes = [CanViewBoard]
 
     def get_object(self):
         pk = self.kwargs.get('pk')
@@ -214,10 +214,11 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
         self.check_object_permissions(self.request, item.list.board)
         return item
 
+
 class CommentList(generics.ListCreateAPIView):
 
     serializer_class = CommentSerializer
-    permission_classes = [ CanViewBoard ]
+    permission_classes = [CanViewBoard]
 
     def get_item(self, pk):
         item = get_object_or_404(Item, pk=pk)
@@ -225,11 +226,11 @@ class CommentList(generics.ListCreateAPIView):
         return item
 
     def get_queryset(self, *args, **kwargs):
-        
+
         item_id = self.request.GET.get('item', None)
-        
+
         item = self.get_item(item_id)
-        return Comment.objects.filter(item=item).order_by('-created_at')
+        return Comment.objects.filter(item=item)
 
     def get(self, request, *args, **kwargs):
 
@@ -237,7 +238,7 @@ class CommentList(generics.ListCreateAPIView):
 
         if item_id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -254,7 +255,7 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
     serializer_class = CommentSerializer
-    permission_classes = [ IsAuthorOrReadOnly ]
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_object(self):
         pk = self.kwargs.get('pk')

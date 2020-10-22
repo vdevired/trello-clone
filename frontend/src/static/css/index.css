@@ -460,9 +460,26 @@ button, input, select, textarea, input::placeholder {
           flex-direction: column;
 }
 
-.board__title {
+.board__title, .board__title-edit {
   font-weight: 500;
   font-size: 1.25rem;
+  height: 25px;
+}
+
+.board__title {
+  cursor: pointer;
+}
+
+.board__title-edit {
+  padding: 0.25em;
+  border: 1px rgba(109, 109, 109, 0.55) solid;
+  position: relative;
+  top: -3px;
+  left: -6px;
+}
+
+.board__title-edit:focus {
+  border: 1px #4680ff solid;
 }
 
 .board__subtitle {
@@ -502,6 +519,10 @@ button, input, select, textarea, input::placeholder {
   min-width: 300px;
   margin-top: 0.5em;
   margin-left: 1em;
+}
+
+.board__create-list i {
+  margin-right: 0.5em;
 }
 
 .board__create-list-form {
@@ -801,10 +822,28 @@ button, input, select, textarea, input::placeholder {
   margin-bottom: 0.875em;
 }
 
-.edit-modal__title {
+.edit-modal__title, .edit-modal__title-edit {
+  height: 25px;
   font-weight: 500;
   font-size: 1.25em;
   margin-bottom: 0.4em;
+}
+
+.edit-modal__title {
+  cursor: pointer;
+}
+
+.edit-modal__title-edit {
+  width: 100%;
+  padding: 0.25em;
+  border: 1px rgba(109, 109, 109, 0.55) solid;
+  position: relative;
+  top: -2px;
+  left: -6px;
+}
+
+.edit-modal__title-edit:focus {
+  border: 1px #4680ff solid;
 }
 
 .edit-modal__subtitle {
@@ -858,6 +897,7 @@ button, input, select, textarea, input::placeholder {
 .edit-modal__description {
   white-space: pre-line;
   margin-bottom: 2em;
+  font-size: 0.875rem;
 }
 
 .edit-modal__attachments {

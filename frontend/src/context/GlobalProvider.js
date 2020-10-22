@@ -4,13 +4,20 @@ import { useHistory } from "react-router-dom";
 import { backendUrl } from "../static/js/const";
 import { authAxios } from "../static/js/util";
 import globalContext from "./globalContext";
-import { globalReducer, LOGIN, LOGOUT } from "./globalReducer";
+import {
+    globalReducer,
+    LOGIN,
+    LOGOUT,
+    SET_BOARD_CONTEXT,
+} from "./globalReducer";
 
 const GlobalProvider = (props) => {
     const history = useHistory();
     const [globalState, dispatch] = useReducer(globalReducer, {
         authUser: null,
         checkedAuth: false,
+        board: null,
+        setBoard: null,
     });
 
     const login = async (resData) => {
@@ -39,14 +46,21 @@ const GlobalProvider = (props) => {
         history.push("/login");
     };
 
+    const setBoardContext = (board, setBoard) => {
+        dispatch({ type: SET_BOARD_CONTEXT, board, setBoard });
+    };
+
     return (
         <globalContext.Provider
             value={{
                 authUser: globalState.authUser,
                 checkedAuth: globalState.checkedAuth,
+                board: globalState.board,
+                setBoard: globalState.setBoard,
                 checkAuth,
                 login,
                 logout,
+                setBoardContext,
             }}
         >
             {props.children}

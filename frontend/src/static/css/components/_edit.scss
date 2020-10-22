@@ -85,10 +85,30 @@
         }
     }
 
-    &__title {
+    &__title,
+    &__title-edit {
+        height: 25px;
         font-weight: 500;
         font-size: 1.25em;
         margin-bottom: 0.4em;
+    }
+
+    &__title {
+        cursor: pointer;
+    }
+
+    &__title-edit {
+        width: 100%;
+        padding: 0.25em;
+        border: 1px darken($border-color, 40%) solid;
+
+        position: relative;
+        top: -2px;
+        left: -6px;
+
+        &:focus {
+            border: 1px $blue solid;
+        }
     }
 
     &__subtitle {
@@ -131,6 +151,7 @@
     &__description {
         white-space: pre-line; // To display new lines
         margin-bottom: 2em;
+        font-size: 0.875rem;
     }
 
     &__attachments {

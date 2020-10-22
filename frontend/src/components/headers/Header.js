@@ -1,15 +1,10 @@
-import React, {
-    useState,
-    useRef,
-    useEffect,
-    useContext,
-    useCallback,
-} from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import logo from "../../static/img/logo2.png";
 import SearchModal from "../modals/SearchModal";
 import ProfilePic from "../boards/ProfilePic";
 import { Link } from "react-router-dom";
 import useAxiosGet from "../../hooks/useAxiosGet";
+import useBlurSetState from "../../hooks/useBlurSetState";
 
 import globalContext from "../../context/globalContext";
 import NotificationsModal from "../modals/NotificationsModal";
@@ -20,30 +15,17 @@ const Header = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [showSearch, setShowSearch] = useState(false);
     const searchElem = useRef(null);
+    const [showNotifications, setShowNotifications] = useState(false);
+    useBlurSetState(".label-modal", showNotifications, setShowNotifications);
 
     useEffect(() => {
         if (searchQuery !== "") setShowSearch(true);
         else if (searchQuery === "" && showSearch) setShowSearch(false);
     }, [searchQuery]);
 
-    const [showNotifications, setShowNotifications] = useState(false);
     const { data: notifications, setData: setNotifications } = useAxiosGet(
         "/notifications/"
     );
-
-    const handleHideNotificationsModal = useCallback((e) => {
-        const notificationsModal = document.querySelector(".label-modal");
-        if (!notificationsModal) return;
-        if (!notificationsModal.contains(e.target)) setShowNotifications(false);
-    }, []);
-
-    useEffect(() => {
-        if (showNotifications) {
-            document.addEventListener("click", handleHideNotificationsModal);
-        } else {
-            document.removeEventListener("click", handleHideNotificationsModal);
-        }
-    }, [showNotifications]);
 
     return (
         <>

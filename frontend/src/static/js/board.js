@@ -104,6 +104,34 @@ export const updateList = (board, setBoard) => (updatedList) => {
     setBoard(newBoard);
 };
 
+export const addCard = (board, setBoard) => (listId, newCard) => {
+    const newLists = board.lists.map((list) =>
+        list.id === listId ? { ...list, items: [...list.items, newCard] } : list
+    );
+
+    const newBoard = {
+        ...board,
+        lists: newLists,
+    };
+
+    setBoard(newBoard);
+};
+
+export const updateCard = (board, setBoard) => (listId, updatedCard) => {
+    const targetList = board.lists.find((list) => list.id === listId);
+
+    const newItems = targetList.items.map((item) =>
+        item.id === updatedCard.id ? updatedCard : item
+    );
+
+    const newList = {
+        ...targetList,
+        items: newItems,
+    };
+
+    updateList(board, setBoard)(newList);
+};
+
 // Filter boards into user boards and project boards
 export const filterBoards = (boards) => {
     const starredBoards = [];

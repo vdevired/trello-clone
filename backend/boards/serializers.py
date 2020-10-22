@@ -12,50 +12,11 @@ from users.serializers import UserSerializer
 from .models import Attachment, Board, Comment, Item, Label, List, Notification
 
 
-class BoardSerializer(serializers.ModelSerializer):
-    owner = serializers.SerializerMethodField()
-    is_starred = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Board
-        fields = ['id', 'title', 'description', 'image',
-                  'created_at', 'owner', 'is_starred']
-
-    def get_is_starred(self, obj):
-        request_user = self.context.get('request').user
-        return request_user.starred_boards.filter(pk=obj.pk).exists()
-
-    def get_owner(self, obj):
-        object_app = obj.owner._meta.app_label
-        object_name = obj.owner._meta.object_name
-        if object_name == 'Project':
-            object_name = 'Short' + object_name
-        serializer_module_path = f'{object_app}.serializers.{object_name}Serializer'
-        serializer_class = import_string(serializer_module_path)
-        return serializer_class(obj.owner).data
-
-
 class LabelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Label
         exclude = ('id', 'item',)
-
-
-class ItemSerializer(serializers.ModelSerializer):
-    labels = LabelSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Item
-        exclude = ['list']
-
-
-class ListSerializer(serializers.ModelSerializer):
-    items = ItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = List
-        exclude = ['board']
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -71,6 +32,52 @@ class AttachmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Attachment
         fields = '__all__'
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    labels = LabelSerializer(many=True, read_only=True)
+    attachments = AttachmentSerializer(many=True, read_only=True)
+    assigned_to = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Item
+        exclude = ['list']
+
+    def get_assigned_to(self, obj):
+        queryset = obj.assigned_to.all()
+        return UserSerializer(queryset, many=True).data
+
+
+class ListSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = List
+        exclude = ['board']
+
+
+class BoardSerializer(serializers.ModelSerializer):
+    owner = serializers.SerializerMethodField()
+    lists = ListSerializer(many=True, read_only=True)
+    is_starred = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Board
+        fields = ['id', 'title', 'description', 'image',
+                  'created_at', 'owner', 'lists', 'is_starred', ]
+
+    def get_is_starred(self, obj):
+        request_user = self.context.get('request').user
+        return request_user.starred_boards.filter(pk=obj.pk).exists()
+
+    def get_owner(self, obj):
+        object_app = obj.owner._meta.app_label
+        object_name = obj.owner._meta.object_name
+        if object_name == 'Project':
+            object_name = 'Short' + object_name
+        serializer_module_path = f'{object_app}.serializers.{object_name}Serializer'
+        serializer_class = import_string(serializer_module_path)
+        return serializer_class(obj.owner).data
 
 
 class NotificationSerializer(serializers.ModelSerializer):

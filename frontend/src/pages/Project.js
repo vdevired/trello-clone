@@ -1,16 +1,11 @@
-import React, {
-    useState,
-    useContext,
-    useEffect,
-    useCallback,
-    useRef,
-} from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import qs from "qs";
 import { v4 as uuidv4 } from "uuid";
 import HomeBoard from "../components/boards/HomeBoard";
 import ProfilePic from "../components/boards/ProfilePic";
 import globalContext from "../context/globalContext";
 import useAxiosGet from "../hooks/useAxiosGet";
+import useBlurSetState from "../hooks/useBlurSetState";
 import useDocumentTitle from "../hooks/useDocumentTitle";
 import { authAxios } from "../static/js/util";
 import { backendUrl } from "../static/js/const";
@@ -34,20 +29,7 @@ const Project = (props) => {
     const [curTab, setCurTab] = useState(tab || 1);
     const [isEditing, setIsEditing] = useState(false);
     const [isInviting, setIsInviting] = useState(false);
-
-    const handleHideInviteModal = useCallback((e) => {
-        const inviteModal = document.querySelector(".label-modal");
-        if (!inviteModal) return;
-        if (!inviteModal.contains(e.target)) setIsInviting(false);
-    }, []);
-
-    useEffect(() => {
-        if (isInviting) {
-            document.addEventListener("click", handleHideInviteModal);
-        } else {
-            document.removeEventListener("click", handleHideInviteModal);
-        }
-    }, [isInviting]);
+    useBlurSetState(".label-modal", isInviting, setIsInviting);
 
     const { data: project, loading, setData: setProject } = useAxiosGet(
         `/projects/${id}/`
@@ -55,7 +37,6 @@ const Project = (props) => {
     const { data: boards, addItem: addBoard } = useAxiosGet(
         "/boards?project=" + id
     );
-    console.log(boards);
     useDocumentTitle(project ? `${project.title} | Trello` : "");
 
     if (!project && loading) return null;
@@ -235,19 +216,11 @@ const Member = ({ user, authUser, setProject }) => {
     const history = useHistory();
     const [isChangingPermission, setIsChangingPermission] = useState(false);
 
-    const handleHidePermissionModal = useCallback((e) => {
-        const inviteModal = document.querySelector(".label-modal");
-        if (!inviteModal) return;
-        if (!inviteModal.contains(e.target)) setIsChangingPermission(false);
-    }, []);
-
-    useEffect(() => {
-        if (isChangingPermission) {
-            document.addEventListener("click", handleHidePermissionModal);
-        } else {
-            document.removeEventListener("click", handleHidePermissionModal);
-        }
-    }, [isChangingPermission]);
+    useBlurSetState(
+        ".label-modal",
+        isChangingPermission,
+        setIsChangingPermission
+    );
 
     const removeMember = async () => {
         try {

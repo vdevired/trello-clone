@@ -9,6 +9,8 @@ from . import models
 def create_comment_notification(sender, instance, created, **kwargs):
     if created:
         for user in instance.item.assigned_to.all():
+            if instance.author == user:  # Don't create notification if you comment
+                continue
             models.Notification.objects.create(
                 actor=instance.author, recipient=user,
                 verb='commented', action_object=instance, target=instance.item)

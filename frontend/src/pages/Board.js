@@ -1,130 +1,54 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import useDocumentTitle from "../hooks/useDocumentTitle";
-
+import useBlurSetState from "../hooks/useBlurSetState";
+import useAxiosGet from "../hooks/useAxiosGet";
 import { addList, onDragEnd } from "../static/js/board";
 import List from "../components/boards/List";
 import { authAxios } from "../static/js/util";
 import { backendUrl } from "../static/js/const";
+import Error404 from "./Error404";
+import globalContext from "../context/globalContext";
 
 const Board = (props) => {
     const { id } = props.match.params;
     const [addingList, setAddingList] = useState(false);
-    const [board, setBoard] = useState({
-        id: 1,
-        title: "Hello World",
-        project: "The Boys",
-        lists: [
-            {
-                id: 1,
-                title: "List1",
-                items: [
-                    {
-                        id: 1,
-                        title: "Hello",
-                        description: "",
-                        assigned_to: [],
-                        labels: [{ color: "red" }],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 2,
-                        title: "Hello2",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 3,
-                        title: "Hello3",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 4,
-                        title: "Hello4",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                ],
-            },
-            {
-                id: 2,
-                title: "List2",
-                items: [
-                    {
-                        id: 5,
-                        title: "Hello",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 6,
-                        title: "Hello2",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 7,
-                        title: "Hello3",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                    {
-                        id: 8,
-                        title: "Hello4",
-                        description: "",
-                        assigned_to: [],
-                        labels: [],
-                        attachments: [],
-                        comments: [],
-                    },
-                ],
-            },
-        ],
-    }); // Get using route params
+    const { data: board, setData: setBoard, loading } = useAxiosGet(
+        `/boards/${id}/`
+    );
+
+    const { setBoardContext } = useContext(globalContext);
+    useEffect(() => {
+        if (board) {
+            setBoardContext(board, setBoard);
+        }
+    }, [board]);
 
     useDocumentTitle(board ? `${board.title} | Trello` : "");
+    useBlurSetState(".board__create-list-form", addingList, setAddingList);
+    const [editingTitle, setEditingTitle] = useState(false);
+    useBlurSetState(".board__title-edit", editingTitle, setEditingTitle);
 
-    const handleHideCreateList = useCallback((e) => {
-        const createListForm = document.querySelector(
-            ".board__create-list-form"
-        );
-        if (!createListForm) return;
-        if (!createListForm.contains(e.target)) setAddingList(false);
-    }, []);
-
-    useEffect(() => {
-        if (addingList) {
-            document.addEventListener("click", handleHideCreateList);
-        } else {
-            document.removeEventListener("click", handleHideCreateList);
-        }
-    }, [addingList]);
-
+    if (!board && loading) return null;
+    if (!board && !loading) return <Error404 />;
     return (
         <div className="board">
-            <p className="board__title">{board.title}</p>
-            <p className="board__subtitle">{board.project}</p>
+            {!editingTitle ? (
+                <p
+                    className="board__title"
+                    onClick={() => setEditingTitle(true)}
+                >
+                    {board.title}
+                </p>
+            ) : (
+                <EditBoard
+                    setEditingTitle={setEditingTitle}
+                    board={board}
+                    setBoard={setBoard}
+                />
+            )}
+            <p className="board__subtitle">{board.owner.title}</p>
             <DragDropContext onDragEnd={onDragEnd(board, setBoard)}>
                 <Droppable
                     droppableId={"board" + board.id.toString()}
@@ -142,8 +66,6 @@ const Board = (props) => {
                                     list={list}
                                     index={index}
                                     key={uuidv4()}
-                                    board={board}
-                                    setBoard={setBoard}
                                 />
                             ))}
                             {provided.placeholder}
@@ -157,8 +79,18 @@ const Board = (props) => {
                                 <button
                                     className="btn board__create-list"
                                     onClick={() => setAddingList(true)}
+                                    style={
+                                        board.lists.length === 0
+                                            ? { marginLeft: 0 }
+                                            : null
+                                    }
                                 >
-                                    Add another list
+                                    <i className="fal fa-plus"></i>
+                                    Add{" "}
+                                    {board.lists.length === 0
+                                        ? "a"
+                                        : "another"}{" "}
+                                    list
                                 </button>
                             )}
                         </div>
@@ -204,6 +136,36 @@ const CreateList = ({ board, setBoard, setAddingList }) => {
                     Add List
                 </button>
             )}
+        </form>
+    );
+};
+
+const EditBoard = ({ board, setBoard, setEditingTitle }) => {
+    const [title, setTitle] = useState(board.title);
+
+    const onEditTitle = async (e) => {
+        e.preventDefault();
+        if (title.trim() === "") return;
+        const { data } = await authAxios.put(
+            `${backendUrl}/boards/${board.id}/`,
+            {
+                title,
+            }
+        );
+        setBoard(data);
+        setEditingTitle(false);
+    };
+
+    return (
+        <form onSubmit={onEditTitle}>
+            <input
+                className="board__title-edit"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                type="text"
+                name="title"
+                placeholder="Enter board title"
+            />
         </form>
     );
 };

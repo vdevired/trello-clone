@@ -1,13 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { modalBlurHandler, mergeRefs } from "../../static/js/util";
+import { modalBlurHandler, mergeRefs, authAxios } from "../../static/js/util";
 import Labels from "./Labels";
 import ProfilePic from "./ProfilePic";
 import EditCardModal from "../modals/EditCardModal";
 import LabelModal from "../modals/LabelModal";
+import { backendUrl } from "../../static/js/const";
+import { updateCard } from "../../static/js/board";
+import globalContext from "../../context/globalContext";
 
-const getCardStyle = (isDragging, defaultStyle) => {
+const getCardStyle = (isDragging, isEditing, defaultStyle) => {
+    if (isEditing) {
+        return {
+            cursor: "auto",
+        };
+    }
     if (!isDragging)
         return {
             ...defaultStyle,
@@ -21,7 +29,10 @@ const getCardStyle = (isDragging, defaultStyle) => {
 };
 
 const Card = ({ card, list, provided, isDragging }) => {
+    const { board, setBoard } = useContext(globalContext);
     const [isEditing, setIsEditing] = useState(false);
+    const [title, setTitle] = useState(card.title);
+
     const [showEditModal, setShowEditModal] = useState(false);
     const [showLabelModal, setShowLabelModal] = useState(false);
 
@@ -36,8 +47,25 @@ const Card = ({ card, list, provided, isDragging }) => {
     useEffect(() => {
         if (!isEditing) {
             setShowLabelModal(false);
+        } else {
+            const editCardTitle = document.querySelector(".card__title-edit");
+            editCardTitle.focus();
+            editCardTitle.select();
         }
     }, [isEditing]);
+
+    const onEditCard = async (e) => {
+        e.preventDefault();
+        if (title.trim() === "") return;
+        const { data } = await authAxios.put(
+            `${backendUrl}/boards/items/${card.id}/`,
+            {
+                title,
+            }
+        );
+        setIsEditing(false);
+        updateCard(board, setBoard)(list.id, data);
+    };
 
     const { innerRef, draggableProps, dragHandleProps } = provided;
     return (
@@ -49,7 +77,11 @@ const Card = ({ card, list, provided, isDragging }) => {
                 ref={mergeRefs(cardElem, innerRef)}
                 onClick={handleCardClick}
                 {...draggableProps}
-                style={getCardStyle(isDragging, draggableProps.style)}
+                style={getCardStyle(
+                    isDragging,
+                    isEditing,
+                    draggableProps.style
+                )}
                 {...dragHandleProps}
             >
                 {card.image && (
@@ -68,17 +100,14 @@ const Card = ({ card, list, provided, isDragging }) => {
                     )}
                     <Labels labels={card.labels} />
                     {isEditing ? (
-                        <input
-                            className="card__title-edit"
-                            type="text"
-                            value={card.title}
-                            ref={(el) => {
-                                if (el) {
-                                    el.focus();
-                                    el.select();
-                                }
-                            }}
-                        />
+                        <form onSubmit={onEditCard}>
+                            <input
+                                className="card__title-edit"
+                                type="text"
+                                value={title}
+                                onChange={(e) => setTitle(e.target.value)}
+                            />
+                        </form>
                     ) : (
                         <p className="card__title">{card.title}</p>
                     )}
@@ -92,6 +121,7 @@ const Card = ({ card, list, provided, isDragging }) => {
                     {isEditing && (
                         <>
                             <EditControls
+                                onEditCard={onEditCard}
                                 cardElem={cardElem}
                                 setShowModal={setIsEditing}
                                 setShowLabelModal={setShowLabelModal}
@@ -141,11 +171,18 @@ export const getEditControlsSidePosition = (cardElem, offset = 0) => {
     };
 };
 
-const EditControls = ({ cardElem, setShowModal, setShowLabelModal }) => {
+const EditControls = ({
+    onEditCard,
+    cardElem,
+    setShowModal,
+    setShowLabelModal,
+}) => {
     useEffect(modalBlurHandler(setShowModal), []);
     return (
         <div className="card__edit-controls">
-            <a className="btn">Save</a>
+            <button onClick={onEditCard} className="btn">
+                Save
+            </button>
             <ul
                 className="card__edit-controls-side"
                 style={getEditControlsSidePosition(cardElem.current)}

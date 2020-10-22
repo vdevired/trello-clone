@@ -1,37 +1,36 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { timeSince, modalBlurHandler } from "../../static/js/util";
 import Labels from "../boards/Labels";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import useBlurSetState from "../../hooks/useBlurSetState";
+import globalContext from "../../context/globalContext";
+import { timeSince, modalBlurHandler, authAxios } from "../../static/js/util";
+import { backendUrl } from "../../static/js/const";
+import { updateCard } from "../../static/js/board";
 import ProfilePic from "../boards/ProfilePic";
 
 const EditCardModal = ({ card, list, setShowModal }) => {
+    const [editingTitle, setEditingTitle] = useState(false);
     const [editingDescription, setEditingDescription] = useState(false);
 
     useEffect(modalBlurHandler(setShowModal), []);
+    useBlurSetState(".edit-modal__title-edit", editingTitle, setEditingTitle);
+    useBlurSetState(
+        ".edit-modal__form",
+        editingDescription,
+        setEditingDescription
+    );
 
-    const modalElem = useRef(null);
-    const handleHideDescriptionForm = useCallback((e) => {
-        if (!modalElem.current) return;
-        const descForm = modalElem.current.querySelector(".edit-modal__form");
-        if (!descForm.contains(e.target)) setEditingDescription(false);
-    }, []);
-    useEffect(() => {
-        if (editingDescription && modalElem.current) {
-            modalElem.current.addEventListener(
-                "click",
-                handleHideDescriptionForm
-            );
-        } else {
-            modalElem.current.removeEventListener(
-                "click",
-                handleHideDescriptionForm
-            );
-        }
-    }, [editingDescription]);
+    const {
+        data: comments,
+        addItem: addComment,
+        replaceItem: replaceComment,
+        removeItem: removeComment,
+    } = useAxiosGet(`/boards/comments/?item=${card.id}`);
 
     return (
-        <div className="edit-modal" ref={modalElem}>
+        <div className="edit-modal">
             <button
                 className="edit-modal__exit"
                 onClick={() => setShowModal(false)}
@@ -41,7 +40,20 @@ const EditCardModal = ({ card, list, setShowModal }) => {
             <div className="edit-modal__cols">
                 <div className="edit-modal__left">
                     <Labels labels={card.labels} />
-                    <div className="edit-modal__title">{card.title}</div>
+                    {!editingTitle ? (
+                        <p
+                            onClick={() => setEditingTitle(true)}
+                            className="edit-modal__title"
+                        >
+                            {card.title}
+                        </p>
+                    ) : (
+                        <EditCardTitle
+                            list={list}
+                            card={card}
+                            setEditingTitle={setEditingTitle}
+                        />
+                    )}
                     <div className="edit-modal__subtitle">
                         in list <span>{list.title}</span>
                     </div>
@@ -52,37 +64,47 @@ const EditCardModal = ({ card, list, setShowModal }) => {
                         </div>
                         {card.description !== "" && (
                             <div>
-                                <a className="btn btn--secondary btn--small">
+                                <button
+                                    className="btn btn--secondary btn--small"
+                                    onClick={() => setEditingDescription(true)}
+                                >
                                     <i className="fal fa-pencil"></i> Edit
-                                </a>
+                                </button>
                             </div>
                         )}
                     </div>
 
-                    {card.description !== "" ? (
+                    {card.description !== "" && !editingDescription && (
                         <p className="edit-modal__description">
                             {card.description}
                         </p>
-                    ) : editingDescription ? (
-                        <div className="edit-modal__form">
-                            <textarea placeholder="Add description..."></textarea>
-                            <a className="btn btn--small">Save</a>
-                        </div>
+                    )}
+
+                    {editingDescription ? (
+                        <EditCardDescription
+                            list={list}
+                            card={card}
+                            setEditingDescription={setEditingDescription}
+                        />
                     ) : (
-                        <button
-                            className="btn btn--secondary btn--small btn--description"
-                            onClick={() => setEditingDescription(true)}
-                        >
-                            Add description
-                        </button>
+                        card.description === "" && (
+                            <button
+                                className="btn btn--secondary btn--small btn--description"
+                                onClick={() => setEditingDescription(true)}
+                            >
+                                Add description
+                            </button>
+                        )
                     )}
 
                     <div
                         className="edit-modal__section-header"
                         style={
-                            card.attachments.length === 0 && {
-                                marginBottom: "1.75em",
-                            }
+                            card.attachments.length === 0
+                                ? {
+                                      marginBottom: "1.75em",
+                                  }
+                                : null
                         }
                     >
                         <div>
@@ -96,18 +118,21 @@ const EditCardModal = ({ card, list, setShowModal }) => {
                     </div>
 
                     <Attachments attachments={card.attachments} />
-
-                    <div
-                        className="edit-modal__form"
+                    <CommentForm
+                        card={card}
                         style={
-                            card.comments.length === 0 && { marginBottom: 0 }
+                            (comments || []).length === 0
+                                ? { marginBottom: 0 }
+                                : null
                         }
-                    >
-                        <textarea placeholder="Leave a comment..."></textarea>
-                        <a className="btn btn--small">Comment</a>
-                    </div>
-
-                    <Comments comments={card.comments} />
+                        addComment={addComment}
+                    />
+                    <Comments
+                        card={card}
+                        comments={comments || []}
+                        replaceComment={replaceComment}
+                        removeComment={removeComment}
+                    />
                 </div>
 
                 <div className="edit-modal__right">
@@ -150,6 +175,76 @@ const EditCardModal = ({ card, list, setShowModal }) => {
     );
 };
 
+const EditCardTitle = ({ list, card, setEditingTitle }) => {
+    const { board, setBoard } = useContext(globalContext);
+    const [title, setTitle] = useState(card.title);
+
+    useEffect(() => {
+        const titleInput = document.querySelector(".edit-modal__title-edit");
+        titleInput.focus();
+        titleInput.select();
+    }, []);
+
+    const onEditTitle = async (e) => {
+        e.preventDefault();
+        if (title.trim() === "") return;
+        const { data } = await authAxios.put(
+            `${backendUrl}/boards/items/${card.id}/`,
+            {
+                title,
+            }
+        );
+        setEditingTitle(false);
+        updateCard(board, setBoard)(list.id, data);
+    };
+
+    return (
+        <form onSubmit={onEditTitle}>
+            <input
+                className="edit-modal__title-edit"
+                type="text"
+                name="title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+            ></input>
+        </form>
+    );
+};
+
+const EditCardDescription = ({ list, card, setEditingDescription }) => {
+    const { board, setBoard } = useContext(globalContext);
+    const [description, setDescription] = useState(card.description);
+
+    const onEditDesc = async (e) => {
+        e.preventDefault();
+        if (description.trim() === "") return;
+        const { data } = await authAxios.put(
+            `${backendUrl}/boards/items/${card.id}/`,
+            {
+                title: card.title,
+                description,
+            }
+        );
+        setEditingDescription(false);
+        updateCard(board, setBoard)(list.id, data);
+    };
+
+    return (
+        <form className="edit-modal__form" onSubmit={onEditDesc}>
+            <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Add description..."
+            ></textarea>
+            {description.trim() !== "" && (
+                <button type="submit" className="btn btn--small">
+                    Save
+                </button>
+            )}
+        </form>
+    );
+};
+
 const Attachments = ({ attachments }) =>
     attachments.length !== 0 && (
         <ul className="edit-modal__attachments">
@@ -179,8 +274,19 @@ const Attachments = ({ attachments }) =>
         </ul>
     );
 
-const Comments = ({ comments }) =>
-    comments.length !== 0 && (
+const Comments = ({ card, comments, replaceComment, removeComment }) => {
+    const { authUser } = useContext(globalContext);
+    const [isEditing, setIsEditing] = useState(false);
+    useBlurSetState(".edit-modal__form--comment", isEditing, setIsEditing);
+
+    if (comments.length === 0) return null;
+
+    const onDelete = async (comment) => {
+        await authAxios.delete(`${backendUrl}/boards/comments/${comment.id}/`);
+        removeComment(comment.id);
+    };
+
+    return (
         <ul className="edit-modal__comments">
             {comments.map((comment) => (
                 <li key={uuidv4()}>
@@ -193,18 +299,100 @@ const Comments = ({ comments }) =>
                                     <p>{timeSince(comment.created_at)}</p>
                                 </div>
                             </div>
-                            <div className="comment__header-right">
-                                <a>Edit</a> - <a>Delete</a>
+                            {comment.author.username === authUser.username && (
+                                <div className="comment__header-right">
+                                    <button
+                                        onClick={() => setIsEditing(comment.id)}
+                                    >
+                                        Edit
+                                    </button>{" "}
+                                    -{" "}
+                                    <button onClick={() => onDelete(comment)}>
+                                        Delete
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                        {isEditing !== comment.id ? (
+                            <div className="comment__content">
+                                {comment.body}
                             </div>
-                        </div>
-                        <div className="comment__content">
-                            {comment.content}
-                        </div>
+                        ) : (
+                            <CommentForm
+                                card={card}
+                                comment={comment}
+                                replaceComment={replaceComment}
+                                setIsEditing={setIsEditing}
+                            />
+                        )}
                     </div>
                 </li>
             ))}
         </ul>
     );
+};
+
+const CommentForm = ({
+    card,
+    comment,
+    style,
+    addComment,
+    replaceComment,
+    setIsEditing,
+}) => {
+    // If comment not null, edit form
+    const [commentBody, setCommentBody] = useState(comment ? comment.body : "");
+
+    const onAddComment = async (e) => {
+        e.preventDefault();
+        if (commentBody.trim() === "") return;
+        const { data } = await authAxios.post(
+            `${backendUrl}/boards/comments/`,
+            {
+                item: card.id,
+                body: commentBody,
+            }
+        );
+        addComment(data);
+        setCommentBody("");
+    };
+
+    const onEditComment = async (e) => {
+        e.preventDefault();
+        if (commentBody.trim() === "") return;
+        const { data } = await authAxios.put(
+            `${backendUrl}/boards/comments/${comment.id}/`,
+            {
+                body: commentBody,
+            }
+        );
+        replaceComment(data);
+        setIsEditing(false);
+    };
+
+    // Modifier is only for useBlurSetState, as doc.querySelector is selecting description form otherwise
+    // Only add if comment is not null, otherwise doc.querySelector selects create comment form
+    return (
+        <form
+            className={`edit-modal__form${
+                comment ? " edit-modal__form--comment" : ""
+            }`}
+            style={style}
+            onSubmit={comment ? onEditComment : onAddComment}
+        >
+            <textarea
+                placeholder="Leave a comment..."
+                value={commentBody}
+                onChange={(e) => setCommentBody(e.target.value)}
+            ></textarea>
+            {commentBody.trim() !== "" && (
+                <button className="btn btn--small" type="submit">
+                    Comment
+                </button>
+            )}
+        </form>
+    );
+};
 
 const Members = ({ members }) =>
     members.length !== 0 && (
