@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 from users.models import User
 
 from .. import views
-from ..models import Board, Item, List, Comment
+from ..models import Board, Item, List, Comment, Label
 
 pytestmark = pytest.mark.django_db
 
@@ -413,6 +413,71 @@ class TestItemDetailView:
                               })
         assert response.status_code == 403
 
+    def test_assigned_to(self, make_item):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2) = make_item
+        # Can assign user_admin and user_member to board's items - item2, item3
+        # Can assign user_admin to personal_board's items - item1
+
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "assigned_to": user_admin.username
+                              })
+
+        assert response.status_code == 200
+        assert Item.objects.get(pk=1).assigned_to.filter(
+            username=user_admin.username).exists()
+
+        client.force_authenticate(user_member)
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "assigned_to": user_member.username
+                              })
+        assert response.status_code == 403
+
+        client.force_authenticate(user_admin)
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "assigned_to": user_member.username
+                              })
+        assert response.status_code == 400
+        assert Item.objects.get(pk=1).assigned_to.filter(
+            username=user_member.username).exists() == False
+
+    def test_labels(self, make_item):
+        (user_admin, user_member, user2, proj, personal_board, board,
+         personal_list, list1, list2, personal_item, item1, item2) = make_item
+
+        project_label = Label.objects.filter(board=board)[0]
+        personal_label = Label.objects.filter(board=personal_board)[0]
+
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "labels": project_label.pk
+                              })
+
+        assert response.status_code == 400
+        assert Item.objects.get(pk=1).labels.filter(
+            pk=project_label.pk).exists() == False
+
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "labels": personal_label.pk
+                              })
+
+        assert response.status_code == 200
+        assert Item.objects.get(pk=1).labels.filter(
+            pk=personal_label.pk).exists() == True
+
     def test_delete(self, make_item):
         (user_admin, user_member, user2, proj, personal_board, board,
          personal_list, list1, list2, personal_item, item1, item2) = make_item
@@ -640,3 +705,67 @@ class TestCommentDetailView:
         assert response.status_code == 204
         response = client.delete('/boards/comments/3/')
         assert response.status_code == 204
+
+
+class TestLabelListView:
+    def test_get(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board)
+        client = APIClient()
+        client.force_authenticate(user)
+
+        response = client.get('/boards/labels/?board=1')
+        assert response.status_code == 403
+
+        board1 = mixer.blend(Board, owner=user)
+        response = client.get('/boards/labels/?board=2')
+        assert response.status_code == 200
+
+    def test_post(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board)
+        client = APIClient()
+        client.force_authenticate(user)
+
+        response = client.post('/boards/labels/', {
+            "color": "000000",
+            "board": 1
+        })
+        assert response.status_code == 403
+
+        board1 = mixer.blend(Board, owner=user)
+        response = client.post('/boards/labels/', {
+            "color": "000000",
+            "board": 2
+        })
+        assert response.status_code == 201
+
+
+class TestLabelDetailView:
+    def test_put(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board)
+        label = Label.objects.filter(board=board)[0]
+
+        client = APIClient()
+        client.force_authenticate(user)
+        response = client.put(f'/boards/labels/{label.pk}/', {
+            "color": "ffffff",
+            "title": "Technical"
+        })
+
+        assert response.status_code == 200
+        assert response.data["color"] == "ffffff"
+        assert response.data["title"] == "Technical"
+
+    def test_delete(self):
+        user = mixer.blend(User)
+        board = mixer.blend(Board)
+        label = Label.objects.filter(board=board)[0]
+
+        client = APIClient()
+        client.force_authenticate(user)
+        response = client.delete(f'/boards/labels/{label.pk}/')
+
+        assert response.status_code == 204
+        assert Label.objects.filter(pk=label.pk).exists() == False

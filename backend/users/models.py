@@ -1,5 +1,7 @@
+from django.apps import apps
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.core.validators import RegexValidator
 from django.db import models
 
@@ -53,3 +55,17 @@ class User(AbstractUser):
     @property
     def full_name(self):
         return f'{self.first_name} {self.last_name}'
+
+    def can_view_board(self, board):
+        ProjectMembership = apps.get_model('projects', 'ProjectMembership')
+
+        if board.owner_model == ContentType.objects.get(model='project'):
+            try:
+                pmem = ProjectMembership.objects.get(
+                    member=self, project__id=board.owner_id)
+            except ProjectMembership.DoesNotExist:
+                return False
+        else:
+            if board.owner_id != self.id:
+                return False
+        return True

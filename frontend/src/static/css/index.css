@@ -328,18 +328,6 @@ button, input, select, textarea, input::placeholder {
   margin-right: 0;
 }
 
-.labels__label--red {
-  color: red;
-}
-
-.labels__label--blue {
-  color: #4680ff;
-}
-
-.labels__label--yellow {
-  color: #ffb64d;
-}
-
 .header {
   position: fixed;
   top: 0;
@@ -357,6 +345,25 @@ button, input, select, textarea, input::placeholder {
           justify-content: space-between;
   color: #838282;
   background: white;
+}
+
+.header__section:nth-of-type(1) {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.header__section:nth-of-type(3) {
+  -webkit-box-flex: 1;
+      -ms-flex: 1;
+          flex: 1;
+}
+
+.header__section:nth-of-type(3) .header__list {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
 }
 
 .header__logo {
@@ -456,26 +463,32 @@ button, input, select, textarea, input::placeholder {
 
 .header--transparent .header__li--search input {
   background-color: transparent;
+  color: white;
 }
 
 .header--transparent .header__li--search input::-webkit-input-placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .header--transparent .header__li--search input:-ms-input-placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .header--transparent .header__li--search input::-ms-input-placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .header--transparent .header__li--search input::placeholder {
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .header--transparent .header__li--search:focus-within {
   background-color: white;
+  color: #838282;
+}
+
+.header--transparent .header__li--search:focus-within :not(i) {
+  color: black;
 }
 
 .header--transparent .header__li--border {
@@ -765,6 +778,10 @@ button, input, select, textarea, input::placeholder {
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
+}
+
+.card--image .card__title {
+  margin-top: 1em;
 }
 
 .card--image:hover .card__pen {

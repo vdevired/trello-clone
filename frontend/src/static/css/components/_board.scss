@@ -250,9 +250,15 @@
         }
     }
 
-    &--image:hover {
-        .card__pen {
-            background: darken(white, 2%);
+    &--image {
+        .card__title {
+            margin-top: 1em;
+        }
+
+        &:hover {
+            .card__pen {
+                background: darken(white, 2%);
+            }
         }
     }
 }
