@@ -59,9 +59,13 @@ $ yarn start
 ```
 
 ## Screenshots
+![Board Page Video](https://i.imgur.com/gDTkwAS.gif)
 ![Landing Page](https://imgur.com/CTgpNlD.jpg)
 ![Login Page](https://imgur.com/as4jhYS.jpg)
 ![Home Page](https://imgur.com/FV0UirA.jpg)
 ![Create Project Modal](https://imgur.com/CXeD3C2.jpg)
-![Project Page](https://imgur.com/GYtXKFW.jpg)
-![Project Page 2](https://i.imgur.com/rTtkIxj.jpg)
+![Project Page](https://imgur.com/QOsbu3y.jpg)
+![Project Page 2](https://i.imgur.com/PGbDYvS.png)
+![Card Modal](https://i.imgur.com/xpFOTsO.png)
+
+Design Inspiration: https://www.behance.net/gallery/47031411/Trello-Atlassian-Redesign

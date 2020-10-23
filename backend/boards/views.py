@@ -48,20 +48,21 @@ class BoardList(generics.ListCreateAPIView):
             board_ids = r.zrange(redis_key, 0, 3, desc=True)
 
             preserved = Case(*[When(pk=pk, then=pos)
-                                for pos, pk in enumerate(board_ids)])
+                               for pos, pk in enumerate(board_ids)])
             return Board.objects.filter(pk__in=board_ids).order_by(preserved)
 
         if project_id is None:
             project_ids = ProjectMembership.objects.filter(
                 member=self.request.user).values_list('project__id', flat=True)
             queryset = Board.objects.filter(Q(owner_id=self.request.user.id, owner_model=ContentType.objects.get(model='user')) |
-                                        Q(owner_id__in=project_ids, owner_model=ContentType.objects.get(model='project')))
+                                            Q(owner_id__in=project_ids, owner_model=ContentType.objects.get(model='project')))
         else:
-            queryset = Board.objects.filter(owner_id=project_id, owner_model=ContentType.objects.get(model='project'))
+            queryset = Board.objects.filter(
+                owner_id=project_id, owner_model=ContentType.objects.get(model='project'))
             project = self.get_project(project_id)
 
         if search is not None:
-            return queryset.filter(title__icontains = search)[:2]
+            return queryset.filter(title__icontains=search)[:2]
         return queryset
 
     def post(self, request, *args, **kwargs):
@@ -109,7 +110,7 @@ class BoardDetail(generics.RetrieveUpdateDestroyAPIView):
             serializer.save(image_url="", color="")
         elif "image_url" in req_data:
             serializer.save(image=None, color="")
-        else:
+        elif "color" in req_data:
             serializer.save(image=None, image_url="")
 
 
@@ -197,7 +198,7 @@ class ItemList(generics.ListCreateAPIView):
         return list
 
     def get_queryset(self, *args, **kwargs):
-        
+
         list_id = self.request.GET.get('list', None)
         search = self.request.GET.get('q', None)
 
@@ -205,14 +206,15 @@ class ItemList(generics.ListCreateAPIView):
             list = self.get_list(list_id)
 
         if search is not None:
-            project_ids = ProjectMembership.objects.filter(member=self.request.user).values_list('project__id', flat=True)
-            boards = Board.objects.filter(Q(owner_id__in=project_ids, owner_model=ContentType.objects.get(model='project')) | 
-                                                Q(owner_id=self.request.user.id, owner_model=ContentType.objects.get(model='user')))
+            project_ids = ProjectMembership.objects.filter(
+                member=self.request.user).values_list('project__id', flat=True)
+            boards = Board.objects.filter(Q(owner_id__in=project_ids, owner_model=ContentType.objects.get(model='project')) |
+                                          Q(owner_id=self.request.user.id, owner_model=ContentType.objects.get(model='user')))
             if list_id is not None:
                 return Item.objects.filter(list=list, title__icontains=search)[:2]
             lists = List.objects.filter(board__in=boards)
             return Item.objects.filter(list__in=lists, title__icontains=search)[:2]
-        
+
         return Item.objects.filter(list=list).order_by('order')
 
     def get(self, request, *args, **kwargs):
@@ -222,7 +224,7 @@ class ItemList(generics.ListCreateAPIView):
 
         if list_id is None and search is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-        
+
         return super().get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
@@ -257,7 +259,7 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_list(self, pk, board):
         list = get_object_or_404(List, pk=pk)
-        if board == list.board: 
+        if board == list.board:
             return list
         return None
 
@@ -278,12 +280,11 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             label = self.get_label(request.data["labels"], item.list.board)
             if label is None:
                 return Response({"labels": ["This label doees not belong to this board"]}, status=status.HTTP_400_BAD_REQUEST)
-        
-        if "list" in request.data: 
+
+        if "list" in request.data:
             list = self.get_list(request.data['list'], item.list.board)
             if list is None:
                 return Response({'list': ["This list doesn't belong to this baord"]}, status=status.HTTP_400_BAD_REQUEST)
-            
 
         return super().put(request, *args, **kwargs)
 
@@ -295,8 +296,10 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             item = serializer.save(image_url="", color="")
         elif "image_url" in req_data:
             item = serializer.save(image=None, color="")
-        else:
+        elif "color" in req_data:
             item = serializer.save(image=None, image_url="")
+        else:
+            item = serializer.save()
 
         # Assigning or removing someone?
         if "assigned_to" in req_data:
@@ -315,10 +318,11 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
                 item.labels.remove(label)
             else:
                 item.labels.add(label)
-        
-        if "list" in req_data: 
+
+        if "list" in req_data:
             list = self.get_list(req_data["list"], item.list.board)
             serializer.save(list=list)
+
 
 class CommentList(generics.ListCreateAPIView):
 
