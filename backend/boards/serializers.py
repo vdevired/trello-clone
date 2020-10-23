@@ -60,11 +60,13 @@ class ListSerializer(serializers.ModelSerializer):
 class ShortBoardSerializer(serializers.ModelSerializer):
     owner = serializers.SerializerMethodField()
     is_starred = serializers.SerializerMethodField()
+    list_count = serializers.SerializerMethodField()
+    item_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
         fields = ['id', 'title', 'image', 'image_url',
-                  'color', 'owner', 'is_starred']
+                  'color', 'owner', 'is_starred', 'list_count', 'item_count']
 
     def get_is_starred(self, obj):
         request_user = self.context.get('request').user
@@ -78,6 +80,13 @@ class ShortBoardSerializer(serializers.ModelSerializer):
         serializer_module_path = f'{object_app}.serializers.{object_name}Serializer'
         serializer_class = import_string(serializer_module_path)
         return serializer_class(obj.owner).data
+
+    def get_list_count(self, obj):
+        return List.objects.filter(board=obj).count()
+
+    def get_item_count(self, obj):
+        lists = List.objects.filter(board=obj)
+        return Item.objects.filter(list__in=lists).count()
 
     def validate(self, data):
         background_keys = ["image", "image_url", "color"]

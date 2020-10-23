@@ -1194,6 +1194,8 @@ button, input, select, textarea, input::placeholder {
   border-radius: 5px;
   padding: 0.75em;
   background: white;
+  width: 47%;
+  color: black;
 }
 
 .searched-board:hover {

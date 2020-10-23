@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
+import _ from "lodash";
 import logo from "../../static/img/logo2.png";
 import SearchModal from "../modals/SearchModal";
 import ProfilePic from "../boards/ProfilePic";
@@ -12,7 +13,9 @@ import NotificationsModal from "../modals/NotificationsModal";
 const Header = (props) => {
     const { authUser, board } = useContext(globalContext);
 
-    const [searchQuery, setSearchQuery] = useState("");
+    const [searchQuery, setSearchQuery] = useState(""); //This variable keeps track of what to show in the search bar
+    const [backendQuery, setBackendQuery] = useState(""); //This variable is used to query the backend, debounced
+    const delayedQuery = useCallback(_.debounce(q => setBackendQuery(q), 500), []);
     const [showSearch, setShowSearch] = useState(false);
     const searchElem = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -57,7 +60,7 @@ const Header = (props) => {
                             <input
                                 type="text"
                                 placeholder="Search"
-                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onChange={(e) => {setSearchQuery(e.target.value); delayedQuery(e.target.value)}}
                             />
                         </li>
                     </ul>
@@ -92,7 +95,7 @@ const Header = (props) => {
             </header>
             {showSearch && (
                 <SearchModal
-                    searchQuery={searchQuery}
+                    backendQuery={backendQuery}
                     searchElem={searchElem}
                     setShowModal={setShowSearch}
                 />

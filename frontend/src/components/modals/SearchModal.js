@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import {modalBlurHandler} from '../../static/js/util';
+import useAxiosGet from '../../hooks/useAxiosGet'
 
 import Card from '../boards/Card';
 import SearchedBoard from '../boards/SearchedBoard';
@@ -13,9 +14,9 @@ const getSearchSuggestionsPosition = (searchElem) => {
 	}
 }
 
-const SearchModal = ({searchQuery, searchElem, setShowModal}) => {
-	const cards = [];
-	const boards = [];
+const SearchModal = ({backendQuery, searchElem, setShowModal}) => {
+	const {data:cards} = useAxiosGet(`/boards/items/?q=${backendQuery}`);
+	const {data:boards} = useAxiosGet(`/boards/?q=${backendQuery}`);
 
 	useEffect(modalBlurHandler(setShowModal), []);
 
@@ -23,15 +24,15 @@ const SearchModal = ({searchQuery, searchElem, setShowModal}) => {
 		<div className="search-suggestions" style={getSearchSuggestionsPosition(searchElem.current)}>
 		    <p className="search-suggestions__title">Cards</p>
 		    <ul className="search-suggestions__cards">
-		        {cards.map(card => (
+		        {([]).map(card => (
 		        	<Card card={card} />
 		        ))}
 		    </ul>
 
 		    <p className="search-suggestions__title">Boards</p>
 		    <ul className="search-suggestions__boards">
-		        {boards.map(board => (
-		        	<SearchedBoard board={board} />
+		        {(boards || []).map(board => (
+		        	<SearchedBoard board={board} setShowModal={setShowModal} key={uuidv4()}/>
 		        ))}
 		    </ul>
 		</div>

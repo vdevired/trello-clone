@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^7.1.2",
     "axios": "^0.20.0",
     "humanize-duration": "^3.24.0",
+    "lodash": "^4.17.20",
     "qs": "^6.9.4",
     "react": "^16.13.1",
     "react-beautiful-dnd": "^13.0.0",
