@@ -48,6 +48,16 @@ class List(models.Model):
         return super().save(*args, **kwargs)
 
 
+class Label(models.Model):
+    board = models.ForeignKey(
+        Board, on_delete=models.CASCADE, related_name='labels')
+    title = models.CharField(max_length=255, blank=True, null=False)
+    color = models.CharField(max_length=255, blank=False, null=False)
+
+    def __str__(self):
+        return self.title
+
+
 class Item(models.Model):
     list = models.ForeignKey(
         List, on_delete=models.CASCADE, related_name='items')
@@ -60,6 +70,7 @@ class Item(models.Model):
     color = models.CharField(blank=True, null=False, max_length=6)  # Hex Code
 
     order = models.IntegerField(blank=True, null=True)
+    labels = models.ManyToManyField(Label, blank=True)
     assigned_to = models.ManyToManyField(User, blank=True)
     due_date = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -75,16 +86,6 @@ class Item(models.Model):
             self.order = filtered_objects.aggregate(Max('order'))[
                 'order__max'] + 1
         return super().save(*args, **kwargs)
-
-
-class Label(models.Model):
-    item = models.ForeignKey(
-        Item, on_delete=models.CASCADE, related_name='labels')
-    title = models.CharField(max_length=255, blank=False, null=False)
-    color = models.CharField(max_length=255, blank=False, null=False)
-
-    def __str__(self):
-        return self.title
 
 
 class Comment(models.Model):

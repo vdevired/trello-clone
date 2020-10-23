@@ -7,8 +7,9 @@ const Labels = ({ labels }) => {
         <div className="labels">
             {labels.map((label) => (
                 <p
-                    className={`labels__label labels__label--${label.color}`}
+                    className={`labels__label`}
                     key={uuidv4()}
+                    style={{ color: `#${label.color}` }}
                 >
                     ___
                 </p>

@@ -1,7 +1,7 @@
 import redis
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.db.models import Q, Case, When
+from django.db.models import Case, Q, When
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.utils.module_loading import import_string
@@ -12,12 +12,14 @@ from rest_framework import generics, permissions, serializers, status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from users.models import User
 
 from .models import Attachment, Board, Comment, Item, Label, List, Notification
 from .permissions import CanViewBoard, IsAuthorOrReadOnly
 from .serializers import (AttachmentSerializer, BoardSerializer,
                           CommentSerializer, ItemSerializer, LabelSerializer,
-                          ListSerializer, NotificationSerializer, ShortBoardSerializer)
+                          ListSerializer, NotificationSerializer,
+                          ShortBoardSerializer)
 
 r = redis.Redis(
     host=settings.REDIS_HOST, port=settings.REDIS_PORT, db=settings.REDIS_DB,
@@ -221,22 +223,68 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ItemSerializer
     permission_classes = [CanViewBoard]
 
+    def get_user(self, username, board):
+        user = get_object_or_404(User, username=username)
+        # Can this user view the board though?
+        if user.can_view_board(board):
+            return user
+        return None
+
+    def get_label(self, pk, board):
+        label = get_object_or_404(Label, pk=pk)
+        # Does this label belong to this item's board?
+        if board == label.board:
+            return label
+        return None
+
     def get_object(self):
         pk = self.kwargs.get('pk')
         item = get_object_or_404(Item, pk=pk)
         self.check_object_permissions(self.request, item.list.board)
         return item
 
+    def put(self, request, *args, **kwargs):
+        item = self.get_object()
+        if "assigned_to" in request.data:
+            user = self.get_user(request.data["assigned_to"], item.list.board)
+            if user is None:
+                return Response({"assigned_to": ["This user cannot view this board"]}, status=status.HTTP_400_BAD_REQUEST)
+
+        if "labels" in request.data:
+            label = self.get_label(request.data["labels"], item.list.board)
+            if label is None:
+                return Response({"labels": ["This label doees not belong to this board"]}, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().put(request, *args, **kwargs)
+
     def perform_update(self, serializer):
         # Same logic as BoardDetail
         req_data = self.request.data
 
         if "image" in req_data:
-            serializer.save(image_url="", color="")
+            item = serializer.save(image_url="", color="")
         elif "image_url" in req_data:
-            serializer.save(image=None, color="")
+            item = serializer.save(image=None, color="")
         else:
-            serializer.save(image=None, image_url="")
+            item = serializer.save(image=None, image_url="")
+
+        # Assigning or removing someone?
+        if "assigned_to" in req_data:
+            user = self.get_user(req_data["assigned_to"], item.list.board)
+
+            if item.assigned_to.filter(pk=user.pk).exists():
+                item.assigned_to.remove(user)
+            else:
+                item.assigned_to.add(user)
+
+        # Adding or removing a label?
+        if "labels" in req_data:
+            label = self.get_label(req_data["labels"], item.list.board)
+
+            if item.labels.filter(pk=label.pk).exists():
+                item.labels.remove(label)
+            else:
+                item.labels.add(label)
 
 
 class CommentList(generics.ListCreateAPIView):
@@ -289,12 +337,43 @@ class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class LabelList(generics.ListCreateAPIView):
-
-    queryset = Label.objects.all()
     serializer_class = LabelSerializer
     permission_classes = [
-        permissions.AllowAny
+        CanViewBoard
     ]
+
+    def get_board(self, pk):
+        board = get_object_or_404(Board, pk=pk)
+        self.check_object_permissions(self.request, board)
+        return board
+
+    def get_queryset(self, *args, **kwargs):
+
+        board_id = self.request.GET.get('board', None)
+
+        board = self.get_board(board_id)
+        return Label.objects.filter(board=board)
+
+    def post(self, request, *args, **kwargs):
+        if 'board' in request.data.keys():
+            board = self.get_board(request.data['board'])
+            return super().post(request, *args, **kwargs)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def perform_create(self, serializer):
+        board = self.get_board(self.request.data['board'])
+        serializer.save(board=board)
+
+
+class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = LabelSerializer
+    permission_classes = [CanViewBoard]
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+        label = get_object_or_404(Label, pk=pk)
+        self.check_object_permissions(self.request, label.board)
+        return label
 
 
 class LabelDetail(generics.RetrieveUpdateDestroyAPIView):
