@@ -478,6 +478,29 @@ class TestItemDetailView:
         assert Item.objects.get(pk=1).labels.filter(
             pk=personal_label.pk).exists() == True
 
+    def test_list_change(self,make_item):
+        (user_admin, user_member, user2, proj, personal_board, board,
+        personal_list, list1, list2, personal_item, item1, item2) = make_item
+        list3 = mixer.blend(List, board=personal_board)
+
+        client = APIClient()
+        client.force_authenticate(user_admin)
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "list" : list2.pk
+                              })
+
+        assert response.status_code == 400
+
+        response = client.put('/boards/items/1/',
+                              {
+                                  "title": "Put",
+                                  "list" : list3.pk
+                              })
+        assert response.status_code == 200
+        assert Item.objects.filter(pk=1, list=list3).exists() == True
+
     def test_delete(self, make_item):
         (user_admin, user_member, user2, proj, personal_board, board,
          personal_list, list1, list2, personal_item, item1, item2) = make_item

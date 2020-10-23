@@ -27,32 +27,32 @@ class TestList:
         board = mixer.blend('boards.Board')
         list1 = mixer.blend('boards.List', board=board)
         list2 = mixer.blend('boards.List', board=board)
-        assert list1.order == 1, 'Should create a list with order 1'
-        assert list1.order == list2.order - 1, 'Should check the order number for List'
+        assert list1.order == 2 ** 16 - 1 
+        assert list1.order == list2.order - (2 ** 16 - 1)
         list3 = mixer.blend('boards.List', board=board)
         list4 = mixer.blend('boards.List', board=board)
         list1.delete()
         list5 = mixer.blend('boards.List', board=board)
-        assert list5.order == 5, 'Should be 5, not 4'
+        assert list5.order == 5 * (2 ** 16 - 1)
 
 
 class TestItem:
     def test_str(self):
         item = mixer.blend('boards.Item')
-        assert item.title == str(item), 'Should check the Item name'
+        assert item.title == str(item)
 
     def test_save(self):
         list = mixer.blend('boards.List')
         item1 = mixer.blend('boards.Item', list=list)
         item2 = mixer.blend('boards.Item', list=list)
-        assert item1.order == 1, 'Should create a Item with order 1'
-        assert item1.order == item2.order - 1, 'Should check the order number for Item'
+        assert item1.order == (2 ** 16 -1)
+        assert item1.order == item2.order - (2 ** 16 - 1)
         item3 = mixer.blend('boards.Item', list=list)
         item4 = mixer.blend('boards.Item', list=list)
         item1.delete()
         item2.delete()
         item5 = mixer.blend('boards.Item', list=list)
-        assert item5.order == 5, 'Should be 5, not 3'
+        assert item5.order == 5 * (2 ** 16 -1)
 
 
 class TestLabel:

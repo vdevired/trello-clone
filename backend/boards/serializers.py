@@ -49,12 +49,16 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 class ListSerializer(serializers.ModelSerializer):
-    items = ItemSerializer(many=True, read_only=True)
+    items = serializers.SerializerMethodField()
 
     class Meta:
         model = List
         exclude = ['board']
 
+    def get_items(self, obj):
+        queryset = Item.objects.filter(list=obj).order_by('order')
+        return ItemSerializer(queryset, many=True).data
+        
 
 # For homepage, exclude lists
 class ShortBoardSerializer(serializers.ModelSerializer):
@@ -98,12 +102,16 @@ class ShortBoardSerializer(serializers.ModelSerializer):
 
 
 class BoardSerializer(ShortBoardSerializer):
-    lists = ListSerializer(many=True, read_only=True)
+    lists = serializers.SerializerMethodField()
 
     class Meta:
         model = Board
         fields = ['id', 'title', 'description', 'image', 'image_url',
                   'color', 'created_at', 'owner', 'lists', 'is_starred', ]
+
+    def get_lists(self, obj):
+        queryset = List.objects.filter(board=obj).order_by('order')
+        return ListSerializer(queryset, many=True).data
 
     def validate(self, data):
         return data  # No need to pass in image/image_url/color while editing board

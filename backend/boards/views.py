@@ -255,6 +255,12 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             return label
         return None
 
+    def get_list(self, pk, board):
+        list = get_object_or_404(List, pk=pk)
+        if board == list.board: 
+            return list
+        return None
+
     def get_object(self):
         pk = self.kwargs.get('pk')
         item = get_object_or_404(Item, pk=pk)
@@ -272,6 +278,12 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
             label = self.get_label(request.data["labels"], item.list.board)
             if label is None:
                 return Response({"labels": ["This label doees not belong to this board"]}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if "list" in request.data: 
+            list = self.get_list(request.data['list'], item.list.board)
+            if list is None:
+                return Response({'list': ["This list doesn't belong to this baord"]}, status=status.HTTP_400_BAD_REQUEST)
+            
 
         return super().put(request, *args, **kwargs)
 
@@ -303,7 +315,10 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
                 item.labels.remove(label)
             else:
                 item.labels.add(label)
-
+        
+        if "list" in req_data: 
+            list = self.get_list(req_data["list"], item.list.board)
+            serializer.save(list=list)
 
 class CommentList(generics.ListCreateAPIView):
 
