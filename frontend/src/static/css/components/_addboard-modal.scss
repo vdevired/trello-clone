@@ -1,10 +1,11 @@
 .addboard-modal {
     top: 0;
-    right: 0;
+    right: 50%;
+    transform: translateX(50%);
     display: flex;
-    left: 0;
     position: fixed;
-    
+    z-index: 4;
+
     &__title-block {
         height: 160px;
         background-repeat: no-repeat;
@@ -12,7 +13,6 @@
         //background-image: ;
         border-radius: 5px;
         width: 350px;
-
     }
 
     &__title {
@@ -25,8 +25,13 @@
         border-radius: 5px;
         padding: 0.5em;
         font-size: 1.125rem;
-        &:hover, &:focus {
+        &:hover,
+        &:focus {
             background-color: rgba(white, 0.2);
+        }
+
+        &::placeholder {
+            color: #bcbcbc;
         }
     }
 
@@ -38,7 +43,7 @@
         color: white;
     }
 
-    &__create{
+    &__create {
         margin-top: 0.5em;
     }
 
@@ -47,18 +52,17 @@
         width: 200px;
     }
 
-
     &__color-box {
         height: 48px;
         width: 48px;
         border: 0;
         border-radius: 5px;
-        margin-bottom: 0.5em ;
+        margin-bottom: 0.5em;
         margin-right: 0.5em;
         position: relative;
         background-color: white;
 
-        > i{
+        > i {
             position: absolute;
             top: 50%;
             left: 50%;
@@ -83,7 +87,10 @@
 
         .fa-ellipsis-h {
             color: $secondary-text;
-            
         }
+    }
+
+    .btn--disabled {
+        background-color: rgba($border-color, 1);
     }
 }

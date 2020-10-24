@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
+import AddBoardModal from "../components/modals/AddBoardModal";
 import HomeSidebar from "../components/sidebars/HomeSidebar";
 import HomeBoard from "../components/boards/HomeBoard";
 import CreateTeamModal from "../components/modals/CreateTeamModal";
@@ -11,6 +12,8 @@ import { filterBoards } from "../static/js/board";
 
 const Home = () => {
     useDocumentTitle("Boards | Trello");
+    const [showAddBoardModal, setShowAddBoardModal] = useState(false);
+    const [boardProject, setBoardProject] = useState(0); // If 0, we are making a personal board. Else, making board for project with given ID
     const [showTeamModal, setShowTeamModal] = useState(false);
     const { data: projects, addItem: addProject } = useAxiosGet("/projects/");
     const {
@@ -76,7 +79,13 @@ const Home = () => {
                         <p className="home__title">
                             <i className="fal fa-user"></i> Personal Boards
                         </p>
-                        <button className="btn">
+                        <button
+                            className="btn"
+                            onClick={() => {
+                                setBoardProject(0);
+                                setShowAddBoardModal(true);
+                            }}
+                        >
                             <i className="fal fa-plus"></i> Create
                         </button>
                     </div>
@@ -116,7 +125,13 @@ const Home = () => {
                                     >
                                         <i className="fal fa-cogs"></i> Settings
                                     </Link>
-                                    <a className="btn">
+                                    <a
+                                        className="btn"
+                                        onClick={() => {
+                                            setBoardProject(project.id);
+                                            setShowAddBoardModal(true);
+                                        }}
+                                    >
                                         <i className="fal fa-plus"></i> Create
                                     </a>
                                 </div>
@@ -138,6 +153,13 @@ const Home = () => {
                 <CreateTeamModal
                     setShowModal={setShowTeamModal}
                     addProject={addProject}
+                />
+            )}
+            {showAddBoardModal && (
+                <AddBoardModal
+                    setShowAddBoardModal={setShowAddBoardModal}
+                    addBoard={addBoard}
+                    project={boardProject}
                 />
             )}
         </>

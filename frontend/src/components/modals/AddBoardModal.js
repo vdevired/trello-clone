@@ -1,129 +1,149 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
+import { v4 as uuidv4 } from "uuid";
+
 import BoardBackground from "./BoardBackground";
-import { getEditControlsSidePosition } from '../boards/Card';
+import { getEditControlsSidePosition } from "../boards/Card";
+import {
+    modalBlurHandler,
+    getBoardBackgroundOptions,
+    authAxios,
+    getAddBoardStyle,
+} from "../../static/js/util";
+import useAxiosGet from "../../hooks/useAxiosGet";
+import { backendUrl } from "../../static/js/const";
 
-const options = [
-  [
-    "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1391&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1524129426126-1b85d8c74fd2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=614&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1444080748397-f442aa95c3e5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1790&q=80",
-    true,
-  ],
-  [
-    "https://images.unsplash.com/photo-1470813740244-df37b8c1edcb?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1051&q=80",
-    true,
-  ],
-  ["#4680FF", false],
-  ["red", false],
-  ["#FFB64D", false],
-  ["purple", false],
-];
-
-function deepEqual(object1, object2) {
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (const key of keys1) {
-    const val1 = object1[key];
-    const val2 = object2[key];
-    const areObjects = isObject(val1) && isObject(val2);
-    if (
-      (areObjects && !deepEqual(val1, val2)) ||
-      (!areObjects && val1 !== val2)
-    ) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-function isObject(object) {
-  return object != null && typeof object === "object";
-}
-
-const AddBoardModal = () => {
-  const [background, setBackground] = useState(
-    bgImage(
-      "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1391&q=80"
-    )
-  );
-  const [title, setTitle] = useState("");
-  const [showBoardModal, setShowBoardModal] = useState(false);
-  const cardElem = useRef(null);
-  return (
-    <>
-      {showBoardModal ? (
-        <BoardBackground
-          setShowBoardModal={setShowBoardModal}
-          setBackground={setBackground}
-          position={getEditControlsSidePosition(cardElem.current)}
-        />
-      ) : null}
-      <div className="addboard-modal">
-        <div className="addboard-modal__left">
-          <div className="addboard-modal__title-block" style={background}>
-            <input
-              onChange={(t) => {
-                setTitle(t.target.value);
-              }}
-              className="addboard-modal__title"
-              placeholder="Add board title"
-            />
-            <a className="addboard-modal__exit">
-              <i className="fal fa-times"></i>
-            </a>
-          </div>
-          <button
-            className={`addboard-modal__create btn--secondary btn${
-              title.trim() !== "" ? "" : " btn--disabled"
-            }`}
-          >
-            Create Board{" "}
-          </button>
-        </div>
-
-        <div className="addboard-modal__right" ref={cardElem}>
-          {options.map((option, index) => (
-            <button
-              onClick={() => {
-                setBackground(bgImage(...option));
-              }}
-              className={`addboard-modal__color-box${
-                option[1] ? " color-box--img" : ""
-              }`}
-              style={bgImage(...option)}
-            >
-              {" "}
-              {deepEqual(background, bgImage(...option)) ? (
-                <i className="fal fa-check"></i>
-              ) : null}{" "}
-            </button>
-          ))}
-          <button className="addboard-modal__color-box"
-           onClick={() => setShowBoardModal(true)} 
-          >
-            <i className="fal fa-ellipsis-h"></i>
-          </button>
-        </div>
-      </div>
-    </>
-  );
+const getBackgroundModalPosition = (boardElem) => {
+    // pass in ref.current
+    if (!boardElem) return null;
+    return {
+        top: boardElem.getBoundingClientRect().y + "px",
+        left:
+            boardElem.getBoundingClientRect().x +
+            boardElem.getBoundingClientRect().width -
+            200 +
+            "px",
+    };
 };
 
-const bgImage = (bg, img = true) => {
-  if (img) return { backgroundImage: `url(${bg})`, backgroundSize: "cover" };
-  return { backgroundColor: bg };
+const AddBoardModal = ({ setShowAddBoardModal, addBoard, project }) => {
+    const [selectedBackground, setSelectedBackground] = useState(0);
+    const [extraBackground, setExtraBackground] = useState(null); // Did we choose something from the BoardBackground modal?
+    const [title, setTitle] = useState("");
+    const [showBoardModal, setShowBoardModal] = useState(false);
+    const boardElem = useRef(null);
+    useEffect(modalBlurHandler(setShowAddBoardModal), []);
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+
+        const bg = options[selectedBackground];
+        const formData = { title };
+        if (project !== 0) formData.project = project;
+        if (bg[1]) {
+            // Image_url
+            formData.image_url = bg[2];
+        } else {
+            // color
+            formData.color = bg[0].substring(1); // We don't store # char in backend
+        }
+        const { data } = await authAxios.post(
+            `${backendUrl}/boards/`,
+            formData
+        );
+        addBoard(data);
+        setShowAddBoardModal(false);
+    };
+
+    const accessKey = process.env.REACT_APP_UNSPLASH_API_ACCESS_KEY;
+    const { data } = useAxiosGet(
+        `https://api.unsplash.com/photos?client_id=${accessKey}`,
+        false
+    );
+    const options = useMemo(() => getBoardBackgroundOptions(data), [data]); // So we don't reshuffle on state change
+    if (extraBackground) options[0] = extraBackground;
+
+    useEffect(() => {
+        if (selectedBackground !== 0) setExtraBackground(null);
+    }, [selectedBackground]);
+
+    if (!data) return null;
+    return (
+        <>
+            {showBoardModal ? (
+                <BoardBackground
+                    setShowBoardModal={setShowBoardModal}
+                    extraBackground={extraBackground}
+                    setExtraBackground={setExtraBackground}
+                    setSelectedBackground={setSelectedBackground}
+                    position={getBackgroundModalPosition(boardElem.current)}
+                />
+            ) : null}
+            <div className="addboard-modal">
+                <form className="addboard-modal__left" onSubmit={onSubmit}>
+                    <div
+                        className="addboard-modal__title-block"
+                        style={getAddBoardStyle(...options[selectedBackground])}
+                    >
+                        <input
+                            value={title}
+                            onChange={(e) => {
+                                setTitle(e.target.value);
+                            }}
+                            className="addboard-modal__title"
+                            placeholder="Add board title"
+                        />
+                        <button
+                            className="addboard-modal__exit"
+                            onClick={() => setShowAddBoardModal(false)}
+                        >
+                            <i className="fal fa-times"></i>
+                        </button>
+                    </div>
+                    {title.trim() === "" ? (
+                        <button
+                            className="addboard-modal__create btn btn--disabled"
+                            disabled
+                        >
+                            Create Board
+                        </button>
+                    ) : (
+                        <button
+                            className="addboard-modal__create btn"
+                            type="submit"
+                        >
+                            Create Board
+                        </button>
+                    )}
+                </form>
+
+                <div className="addboard-modal__right" ref={boardElem}>
+                    {options.map((option, index) => (
+                        <button
+                            onClick={() => {
+                                setSelectedBackground(index);
+                            }}
+                            className={`addboard-modal__color-box${
+                                option[1] ? " color-box--img" : ""
+                            }`}
+                            style={getAddBoardStyle(...option)}
+                            key={uuidv4()}
+                        >
+                            {" "}
+                            {selectedBackground == index && (
+                                <i className="fal fa-check"></i>
+                            )}{" "}
+                        </button>
+                    ))}
+                    <button
+                        className="addboard-modal__color-box"
+                        onClick={() => setShowBoardModal(true)}
+                    >
+                        <i className="fal fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+        </>
+    );
 };
 
 export default AddBoardModal;

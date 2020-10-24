@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    useContext,
+    useCallback,
+} from "react";
 import _ from "lodash";
 import logo from "../../static/img/logo2.png";
 import SearchModal from "../modals/SearchModal";
@@ -15,7 +21,10 @@ const Header = (props) => {
 
     const [searchQuery, setSearchQuery] = useState(""); //This variable keeps track of what to show in the search bar
     const [backendQuery, setBackendQuery] = useState(""); //This variable is used to query the backend, debounced
-    const delayedQuery = useCallback(_.debounce(q => setBackendQuery(q), 500), []);
+    const delayedQuery = useCallback(
+        _.debounce((q) => setBackendQuery(q), 500),
+        []
+    );
     const [showSearch, setShowSearch] = useState(false);
     const searchElem = useRef(null);
     const [showNotifications, setShowNotifications] = useState(false);
@@ -60,7 +69,10 @@ const Header = (props) => {
                             <input
                                 type="text"
                                 placeholder="Search"
-                                onChange={(e) => {setSearchQuery(e.target.value); delayedQuery(e.target.value)}}
+                                onChange={(e) => {
+                                    setSearchQuery(e.target.value);
+                                    delayedQuery(e.target.value);
+                                }}
                             />
                         </li>
                     </ul>
@@ -82,7 +94,7 @@ const Header = (props) => {
                             </button>
                             {(notifications || []).find(
                                 (notification) => notification.unread == true
-                            ) && <div class="header__unread"></div>}
+                            ) && <div className="header__unread"></div>}
                         </li>
                         <li className="header__li header__li--border">
                             <a>

@@ -23,6 +23,7 @@ A Trello clone made using Django Rest Framework, SASS, React, and Redis.
     - Search
         - Autocomplete (Debounced)
     - Unsplash API Integration
+        - Set environment variable REACT_APP_UNSPLASH_API_ACCESS_KEY with access key
     - Automatically adapt header and board title styling based on brightness of board background
 - Notifications
     - When someone assigns you to a card
@@ -63,6 +64,7 @@ $ yarn start
 ![Landing Page](https://imgur.com/CTgpNlD.jpg)
 ![Login Page](https://imgur.com/as4jhYS.jpg)
 ![Home Page](https://imgur.com/FV0UirA.jpg)
+![Add Board Modal](https://imgur.com/tO5fRW8.png)
 ![Create Project Modal](https://imgur.com/CXeD3C2.jpg)
 ![Project Page](https://imgur.com/QOsbu3y.jpg)
 ![Project Page 2](https://i.imgur.com/PGbDYvS.png)

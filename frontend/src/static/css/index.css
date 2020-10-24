@@ -2087,12 +2087,14 @@ button, input, select, textarea, input::placeholder {
 
 .addboard-modal {
   top: 0;
-  right: 0;
+  right: 50%;
+  -webkit-transform: translateX(50%);
+          transform: translateX(50%);
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  left: 0;
   position: fixed;
+  z-index: 4;
 }
 
 .addboard-modal__title-block {
@@ -2117,6 +2119,22 @@ button, input, select, textarea, input::placeholder {
 
 .addboard-modal__title:hover, .addboard-modal__title:focus {
   background-color: rgba(255, 255, 255, 0.2);
+}
+
+.addboard-modal__title::-webkit-input-placeholder {
+  color: #bcbcbc;
+}
+
+.addboard-modal__title:-ms-input-placeholder {
+  color: #bcbcbc;
+}
+
+.addboard-modal__title::-ms-input-placeholder {
+  color: #bcbcbc;
+}
+
+.addboard-modal__title::placeholder {
+  color: #bcbcbc;
 }
 
 .addboard-modal__exit {
@@ -2174,6 +2192,10 @@ button, input, select, textarea, input::placeholder {
 
 .addboard-modal__color-box .fa-ellipsis-h {
   color: #838282;
+}
+
+.addboard-modal .btn--disabled {
+  background-color: lightgray;
 }
 
 .team__header {
