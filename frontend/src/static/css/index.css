@@ -1843,45 +1843,6 @@ button, input, select, textarea, input::placeholder {
           filter: brightness(70%);
 }
 
-.label-modal__search {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  margin: 0.6em 1.2em;
-}
-
-.label-modal__search > p {
-  color: #838282;
-  -webkit-filter: brightness(90%);
-          filter: brightness(90%);
-  margin-bottom: 0.4em;
-  font-size: 0.9em;
-}
-
-.label-modal__search > input[type="text"] {
-  width: 100%;
-  font-weight: 600;
-  height: 2em;
-  border-width: 1px;
-  border-color: rgba(211, 211, 211, 0.55);
-  border-radius: 0.2em;
-}
-
-.label-modal__search > input[type="text"]:hover {
-  border-color: #4680ff;
-  border-width: 2px;
-}
-
-.label-modal__search > ::-webkit-input-placeholder,
-.label-modal__search ::-moz-placeholder {
-  font-size: 1em;
-  font-weight: 600;
-}
-
 .label-modal__labels-head {
   color: #838282;
   font-weight: 600;
@@ -2040,6 +2001,10 @@ button, input, select, textarea, input::placeholder {
 
 .label-modal__content button {
   width: 100%;
+}
+
+.label-modal__title {
+  margin-bottom: 1em;
 }
 
 .label-modal__invite-header {

@@ -136,6 +136,8 @@ const Card = ({ card, list, provided, isDragging }) => {
                             />
                             {showLabelModal && (
                                 <LabelModal
+                                    card={card}
+                                    list={list} 
                                     cardElem={cardElem}
                                     setShowModal={setShowLabelModal}
                                 />

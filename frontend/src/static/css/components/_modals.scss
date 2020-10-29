@@ -53,39 +53,6 @@
         }
     }
 
-    &__search {
-        display: flex;
-        flex-direction: column;
-        margin: 0.6em 1.2em;
-
-        > p {
-            color: $secondary-text;
-            filter: brightness(90%);
-            margin-bottom: 0.4em;
-            font-size: 0.9em;
-        }
-
-        > input[type="text"] {
-            width: 100%;
-            font-weight: 600;
-            height: 2em;
-            border-width: 1px;
-            border-color: $border-color;
-            border-radius: 0.2em;
-        }
-
-        > input[type="text"]:hover {
-            border-color: $blue;
-            border-width: 2px;
-        }
-
-        > ::-webkit-input-placeholder,
-        ::-moz-placeholder {
-            font-size: 1em;
-            font-weight: 600;
-        }
-    }
-
     &__labels-head {
         color: $secondary-text;
         font-weight: 600;
@@ -220,6 +187,10 @@
         button {
             width: 100%;
         }
+    }
+
+    &__title {
+        margin-bottom: 1em;
     }
 
     &__invite-header {

@@ -16,7 +16,7 @@ class LabelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Label
-        exclude = ('id', 'board',)
+        exclude = ('board',)
 
 
 class CommentSerializer(serializers.ModelSerializer):
