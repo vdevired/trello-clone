@@ -49,6 +49,11 @@ $ pipenv run python manage.py migrate
 $ cd frontend
 $ yarn install
 ```
+
+If you get an openssl related warning, run the following command inside the frontend directory. 
+```
+export NODE_OPTIONS=--openssl-legacy-provider
+```
 5. Run redis on port 6380
 ``` 
 $ redis-server --port 6380
